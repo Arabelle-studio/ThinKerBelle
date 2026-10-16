@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arabelle Studio</title>
+<meta name="theme-color" content="#F7D9E3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Arabelle Studio">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  html,body{margin:0;height:100%;background:#FFFDF9;overflow:hidden}
+  #muat{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,sans-serif;color:#6E4A5E}
+  #muat .ikon{font-size:54px;animation:naik 1.4s ease-in-out infinite}
+  @keyframes naik{50%{transform:translateY(-8px)}}
+  iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:transparent}
+</style>
+</head><body>
+<div id="muat"><div class="ikon">🧚‍♀️</div><div style="margin-top:10px;font-weight:600">Arabelle Studio</div><div style="font-size:13px;opacity:.7">Memuat…</div></div>
+<iframe id="app" title="Arabelle Studio" allow="clipboard-write"></iframe>
+<script>
+  // ⬇️ Alamat aplikasi web Arabelle Hub (deployment /exec). Ganti kalau deployment berubah.
+  const APP = 'https://script.google.com/macros/s/AKfycbxglVQKBvsnks_7C_XnrLXEx0GiIoZFT4xjSTDQ74YPVP_sAA-DaVlJdG_6Tvnx1Gk/exec';
+  const KUNCI = 'arabelleStudioToken';
+  const q = new URLSearchParams(location.search);
+  let t = q.get('t') || '';
+  try { if (t) localStorage.setItem(KUNCI, t); else t = localStorage.getItem(KUNCI) || ''; } catch (e) {}
+  if (q.get('t')) history.replaceState(null, '', location.pathname);   // sembunyikan kode dari address bar
+  const f = document.getElementById('app');
+  f.src = APP + '?app=1' + (t ? '&t=' + encodeURIComponent(t) : '');
+  f.onload = () => setTimeout(() => document.getElementById('muat').style.display = 'none', 400);
+  window.addEventListener('message', e => {
+    const d = e.data || {};
+    try { if (d.arabelleToken) localStorage.setItem(KUNCI, d.arabelleToken); if (d.arabelleLogout) localStorage.removeItem(KUNCI); } catch (x) {}
+  });
+</script>
+</body></html>

@@ -1,0 +1,12 @@
+ARABELLE STUDIO · halaman tanpa banner Google (gratis, GitHub Pages)
+
+1. Buat akun gratis di github.com (pakai email kantor).
+2. Klik + → New repository → nama: arabelle-studio → Public → Create repository.
+3. Klik "uploading an existing file" → seret SEMUA file di folder ini
+   (index.html, manifest.webmanifest, icon-192.png, icon-512.png, apple-touch-icon.png) → Commit changes.
+4. Settings → Pages → Source: Deploy from a branch → Branch: main / (root) → Save.
+5. Tunggu 1-2 menit. Alamatnya: https://NAMAAKUN.github.io/arabelle-studio/
+6. Di tab PENGATURAN Arabelle Hub, tambah baris APP_PUBLIK = alamat di langkah 5.
+7. Pin alamat itu di grup ThinKerBelle. Selesai!
+
+Kalau deployment Apps Script berubah: edit index.html (baris const APP = '...') lalu upload ulang.
