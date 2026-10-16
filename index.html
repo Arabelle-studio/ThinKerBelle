@@ -30,7 +30,7 @@
   try { if (t) localStorage.setItem(KUNCI, t); else t = localStorage.getItem(KUNCI) || ''; } catch (e) {}
   if (q.get('t')) history.replaceState(null, '', location.pathname);   // sembunyikan kode dari address bar
   const f = document.getElementById('app');
-  f.src = APP + '?app=1' + (t ? '&t=' + encodeURIComponent(t) : '');
+  f.src = APP + '?app=1&w=1' + (t ? '&t=' + encodeURIComponent(t) : '');
   f.onload = () => setTimeout(() => document.getElementById('muat').style.display = 'none', 400);
   window.addEventListener('message', e => {
     const d = e.data || {};
