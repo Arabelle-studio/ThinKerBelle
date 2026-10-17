@@ -28,13 +28,18 @@
   const q = new URLSearchParams(location.search);
   let t = q.get('t') || '';
   try { if (t) localStorage.setItem(KUNCI, t); else t = localStorage.getItem(KUNCI) || ''; } catch (e) {}
-  if (q.get('t')) history.replaceState(null, '', location.pathname);   // sembunyikan kode dari address bar
+  // Kode ikut disimpan di alamat halaman, supaya ikon di layar utama HP langsung masuk tanpa kode WA
+  // (iPhone memisahkan penyimpanan Safari dan ikon layar utama, jadi alamat inilah yang paling awet)
+  const pasangAlamat = tk => history.replaceState(null, '', location.pathname + (tk ? '?t=' + encodeURIComponent(tk) : ''));
+  pasangAlamat(t);
   const f = document.getElementById('app');
   f.src = APP + '?app=1&w=1' + (t ? '&t=' + encodeURIComponent(t) : '');
   f.onload = () => setTimeout(() => document.getElementById('muat').style.display = 'none', 400);
   window.addEventListener('message', e => {
     const d = e.data || {};
     try { if (d.arabelleToken) localStorage.setItem(KUNCI, d.arabelleToken); if (d.arabelleLogout) localStorage.removeItem(KUNCI); } catch (x) {}
+    if (d.arabelleToken) pasangAlamat(d.arabelleToken);
+    if (d.arabelleLogout) pasangAlamat('');
   });
 </script>
 </body></html>

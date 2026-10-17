@@ -2,7 +2,6 @@
   "name": "Arabelle Studio",
   "short_name": "Arabelle",
   "description": "Aplikasi kerja ThinKerBelle & ThinKerBro",
-  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#FFFDF9",
