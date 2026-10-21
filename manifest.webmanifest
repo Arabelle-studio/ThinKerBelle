@@ -1,11 +1,11 @@
 {
-  "name": "Arabelle Studio",
-  "short_name": "Arabelle",
+  "name": "ThinKerBelle",
+  "short_name": "ThinKerBelle",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#FBE1EC",
-  "theme_color": "#FBE1EC",
+  "background_color": "#FCF4F3",
+  "theme_color": "#FCF4F3",
   "icons": [
     {
       "src": "icon-192.png",
