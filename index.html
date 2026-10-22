@@ -476,7 +476,7 @@ function linkPribadi() { return URL_PUBLIK ? URL_PUBLIK + '/?t=' + TOKEN : URL_A
 function salinLink() { const l = linkPribadi(); const ok = () => react('selesai', 'Link app disalin'); try { navigator.clipboard.writeText(l).then(ok, () => prompt('Salin link ini:', l)); } catch (e) { prompt('Salin link ini:', l); } }
 function cekSetelahUpdate() {
   let dari = null, ikon = null; try { dari = localStorage.getItem('arabelleUpdateDari'); ikon = localStorage.getItem('arabelleIkon'); } catch (e) {}
-  const pasangUlang = ikon !== IKON_VERSI;
+  const pasangUlang = false;   // ajakan pasang ulang ikon dimatikan (mengganggu); ikon cukup dari GitHub
   if (!dari && !pasangUlang) return;
   try { localStorage.removeItem('arabelleUpdateDari'); } catch (e) {}
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
