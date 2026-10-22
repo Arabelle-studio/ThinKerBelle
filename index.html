@@ -15,7 +15,8 @@
 :root[data-theme="dark"] .fab{background:var(--deep);color:#fff}
 :root[data-theme="dark"]{--bg:#151215;--card:#211B20;--ink:#F7E9EF;--mut:#C4A6B4;--deep:#E58AAE;--mid:#E9A0BB;--acc:#F2B5CB;--chip:#2E252C;--line:#3A2F37;--sh:rgba(0,0,0,.35);--okbg:#1F3B2E;--ok:#8FD3AE;--acct:#F2A7C3;--fade:rgba(21,18,21,.9);--nav:#211B20;--navt:#C9A4B6;color-scheme:dark;--tile:#262026;--tile2:#2B242A;--chipnc:rgba(255,255,255,.07);--n-pink:#35212B;--n-kuning:#352A27;--n-hijau:#2C2A2A;--n-ungu:#30242F;--n-biru:#29252E}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{max-width:100%;overflow-x:hidden}
+html,body{max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}
+#view,.app,#sheet{max-width:100%;overflow-x:clip}img,video,svg{max-width:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:'Outfit',system-ui,sans-serif;font-size:15px;line-height:1.45}
 button{font:inherit;color:inherit;cursor:pointer}a{color:var(--acct)}
 .app{max-width:440px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(130px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
@@ -76,7 +77,7 @@ button{font:inherit;color:inherit;cursor:pointer}a{color:var(--acct)}
 .seg{display:flex;background:var(--chip);border-radius:999px;padding:4px;gap:4px}.seg button{flex:1;border:0;background:none;border-radius:999px;padding:9px;font-weight:600;font-size:13px;color:var(--acct)}.seg button.on{background:var(--deep);color:#fff}
 .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}.chips button{flex:none;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--mut)}.chips button.on{background:var(--deep);border-color:var(--acct);color:#fff}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.prg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.prk{border:1px solid var(--line);background:var(--card);border-radius:20px;overflow:hidden;text-align:left;padding:0;color:var(--ink);box-shadow:0 6px 18px var(--sh)}.prk .pim{aspect-ratio:1/1;background:var(--tile);display:grid;place-items:center;font-size:34px;overflow:hidden}.prk .pim img{width:100%;height:100%;object-fit:cover}.prk .pt{padding:10px 12px 12px}.prk b{display:block;font-size:14px;line-height:1.25}.prk small{display:block;color:var(--mut);font-size:12px;margin-top:3px}.prfoto{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:4px 0 10px}.prfoto a{flex:none}.prfoto img{width:132px;height:132px;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:var(--tile)}
+.prg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.prk{border:1px solid var(--line);background:var(--card);border-radius:20px;overflow:hidden;text-align:left;padding:0;color:var(--ink);box-shadow:0 6px 18px var(--sh)}.prk .pim{aspect-ratio:1/1;background:var(--tile);display:grid;place-items:center;font-size:34px;overflow:hidden}.prk .pim img{width:100%;height:100%;object-fit:cover}.prk .pt{padding:10px 12px 12px}.prk b{display:block;font-size:14px;line-height:1.25}.prk small{display:block;color:var(--mut);font-size:12px;margin-top:3px}.chips.wrap{flex-wrap:wrap;overflow:visible}.prg{align-items:start}.prk{min-width:0;display:flex;flex-direction:column;justify-content:flex-start;width:100%}.prk .pim{width:100%}.prk b{overflow-wrap:anywhere}.prcover{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:20px;border:1px solid var(--line);background:var(--tile);display:block;margin:4px 0 10px}.prfoto{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:4px 0 10px}.prfoto .fi{position:relative;min-width:0}.prfoto img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;border:1px solid var(--line);background:var(--tile);display:block}.prfoto .fi button{position:absolute;left:4px;right:4px;bottom:4px;border:0;border-radius:999px;padding:4px 6px;font-size:11px;font-weight:600;background:rgba(255,255,255,.88);color:var(--deep)}.prfoto .fi.on img{outline:3px solid var(--deep);outline-offset:-3px}.prdbox{max-height:210px;overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:16px;padding:8px;background:var(--card)}.prdbox .pf.hid{display:none}
 @media (min-width:900px){.prg{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .hero .streak{position:relative;display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:4px 11px;font-size:12.5px;font-weight:600;margin-bottom:10px}
 .hero .sapa{font-style:italic;opacity:.92;max-width:220px}
@@ -872,7 +873,7 @@ function muatReport(jenis, idx) { REP.jenis = jenis; REP.idx = idx; if (REP.data
   gsr('apiReport', [TOKEN, jenis, idx], d => { loading(false); REP.data = d; REP.idx = d.idx; if (TAB === 'report') render(); }); }
 function vAgenda() { return kembali + judul('Agenda & kalender tim', 'Photoshoot, event, dinas, meeting', `<button class="round" onclick="bukaForm('agenda')" aria-label="Tambah agenda">${ic('plus', 24)}</button>`) + timList(); }
 // =========================== PRODUK & SAMPEL ===========================
-let PROD = null, PRODF = 'Aktif', PRODQ = '';
+let PROD = null, PRODF = 'Aktif', PRODQ = '', COVER = null;
 const ST_PROD = { Sampel: ['✂️', 'wr'], Produksi: ['🛠️', ''], Final: ['✅', 'ok'], Arsip: ['📦', 'no'] };
 const thumb = (id, w) => id ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w' + (w || 400) : '';
 const tglP = iso => iso ? new Date(iso + 'T00:00:00').getDate() + ' ' + BLN3[new Date(iso + 'T00:00:00').getMonth()] : '';
@@ -881,12 +882,12 @@ function vProduk() {
   let h = kembali + judul('Produk &amp; sampel', 'Diisi Fina &amp; tim · dipakai di photoshoot, launching &amp; materi', `<button class="round" onclick="bukaForm('produk')" aria-label="Tambah produk">${ic('plus', 24)}</button>`);
   if (!PROD) { muatProduk(); return h + kosong('s11', 'Memuat produk…'); }
   const n = s => PROD.filter(p => s === 'Aktif' ? p.status !== 'Arsip' : p.status === s).length;
-  h += `<div class="chips">${['Aktif', 'Sampel', 'Produksi', 'Final', 'Arsip'].map(s => `<button class="${PRODF === s ? 'on' : ''}" onclick="PRODF='${s}';render()">${s} ${n(s)}</button>`).join('')}</div>`;
+  h += `<div class="chips wrap">${['Aktif', 'Sampel', 'Produksi', 'Final', 'Arsip'].map(s => `<button class="${PRODF === s ? 'on' : ''}" onclick="PRODF='${s}';render()">${s} ${n(s)}</button>`).join('')}</div>`;
   h += `<input class="cari" id="cariP" placeholder="🔍 Cari nama, kategori, warna…" value="${esc(PRODQ)}" oninput="PRODQ=this.value;const p=this.selectionStart;render();const c=$('cariP');c.focus();c.setSelectionRange(p,p)">`;
   const q = PRODQ.trim().toLowerCase();
   const a = PROD.map((p, i) => Object.assign({ i }, p)).filter(p => (PRODF === 'Aktif' ? p.status !== 'Arsip' : p.status === PRODF) && (!q || [p.nama, p.kategori, p.warna, p.catatan].join(' ').toLowerCase().includes(q)));
   if (!a.length) return h + kosong('s21', PROD.length ? 'Tidak ada produk yang cocok.' : 'Belum ada produk. Ketuk + untuk menambah produk atau sampel.');
-  return h + `<div class="prg">${a.map(p => { const st = ST_PROD[p.status] || ST_PROD.Sampel, f = p.fotoId.find(Boolean);
+  return h + `<div class="prg">${a.map(p => { const st = ST_PROD[p.status] || ST_PROD.Sampel, f = p.coverId || p.fotoId.find(Boolean);
     return `<button class="prk" onclick="bukaProduk(${p.i})"><div class="pim">${f ? `<img src="${esc(thumb(f))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span style="color:var(--acct);opacity:.55">${ic('dress', 46)}</span>`}</div><div class="pt"><b>${esc(p.nama)}</b>
       <small><span class="chip ${st[1]}">${st[0]} ${esc(p.status)}</span></small>${p.kategori ? `<small>${esc(p.kategori)}</small>` : ''}${p.ps ? `<small>📸 ${tglP(p.ps)}</small>` : ''}${p.launch ? `<small>🚀 ${tglP(p.launch)}</small>` : ''}</div></button>`; }).join('')}</div>`;
 }
@@ -894,11 +895,15 @@ function bukaProduk(i) {
   const p = PROD[i]; if (!p) return; const st = ST_PROD[p.status] || ST_PROD.Sampel;
   const baris = (k, v) => v ? `<div class="lc"><div class="x"><small style="color:var(--mut)">${k}</small><b style="font-weight:500;white-space:pre-line">${esc(v)}</b></div></div>` : '';
   buka(`<h2>${esc(p.nama)}</h2><div class="acts" style="margin-top:0"><span class="chip ${st[1]}">${st[0]} ${esc(p.status)}</span>${p.kategori ? `<span class="chip">${esc(p.kategori)}</span>` : ''}</div>
-    ${p.foto.length ? `<div class="prfoto">${p.foto.map((u, j) => `<a href="${esc(u)}" target="_blank" rel="noopener">${p.fotoId[j] ? `<img src="${esc(thumb(p.fotoId[j], 600))}" alt="Foto ${j + 1}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="chip">🔗 Foto ${j + 1}</span>`}</a>`).join('')}</div>` : '<div class="info">Belum ada foto. Tambahkan lewat ✏️ Ubah.</div>'}
+    ${(p.coverId || p.fotoId.find(Boolean)) ? `<a href="${esc(p.cover || p.foto[p.fotoId.findIndex(Boolean)])}" target="_blank" rel="noopener"><img class="prcover" src="${esc(thumb(p.coverId || p.fotoId.find(Boolean), 900))}" alt="Foto cover ${esc(p.nama)}" referrerpolicy="no-referrer"></a>` : (p.cover ? `<a class="chip" href="${esc(p.cover)}" target="_blank" rel="noopener">🔗 Foto cover</a>` : '')}
+    ${p.foto.length ? `<small style="color:var(--mut);font-weight:600">Foto sampel · ketuk ⭐ untuk jadikan cover</small><div class="prfoto">${p.foto.map((u, j) => `<div class="fi ${p.cover === u ? 'on' : ''}"><a href="${esc(u)}" target="_blank" rel="noopener">${p.fotoId[j] ? `<img src="${esc(thumb(p.fotoId[j], 400))}" alt="Foto ${j + 1}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="chip">🔗 Foto ${j + 1}</span>`}</a>${p.cover === u ? '' : `<button onclick="jadikanCover(${i},${j})">⭐ Cover</button>`}</div>`).join('')}</div>` : (p.cover ? '' : '<div class="info">Belum ada foto. Tambahkan lewat ✏️ Ubah.</div>')}
     <div class="card">${baris('Warna / varian', p.warna)}${baris('Ukuran', p.ukuran)}${baris('Rencana photoshoot', p.ps ? tglP(p.ps) : '')}${baris('Rencana launching', p.launch ? tglP(p.launch) : '')}${baris('Catatan', p.catatan)}
       ${p.diubah ? `<small style="display:block;color:var(--mut);margin-top:8px">Terakhir diubah ${esc(p.diubah)}</small>` : ''}</div>
     <button class="big" onclick="bukaForm('produk',${i})">✏️ Ubah / tambah foto</button>`);
 }
+function cariPrd(q) { q = String(q || '').trim().toLowerCase(); document.querySelectorAll('#prd .pf').forEach(b => b.classList.toggle('hid', !!q && !b.classList.contains('on') && !b.dataset.p.toLowerCase().includes(q))); }
+function jadikanCover(i, j) { const p = PROD[i]; if (!p) return; loading(true, 'Mengganti cover…');
+  gsr('apiCoverProduk', [TOKEN, p.id, p.foto[j]], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); p.cover = p.foto[j]; p.coverId = p.fotoId[j]; react('selesai', r.pesan); bukaProduk(i); if (TAB === 'produk') render(); }); }
 function vMateri() {
   let h = kembali + judul('Materi launching', 'Filosofi, detail, harga &amp; warna untuk Alif');
   if (!(D.produkMateri || []).length) return h + kosong('s21', 'Belum ada produk di Jadwal Launching.');
@@ -1071,6 +1076,9 @@ function bukaForm(k, arg) {
       <label>Warna / varian</label><textarea id="pr3" style="min-height:64px" placeholder="Contoh: Sage, Dusty pink, Navy">${v('warna')}</textarea>
       <label>Ukuran</label><input id="pr4" placeholder="Contoh: S, M, L, XL / anak 2–10 th" value="${v('ukuran')}">
       <div class="two"><div><label>Rencana photoshoot</label><input type="date" id="pr5" value="${v('ps')}"></div><div><label>Rencana launching</label><input type="date" id="pr6" value="${v('launch')}"></div></div>
+      <label>Foto cover ${p && p.cover ? '<span style="font-weight:500;color:var(--mut)">(sudah ada · isi untuk mengganti)</span>' : '<span style="font-weight:500;color:var(--mut)">(foto utama, mis. foto feed official)</span>'}</label>
+      <label class="drop" id="drop2"><input type="file" accept="image&#47;*" id="file2" hidden><span>🖼️ Pilih foto cover</span></label>
+      <input id="pr9" placeholder="atau tempel link foto cover (Google Drive)">
       <label>Foto sampel ${p && p.foto.length ? `<span style="font-weight:500;color:var(--mut)">(${p.foto.length} foto tersimpan, foto baru ditambahkan)</span>` : ''}</label>
       <label class="drop" id="drop"><input type="file" accept="image&#47;*" id="file" hidden><span>📷 Foto dari kamera / galeri</span></label>
       <label>atau tempel link foto (Google Drive)</label><input id="pr8" placeholder="https://drive.google.com/…">
@@ -1083,7 +1091,7 @@ function bukaForm(k, arg) {
       <div class="two"><div><label>Jam mulai</label><input type="time" id="a5" value="${esc(k ? jm(k.jam) : '')}"></div><div><label>Jam selesai <span style="font-weight:500;color:var(--mut)">(opsional)</span></label><input type="time" id="a4" value="${esc(k ? jm(k.jamSelesai) : '')}"></div></div>
       <label>Lokasi</label><input id="a6" placeholder="Contoh: Studio Kudus" value="${esc(k ? k.lokasi : '')}">
       <label>Tim yang ikut</label><div class="pfs" id="ikut">${D.timNama.map(n => `<button class="pf ${k && k.tim.includes(n) ? 'on' : ''}" data-p="${esc(n)}">${esc(n)}</button>`).join('')}</div>
-      ${(D.produkList || []).length || (k && k.produk) ? `<label>Produk <span style="font-weight:500;color:var(--mut)">(belum launching · opsional)</span></label><div class="pfs" id="prd">${[...new Set((k && k.produk ? String(k.produk).split(/\s*,\s*/).filter(Boolean) : []).concat(D.produkList || []))].map(n => `<button class="pf ${k && String(k.produk || '').split(/\s*,\s*/).includes(n) ? 'on' : ''}" data-p="${esc(n)}">${esc(n)}</button>`).join('')}</div>` : ''}</div>`
+      ${(D.produkList || []).length || (k && k.produk) ? `<label>Produk <span style="font-weight:500;color:var(--mut)">(belum launching · opsional)</span></label><input id="prdq" placeholder="🔍 Cari produk…" oninput="cariPrd(this.value)" style="margin-bottom:8px"><div class="pfs prdbox" id="prd">${[...new Set((k && k.produk ? String(k.produk).split(/\s*,\s*/).filter(Boolean) : []).concat(D.produkList || []))].map(n => `<button class="pf ${k && String(k.produk || '').split(/\s*,\s*/).includes(n) ? 'on' : ''}" data-p="${esc(n)}">${esc(n)}</button>`).join('')}</div>` : ''}</div>`
       + `<div class="info">${k ? 'Perubahan langsung tampil di beranda &amp; kalender tim.' : (D.pimpinan ? 'Agenda langsung berstatus Fix.' : 'Agenda masuk sebagai Rencana, menunggu konfirmasi leader.') + ' Tampil di beranda &amp; kalender tim (tidak dikirim ke grup WA). Tim yang ikut bebas laporan di hari itu.'}</div><button class="big" id="kirim">${k ? 'Simpan perubahan' : 'Simpan agenda'}</button>`; },
     agsyifa: () => { const k = arg !== undefined ? D.kalTim[arg] : null, r = k ? k.syRaw : null, raw = r ? String(r.note || '') : '';
       const low = x => String(x).toLowerCase().replace(/\s+/g, ''), tag = (raw.match(/@([^\s@,]+)/g) || []).map(x => low(x.slice(1))), semua = tag.includes('semua') || tag.includes('tim');
@@ -1130,6 +1138,9 @@ function bukaForm(k, arg) {
   buka((k === 'materi' && TAB === 'materi' ? '' : bk) + F[k]());
   const sh = $('sheet');
   sh.querySelectorAll('#untuk .pf,#ikut .pf,#prd .pf').forEach(b => b.onclick = () => { if (b.dataset.p === 'Semua') sh.querySelectorAll('#untuk .pf').forEach(x => x.classList.toggle('on', x === b)); else { b.classList.toggle('on'); const s = sh.querySelector('#untuk [data-p="Semua"]'); if (s) s.classList.toggle('on', !sh.querySelectorAll('#untuk .pf.on:not([data-p="Semua"])').length); } });
+  const f2 = $('file2'); COVER = null; if (f2) f2.onchange = e => { const f = e.target.files[0]; if (!f) return; const im = new Image(), rd = new FileReader();
+    rd.onload = () => { im.onload = () => { const s = Math.min(1, 1600 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = im.width * s; c.height = im.height * s; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      const u = c.toDataURL('image/jpeg', .8); COVER = { data: u.split(',')[1], mime: 'image/jpeg' }; $('drop2').innerHTML = '<img src="' + u + '" alt="Foto cover"><span>Cover siap · ' + Math.round(u.length * .75 / 1024) + ' KB</span>'; }; im.src = rd.result; }; rd.readAsDataURL(f); };
   const fi = $('file'); if (fi) fi.onchange = e => { const f = e.target.files[0]; if (!f) return; const im = new Image(), rd = new FileReader();
     rd.onload = () => { im.onload = () => { const s = Math.min(1, 1400 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = im.width * s; c.height = im.height * s; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
       const u = c.toDataURL('image/jpeg', .72); FOTO = { data: u.split(',')[1], mime: 'image/jpeg' }; $('drop').innerHTML = '<img src="' + u + '" alt="Foto nota"><span>Foto siap · ' + Math.round(u.length * .75 / 1024) + ' KB</span>'; }; im.src = rd.result; }; rd.readAsDataURL(f); };
@@ -1190,8 +1201,8 @@ function kirim(k, arg) {
     if (fe) return run('apiPerintahUbah', [fe.id, { isi: g('p1'), tenggat: g('p2'), untuk: u }], 'perintah', 'Menyimpan…');
     return run('apiPerintah', [{ isi: g('p1'), tenggat: g('p2'), untuk: u }], 'perintah', 'Mengirim…'); }
   if (k === 'produk') { if (!g('pr1')) return react('bingung', 'Isi nama produknya dulu ya'); const p = arg !== undefined && PROD ? PROD[arg] : null;
-    const d = { id: p ? p.id : '', nama: g('pr1'), status: (sh.querySelector('#prs .on') || {}).dataset.v || 'Sampel', kategori: g('pr2'), warna: g('pr3'), ukuran: g('pr4'), ps: g('pr5'), launch: g('pr6'), catatan: $('pr7').value.trim(), linkFoto: g('pr8'), foto: FOTO };
-    tutup(); loading(true, FOTO ? 'Mengunggah foto…' : 'Menyimpan produk…');
+    const d = { id: p ? p.id : '', nama: g('pr1'), status: (sh.querySelector('#prs .on') || {}).dataset.v || 'Sampel', kategori: g('pr2'), warna: g('pr3'), ukuran: g('pr4'), ps: g('pr5'), launch: g('pr6'), catatan: $('pr7').value.trim(), linkFoto: g('pr8'), foto: FOTO, cover: COVER, coverLink: g('pr9') };
+    tutup(); loading(true, FOTO || COVER ? 'Mengunggah foto…' : 'Menyimpan produk…');
     return gsr('apiSimpanProduk', [TOKEN, d], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal menyimpan'); react('selesai', r.pesan);
       muatProduk(() => { if (TAB !== 'produk') go('produk'); else render(); const j = PROD.findIndex(x => x.id === r.id); if (j >= 0 && p) bukaProduk(j); }); muat(true); }); }
   if (k === 'agenda') { if (!g('a2')) return react('bingung', 'Isi nama kegiatannya dulu ya');
