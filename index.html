@@ -246,6 +246,7 @@ setTimeout(function () { if (!window.__siap) { var v = document.getElementById('
 <nav class="nav" id="nav"></nav>
 <div class="dim" id="dim"></div><div class="sheet" id="sheet"></div>
 <div class="upd" id="upd" role="status"><img id="updimg" alt=""><p><b>Ada update baru ✨</b><span id="updt"></span></p><button id="updbtn">Update sekarang</button></div>
+<div class="upd" id="notifbar" role="status"><img id="notifimg" alt=""><p><b id="notift1">Nyalakan notifikasi 🔔</b><span id="notift2">Diingatkan perintah baru, balasan, &amp; 1 jam sebelum posting/agenda.</span></p><button id="notifbtn" onclick="notifNyalakan()">Nyalakan</button><button onclick="notifNanti()" aria-label="Nanti saja" style="background:transparent;color:#fff;padding:9px 6px">✕</button></div>
 <div class="toast" id="toast" role="status"><img id="tim" alt=""><span id="tt"></span></div>
 <div id="load"><img src="" id="loadimg" class="a-wiggle" alt=""><span id="loadt">Memuat…</span></div>
 <script>
@@ -372,7 +373,7 @@ function optimis(fn, args) {
 }
 function cacheSimpan() { try { if (D) localStorage.setItem('arabelleData', JSON.stringify({ t: TOKEN, w: Date.now(), d: Object.assign({}, D, { _lama: false }) })); } catch (e) {} }
 function cacheBaca() { try { const c = JSON.parse(localStorage.getItem('arabelleData') || 'null'); return c && c.t === TOKEN && Date.now() - c.w < 7 * 864e5 ? Object.assign(c.d, { _lama: true, _w: c.w }) : null; } catch (e) { return null; } }
-function siapTampil() { if (!siapTampil.sudah) { siapTampil.sudah = true; kabariInduk({ arabelleSiap: true }); if (TOKEN) setTimeout(cekSetelahUpdate, 1200);
+function siapTampil() { if (!siapTampil.sudah) { siapTampil.sudah = true; kabariInduk({ arabelleSiap: true }); if (TOKEN) setTimeout(cekSetelahUpdate, 1200); if (TOKEN) setTimeout(notifSiapkan, 3000);
   let sudahTur = '1'; try { sudahTur = localStorage.getItem('arabelleTur1') || (localStorage.getItem('arabelleIkon') ? '1' : ''); } catch (e) {} if (TOKEN && !sudahTur) setTimeout(() => { if (!$('sheet').classList.contains('show')) tur(0); }, 2500); } }
 function muat(diam, then) {
   const segar = !!diam;
@@ -383,7 +384,7 @@ function muat(diam, then) {
   if (!diam && !DIBUNGKUS) loading(true, 'Memuat ThinKerBelle…');
   gsr('apiMuat', [TOKEN, VERSI, true, segar], d => { loading(false); if (!d || !d.nama) return gagalMuat('Server tidak mengirim data (apiMuat kosong). Cek tab Eksekusi di Apps Script.');
     const lama = D; D = Object.assign({}, d, lama && lama.nama === d.nama ? { rab: lama.rab, approval: lama.approval, dash: lama.dash } : {});
-    if (!$('sheet').classList.contains('show')) render(); siapTampil(); cacheSimpan(); if (then) then(); muatTambahan();
+    if (!$('sheet').classList.contains('show')) render(); siapTampil(); cacheSimpan(); if (then) then(); muatTambahan(); setTimeout(notifSiapkan, 2500);
     if (d.dariCache && d.umur > 90 && !muat.segar) { muat.segar = true; setTimeout(() => muat(true), 400); } },
     e => { loading(false); if (D) react('gagal', '⚠️ ' + e.message); else gagalMuat(e.message); });
 }
@@ -391,7 +392,7 @@ function muatTambahan() {
   google.script.run.withSuccessHandler(x => { if (!x || !D) return; Object.assign(D, x); cacheSimpan(); if (!$('sheet').classList.contains('show') && ['more', 'rab', 'appr', 'dash', 'home'].includes(TAB)) render(); })
     .withFailureHandler(() => {}).apiTambahan(TOKEN);
 }
-function keluar() { try { localStorage.removeItem(LS); localStorage.removeItem('arabelleData'); } catch (e) {} kabariInduk({ arabelleLogout: true }); TOKEN = ''; D = null; layarMasuk(); }
+function keluar() { try { if (NOTIF.os) NOTIF.os.logout(); } catch (e) {} try { localStorage.removeItem(LS); localStorage.removeItem('arabelleData'); } catch (e) {} kabariInduk({ arabelleLogout: true }); TOKEN = ''; D = null; layarMasuk(); }
 var DS_ = '\u002F\u002F';
 function kenaliApp_(u) {
   var h = ''; try { h = new URL(u).hostname.replace(/^www\./, '').replace(/^m\./, ''); } catch (e) { return null; }
@@ -893,10 +894,70 @@ function vCatatan() {
   return h + (aktif.length ? `<div class="sh"><h3>Catatan aktif</h3></div>` + timelineCatatan(aktif) : '') + (beres.length ? `<div class="sh"><h3>Sudah selesai</h3></div>` + timelineCatatan(beres) : '') +
     '<small style="color:var(--mut)">Pribadi hanya tampil di akunmu. Tim tampil untuk semua anggota. Catatan selesai disembunyikan setelah 14 hari.</small>';
 }
+// =========================== NOTIFIKASI HP (OneSignal) ===========================
+// Hanya jalan di tampilan GitHub. Server memberi App ID + ID notifikasi milik orang yang masuk (apiNotifInfo).
+const NOTIF = { st: 'mati', pesan: '', os: null };
+const diGitHub = () => typeof window.tkbRpc === 'function';
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const modeApp = () => (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+function notifNantiSampai() { try { return Number(localStorage.getItem('tkbNotifNanti') || 0); } catch (e) { return 0; } }
+function notifSet(st, pesan, bar) {
+  NOTIF.st = st; NOTIF.pesan = pesan || '';
+  if (bar && Date.now() > notifNantiSampai() && ['tanya', 'ios'].includes(st)) {
+    $('notifimg').src = STK.s13; $('notifbtn').style.display = st === 'tanya' ? '' : 'none';
+    $('notift1').textContent = st === 'ios' ? 'Mau notifikasi pop-up? 🔔' : 'Nyalakan notifikasi 🔔';
+    $('notift2').textContent = st === 'ios' ? 'Buka lewat Safari → Bagikan → Tambahkan ke Layar Utama, lalu buka dari ikonnya.' : 'Diingatkan perintah baru, balasan, & 1 jam sebelum posting/agenda.';
+    $('notifbar').classList.add('show');
+  } else if (st === 'on') $('notifbar').classList.remove('show');
+  if (TAB === 'akun' && !$('sheet').classList.contains('show')) render();
+}
+function notifNanti() { $('notifbar').classList.remove('show'); try { localStorage.setItem('tkbNotifNanti', String(Date.now() + 3 * 864e5)); } catch (e) {} }
+function notifSiapkan() {
+  if (notifSiapkan.jalan || !TOKEN) return; notifSiapkan.jalan = true;
+  if (!diGitHub()) return notifSet('na', 'Notifikasi HP hanya jalan kalau ThinKerBelle dibuka lewat link GitHub (link dari #APP).');
+  if (isIOS() && !modeApp()) return notifSet('ios', 'Di iPhone: buka lewat Safari → Bagikan → Tambahkan ke Layar Utama, lalu buka ThinKerBelle dari ikonnya (iOS 16.4 ke atas).', true);
+  if (!('serviceWorker' in navigator) || !('Notification' in window)) return notifSet('tidak', 'Browser ini belum mendukung notifikasi. Pakai Chrome (Android) atau ikon layar utama (iPhone).');
+  notifSet('muat', 'Menyiapkan notifikasi…');
+  google.script.run.withSuccessHandler(info => {
+    if (!info || !info.appId || !info.id) return notifSet('belum', 'Notifikasi HP belum diatur admin (menu ✨ Arabelle → 🔔 Notifikasi HP).');
+    const base = location.pathname.replace(/[^/]*$/, '');
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    const sc = document.createElement('script'); sc.src = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js'; sc.defer = true;
+    sc.onerror = () => notifSet('gagal', 'Layanan notifikasi gagal dimuat. Cek internet, lalu buka ulang app.');
+    document.head.appendChild(sc);
+    window.OneSignalDeferred.push(async OS => {
+      try {
+        await OS.init({ appId: info.appId, serviceWorkerPath: base.slice(1) + 'OneSignalSDKWorker.js', serviceWorkerParam: { scope: base } });
+        NOTIF.os = OS; NOTIF.id = info.id;
+        if (!OS.Notifications.isPushSupported()) return notifSet('tidak', 'HP/browser ini belum mendukung notifikasi web.');
+        if (OS.Notifications.permission) { await OS.login(info.id); return notifSet('on', 'Notifikasi aktif di HP ini ✓'); }
+        if (Notification.permission === 'denied') return notifSet('tolak', 'Notifikasi pernah ditolak. Nyalakan lewat Pengaturan HP → Notifikasi → ThinKerBelle (iPhone) atau Info aplikasi → Notifikasi (Android).');
+        notifSet('tanya', 'Notifikasi belum dinyalakan di HP ini.', true);
+      } catch (e) { notifSet('gagal', 'Notifikasi belum bisa disiapkan: ' + (e && e.message || e)); laporError('Notif: ' + (e && e.message || e), 'notifikasi'); }
+    });
+    setTimeout(() => { if (NOTIF.st === 'muat') notifSet('gagal', 'Layanan notifikasi lama merespons. Coba buka ulang app.'); }, 20000);
+  }).withFailureHandler(e => notifSet('gagal', 'Gagal mengambil pengaturan notifikasi: ' + e.message)).apiNotifInfo(TOKEN);
+}
+async function notifNyalakan() {
+  const OS = NOTIF.os; if (!OS) { if (NOTIF.st === 'ios' || NOTIF.st === 'na') hasil(NOTIF.pesan, 'sapa'); return; }
+  $('notifbtn').disabled = true;
+  try {
+    await OS.Notifications.requestPermission();
+    if (OS.Notifications.permission) { await OS.login(NOTIF.id); notifSet('on', 'Notifikasi aktif di HP ini ✓'); react('selesai', 'Notifikasi HP aktif 🔔'); }
+    else { notifSet('tolak', 'Izin notifikasi belum diberikan. Nyalakan lewat pengaturan HP/browser.'); react('gagal', 'Izin notifikasi belum diberikan'); }
+  } catch (e) { react('gagal', 'Notifikasi belum bisa dinyalakan di HP ini'); }
+  finally { $('notifbtn').disabled = false; }
+}
+function kartuNotif() {
+  const on = NOTIF.st === 'on', bisa = NOTIF.st === 'tanya';
+  const ket = NOTIF.pesan || (diGitHub() ? 'Menyiapkan…' : 'Notifikasi HP hanya jalan kalau ThinKerBelle dibuka lewat link GitHub.');
+  return `<div class="card"><h3>🔔 Notifikasi HP</h3><small style="color:var(--mut)">${on ? '✅ ' : ''}${esc(ket)}<br>Isi: perintah baru, balasan &amp; perubahan perintah, 1 jam sebelum posting &amp; agenda.</small>${bisa ? '<button class="big" onclick="notifNyalakan()">🔔 Nyalakan notifikasi</button>' : ''}</div>`;
+}
 function vAkun() {
   const pribadi = URL_PUBLIK ? URL_PUBLIK + '/?t=' + TOKEN : URL_APP + '?app=1&t=' + TOKEN;
   return kembali + judul(esc(D.nama), esc(D.peran || 'Tim Arabelle') + (D.pimpinan ? ' · 👑 pimpinan' : '') + (D.rab ? ' · 💰 akses RAB' : '')) +
     `<div class="card"><h3>📲 Pasang di layar utama</h3><small style="color:var(--mut)">Android (Chrome): menu ⋮ → <b>Tambahkan ke layar utama</b><br>iPhone (Safari): Bagikan → <b>Tambahkan ke Layar Utama</b></small><a href="${esc(pribadi)}" target="_top" style="text-decoration:none"><button class="big alt">🔗 Buka versi pribadi</button></a></div>
+    ${kartuNotif()}
     <div class="card"><h3>🎨 Tampilan</h3><div class="seg">${[['auto', 'Otomatis'], ['light', '☀️ Terang'], ['dark', '🌙 Gelap']].map(x => `<button class="${TEMA === x[0] ? 'on' : ''}" onclick="TEMA=pakaiTema('${x[0]}');render()">${x[1]}</button>`).join('')}</div><small style="display:block;color:var(--mut);margin-top:8px">Otomatis = ikut pengaturan terang/gelap HP atau laptop.</small></div>
     <div class="card"><h3>✨ Versi aplikasi</h3><small style="color:var(--mut)">v${esc(VERSI)}</small><button class="big alt" onclick="cekVersi();react('sapa','Sudah dicek ✨')">Cek pembaruan</button></div>
     <div class="card"><h3>🔒 Keamanan</h3><small style="color:var(--mut)">HP ini sudah diingat. Kalau HP dipinjam atau dijual, tekan keluar.</small><button class="big" style="background:#C2456B" onclick="if(confirm('Keluar dari ThinKerBelle di HP ini?'))keluar()">🚪 Keluar dari HP ini</button></div>`;
