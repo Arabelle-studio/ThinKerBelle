@@ -10,3 +10,4 @@ ARABELLE STUDIO · halaman tanpa banner Google (gratis, GitHub Pages)
 7. Pin alamat itu di grup ThinKerBelle. Selesai!
 
 Kalau deployment Apps Script berubah: edit index.html (baris const APP = '...') lalu upload ulang.
+Update produk 23 Okt
