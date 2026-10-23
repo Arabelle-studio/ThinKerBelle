@@ -548,7 +548,7 @@ function judul(t, s, tombol) { return `<div class="ph"><div><h1>${t}</h1>${s ? `
 const kembali = `<button class="back" onclick="go('more')">‹ Lainnya</button>`;
 const kosong = (st, t) => `<div class="card empty"><img src="${STK[st]}" alt="">${t}</div>`;
 function render() { try { renderInti(); } catch (e) { console.error(e); gagalMuat(e.message + ' · tab ' + TAB); } }
-function renderInti() { window.__siap = true; $('nav').style.display = ''; nav(); $('view').innerHTML = (LIHAT ? `<div class="lihatbar"><span>👀 Melihat akun <b>${esc(LIHAT)}</b> · hanya lihat</span><button onclick="kembaliAkunku()">Kembali ke akunku</button></div>` : '') + ({ home: vHome, cal: vCal, task: vTask, more: vMore, rab: vRab, appr: vAppr, dash: vDash, report: vReport, rapor: vRapor, perintah: vPerintah, sehat: vSehat, agenda: vAgenda, materi: vMateri, akun: vAkun, catatan: vCatatan, produk: vProduk, shoot: vShoot, pslist: vPsList }[TAB] || vHome)(); }
+function renderInti() { window.__siap = true; $('nav').style.display = ''; nav(); $('view').innerHTML = (LIHAT ? `<div class="lihatbar"><span>👀 Melihat akun <b>${esc(LIHAT)}</b> · hanya lihat</span><button onclick="kembaliAkunku()">Kembali ke akunku</button></div>` : '') + ({ home: vHome, cal: vCal, task: vTask, more: vMore, rab: vRab, appr: vAppr, dash: vDash, report: vReport, rapor: vRapor, perintah: vPerintah, sehat: vSehat, agenda: vAgenda, materi: vMateri, akun: vAkun, catatan: vCatatan, produk: vProduk, shoot: vShoot, pslist: vPsList, review: vReview }[TAB] || vHome)(); }
 function rencana(h) {
   const a = h === 0 ? D.tugas.filter(x => !x.post).map(x => ({ jam: '', t: x.judul, c: x.ikon === '🚀' ? 'Jobdesk' : x.ikon === '📸' ? 'Photoshoot' : 'Tugas', s: x.sub, telat: x.telat, milik: true })) : [];
   const b = D.kal.filter(x => x.h === h).map(x => ({ jam: x.jam, t: x.topik, c: x.plat, s: (x.mode === 'Auto' ? '🚀 Auto · ' : '') + x.post + ' · ' + x.pic, done: x.post === 'Tayang', milik: !!x.milik, auto: x.mode === 'Auto' }));
@@ -586,6 +586,8 @@ function vHome() {
   else if (!vHome.sapa) { vHome.sapa = true; setTimeout(() => react('sapa', jam < 11 ? 'Selamat pagi! ☀️' : jam < 15 ? 'Halo, semangat ya!' : jam < 18 ? 'Sore! Hampir beres 💪' : 'Jangan lupa istirahat 🌙'), 900); }
   const H = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'], t = new Date();
   if ((D.shootHari || []).length) h += D.shootHari.map(x => `<button class="shtoday" onclick="bukaShoot('${esc(x.id)}','home')"><small class="shk">${x.h === 1 ? 'BESOK · PREVIEW & BRIEF' : 'HARI INI'}${x.jam ? ' · ' + esc(x.jam) : ''}${x.lokasi ? ' · ' + esc(x.lokasi).toUpperCase() : ''}</small><b>Mode Shooting · ${esc(x.nama)}</b><small>${x.h === 1 ? (x.brief ? 'Brief leader sudah ada · cek rundown, ide & moodboard' : 'Preview rundown, ide, moodboard & shot list') : x.tot ? x.lengkap + ' dari ' + x.tot + ' warna lengkap · candid, katalog, detail' : 'Ketuk untuk buka rundown, ide & shot list'}</small><span class="bar"><i style="width:${x.tot ? Math.round(x.lengkap / x.tot * 100) : 0}%"></i></span></button>`).join('');
+  if (D.review && D.review.revisiku) h += `<button class="card psk" onclick="RVF='Revisi';go('review')" style="border-color:var(--deep)"><span class="chip no">✏️ Revisi foto</span><b>${D.review.revisiku} foto perlu direvisi</b><small>Catatan dari Umi Syifa · ketuk untuk lihat</small></button>`;
+  if (D.bolehReview && D.review && D.review.menunggu) h += `<button class="card psk" onclick="RVF='Menunggu';go('review')"><span class="chip wr">⏳ Review foto</span><b>${D.review.menunggu} foto menunggu review</b><small>Ketuk untuk setujui atau minta revisi</small></button>`;
   h += '<div class="pills">' + [...Array(7)].map((_, i) => { const x = new Date(t); x.setDate(t.getDate() + i); return `<button class="pill ${i === SEL ? 'on' : ''}" data-i="${i}"><span>${i === 0 ? 'Hari ini' : H[x.getDay()]}</span><b>${x.getDate()}</b>${D.kal.some(k => k.h === i) || D.kalTim.some(k => k.h === i) ? '<i class="dot"></i>' : ''}</button>`; }).join('') + '</div>';
   const akhirHari = new Date(); akhirHari.setHours(23, 59, 59, 999);
   const pengingat = (D.catatan || []).filter(c => !c.selesai && c.ingat && new Date(c.ingat) <= akhirHari && baru7(c));
@@ -733,7 +735,7 @@ function vMore() {
   tbh(0, ['💡', 'Bank ide', 'Simpan ide konten', "bukaForm('ide')"]); tbh(0, ['🌴', 'Izin & cuti', 'Catat izin', "bukaForm('izin')"]);
   if (D.rab) tbh(0, ['💰', 'RAB', g ? (g.sisa == null ? g.nama : 'Sisa ' + rp(g.sisa)) : 'Anggaran kegiatan', "go('rab')"]);
   tbh(1, ['🗓️', 'Agenda & kalender tim', (D.kalTim || []).filter(k => (k.hs !== undefined ? k.hs : k.h) >= 0).length + ' agenda ke depan', "go('agenda')"]);
-  tbh(1, ['👗', 'Produk & sampel', (D.produkList || []).length + ' belum launching', "go('produk')"]); tbh(1, ['🎬', 'Photoshoot', 'Paket shooting & Mode Shooting', "go('pslist')"]); tbh(1, ['📄', 'Materi launching', (D.produkMateri || []).length + ' produk', "go('materi')"]); tbh(1, ['📊', 'Report sosmed', 'Mingguan & bulanan', "go('report')"]);
+  tbh(1, ['👗', 'Produk & sampel', (D.produkList || []).length + ' belum launching', "go('produk')"]); tbh(1, ['🎬', 'Photoshoot', 'Paket shooting & Mode Shooting', "go('pslist')"]); tbh(1, ['📤', 'Review foto', D.review ? (D.review.revisiku ? D.review.revisiku + ' revisi untukmu' : D.review.menunggu + ' menunggu review') : 'Hasil edit untuk Umi Syifa', "go('review')"]); tbh(1, ['📄', 'Materi launching', (D.produkMateri || []).length + ' produk', "go('materi')"]); tbh(1, ['📊', 'Report sosmed', 'Mingguan & bulanan', "go('report')"]);
   if (D.pimpinan) { tbh(2, ['📣', 'Perintah', 'Kirim, edit, hapus & balasan', "go('perintah')"]); tbh(2, ['👀', 'Approval', (D.approval || []).length + ' konten review', "go('appr')"]);
     tbh(2, ['📈', 'Dashboard tim', D.dash ? 'Laporan ' + D.dash.lapor + '/' + D.dash.wajib : 'Memuat…', "go('dash')"]); }
   if (D.bolehRapor) tbh(2, ['🏆', 'Rapor tim bulanan', 'Khusus owner & leader', "go('rapor')"]);
@@ -1073,6 +1075,34 @@ function lihatSebagai(n) {
     e => { loading(false); LIHAT = ''; if (SAYA) D = SAYA; SAYA = null; render(); react('gagal', '⚠️ ' + e.message); });
 }
 function kembaliAkunku() { tutup(); LIHAT = ''; if (SAYA) D = SAYA; SAYA = null; TAB = 'home'; render(); scrollTo(0, 0); muat(true); }
+// =========================== REVIEW FOTO (hasil edit) ===========================
+let RV = null, RVF = '', RVL = {};
+const ST_RV = { Menunggu: ['⏳', 'wr'], Revisi: ['✏️', 'no'], Disetujui: ['✅', 'ok'] };
+function muatReview(lalu) { gsr('apiReviewFoto', [TOKEN], d => { RV = d || { list: [] }; simpanLokal('tkbRev1', RV); if (lalu) lalu(); else if (TAB === 'review' && !$('sheet').classList.contains('show')) render(); }, e => { RV = RV || { list: [], ps: [], jenis: [] }; react('gagal', '⚠️ ' + e.message); }); }
+function vReview() {
+  let h = kembali + judul('📤 Review foto', 'Hasil edit untuk dicek Umi Syifa', `<button class="round" onclick="bukaForm('review')" aria-label="Upload foto untuk review">${ic('plus', 24)}</button>`);
+  if (!RV) { const c = bacaLokal('tkbRev1'); muatReview(); if (c) RV = c; else return h + kosong('s11', 'Memuat review foto…'); }
+  const L = RV.list || [], n = s => L.filter(x => x.status === s).length;
+  if (!RVF) RVF = (D.review && D.review.revisiku) ? 'Revisi' : 'Menunggu';
+  h += `<div class="chips wrap">${['Menunggu', 'Revisi', 'Disetujui', 'Semua'].map(s => `<button class="${RVF === s ? 'on' : ''}" onclick="RVF='${s}';render()">${s} ${s === 'Semua' ? L.length : n(s)}</button>`).join('')}</div>`;
+  const a = L.map((x, i) => Object.assign({ i }, x)).filter(x => RVF === 'Semua' || x.status === RVF);
+  if (!a.length) return h + kosong('s13', RVF === 'Revisi' ? 'Tidak ada revisi 🎉' : RVF === 'Menunggu' ? 'Tidak ada foto yang menunggu review.' : 'Belum ada foto.');
+  return h + `<div class="prg">${a.map(x => { const st = ST_RV[x.status] || ST_RV.Menunggu;
+    return `<button class="prk" onclick="bukaReview(${x.i})"><div class="pim">${x.fotoId ? `<img src="${esc(thumb(x.fotoId))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span style="color:var(--acct);opacity:.55">${ic('cam', 40)}</span>`}</div><div class="pt"><b>${esc(x.produk || 'Foto')}${x.warna ? ' · ' + esc(x.warna) : ''}</b>
+      <small><span class="chip ${st[1]}">${st[0]} ${esc(x.status)}</span>${x.revisi ? ` <span class="chip">rev ${x.revisi}</span>` : ''}</small><small>${esc(x.jenis)} · ${esc(x.oleh)}</small>${x.status === 'Revisi' && x.catatan ? `<small class="uc" style="color:var(--ink)">"${esc(x.catatan.slice(0, 80))}"</small>` : ''}</div></button>`; }).join('')}</div>`;
+}
+function bukaReview(i) {
+  const x = RV.list[i]; if (!x) return; const st = ST_RV[x.status] || ST_RV.Menunggu, bolehUp = x.status === 'Revisi' && (x.oleh === D.nama || D.nama === 'Firda' || D.pimpinan);
+  buka(`<h2>${esc(x.produk || 'Foto')}${x.warna ? ' · ' + esc(x.warna) : ''}</h2><div class="acts" style="margin-top:0"><span class="chip ${st[1]}">${st[0]} ${esc(x.status)}</span><span class="chip">${esc(x.jenis)}</span>${x.revisi ? `<span class="chip">revisi ke-${x.revisi}</span>` : ''}</div>
+    ${x.fotoId ? `<a href="${esc(x.link)}" target="_blank" rel="noopener"><img class="prcover" src="${esc(thumb(x.fotoId, 1000))}" alt="Foto ${esc(x.produk)}" referrerpolicy="no-referrer"></a>` : `<a class="chip" href="${esc(x.link)}" target="_blank" rel="noopener">🔗 Buka foto</a>`}
+    <div class="card">${x.ps ? `<small style="display:block">📸 ${esc(x.ps)}</small>` : ''}<small style="display:block">📤 ${esc(x.oleh)} · ${esc(x.waktu)}</small>
+      ${x.reviewer ? `<small style="display:block">${x.status === 'Disetujui' ? '✅' : '✏️'} ${esc(x.reviewer === 'Syifa' ? 'Umi Syifa' : x.reviewer)} · ${esc(x.waktuReview)}</small>` : ''}
+      ${x.catatan ? `<div class="info">💬 ${esc(x.catatan)}</div>` : ''}${x.riwayat ? `<details style="margin-top:8px"><summary><small>Riwayat revisi</small></summary><small style="white-space:pre-line;display:block;color:var(--mut)">${esc(x.riwayat)}</small></details>` : ''}</div>
+    ${bolehUp ? `<button class="big" onclick="bukaForm('review',${i})">📤 Upload hasil revisi</button>` : ''}
+    ${D.bolehReview && x.status !== 'Disetujui' ? `<button class="big" onclick="putusRv(${i},'setuju')">✅ Setujui · pindah ke folder Final</button><div class="fm"><textarea id="rvc" style="min-height:70px" placeholder="Catatan revisi, mis. crop lebih rapat, warna kulit lebih hangat"></textarea></div><button class="big alt" onclick="putusRv(${i},'revisi')">✏️ Minta revisi</button>` : ''}`);
+}
+function putusRv(i, kep) { const x = RV.list[i], c = $('rvc') ? $('rvc').value.trim() : ''; if (kep === 'revisi' && !c) return react('bingung', 'Tulis catatan revisinya dulu ya');
+  tutup(); loading(true, 'Menyimpan…'); gsr('apiReviewPutus', [TOKEN, x.id, kep, c], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); react('selesai', r.pesan); muatReview(); muat(true); }); }
 function vMateri() {
   let h = kembali + judul('Materi launching', 'Filosofi, detail, harga &amp; warna untuk Alif');
   if (!(D.produkMateri || []).length) return h + kosong('s21', 'Belum ada produk di Jadwal Launching.');
@@ -1253,6 +1283,17 @@ function bukaForm(k, arg) {
       <label>atau tempel link foto (Google Drive)</label><input id="pr8" placeholder="https://drive.google.com/…">
       <label>Catatan</label><textarea id="pr7" style="min-height:64px" placeholder="Contoh: sampel masih 1 warna, produksi selesai akhir bulan">${v('catatan')}</textarea></div>
       <div class="info">Semua tim bisa menambah &amp; mengubah. Foto tersimpan di Google Drive (folder ThinKerBelle · Foto produk &amp; sampel).</div><button class="big" id="kirim">${p ? 'Simpan perubahan' : 'Simpan produk'}</button>`; },
+    review: () => { const x = arg !== undefined && RV ? RV.list[arg] : null, R = RV || { ps: [], jenis: [] }, ps = R.ps || [];
+      if (x) return `<h2>📤 Upload hasil revisi</h2><div class="info" style="margin-top:0">${esc([x.produk, x.warna, x.jenis].filter(Boolean).join(' · '))}${x.catatan ? '<br>💬 ' + esc(x.catatan) : ''}</div><div class="fm">
+        <label class="drop" id="drop"><input type="file" accept="image&#47;*" id="file" hidden><span>📷 Pilih foto hasil revisi</span></label><label>atau tempel link Drive</label><input id="rv5" placeholder="https://drive.google.com/…"></div><button class="big" id="kirim">Kirim revisi</button>`;
+      const p0 = RVL.ps || (ps[0] && ps[0].label) || '', pp = (ps.find(z => z.label === p0) || { produk: [] }).produk;
+      return `<h2>📤 Foto untuk review</h2><div class="info" style="margin-top:0">Upload foto <b>hasil edit</b>. Umi Syifa akan menyetujui (masuk folder Final) atau memberi catatan revisi.</div><div class="fm">
+        <label>Photoshoot</label><select id="rv1" onchange="RVL.ps=this.value;bukaForm('review')">${ps.map(z => `<option ${z.label === p0 ? 'selected' : ''}>${esc(z.label)}</option>`).join('')}<option value="" ${!p0 ? 'selected' : ''}>Tanpa photoshoot</option></select>
+        <label>Produk</label><input id="rv2" list="rvp" value="${esc(RVL.produk || '')}" placeholder="Nama produk" onchange="RVL.produk=this.value;bukaForm('review')"><datalist id="rvp">${pp.map(z => `<option>${esc(z.nama)}</option>`).join('')}</datalist>
+        <label>Warna</label><input id="rv3" list="rvw" value="${esc(RVL.warna || '')}" placeholder="Warna / varian"><datalist id="rvw">${((pp.find(z => z.nama === RVL.produk) || { warna: [] }).warna).map(w => `<option>${esc(w)}</option>`).join('')}</datalist>
+        <label>Jenis foto</label><div class="chips wrap" id="rvj">${(R.jenis || ['Candid', 'Katalog', 'Detail', 'Feed', 'Lainnya']).map(j => `<button class="${(RVL.jenis || 'Feed') === j ? 'on' : ''}" data-v="${j}">${j}</button>`).join('')}</div>
+        <label class="drop" id="drop"><input type="file" accept="image&#47;*" id="file" hidden><span>📷 Pilih foto hasil edit</span></label><label>atau tempel link Drive</label><input id="rv5" placeholder="https://drive.google.com/…"></div>
+        <button class="big" id="kirim">Kirim untuk review</button>`; },
     blok: () => { const b = arg !== undefined && SH ? SH.rundown[arg] : null, v = x => esc(b ? b[x] || '' : '');
       return `<h2>${b ? 'Ubah blok' : 'Blok rundown baru'}</h2><div class="info" style="margin-top:0">${esc(SH ? SH.nama : '')} · Blok dikosongkan = kegiatan biasa (sarapan, berangkat, ISHOMA)</div><div class="fm">
       <div class="two"><div><label>Jam</label><input id="b1" placeholder="07.35–08.10" value="${v('jam')}"></div><div><label>Nama blok</label><input id="b2" placeholder="Bhumi" value="${v('blok')}"></div></div>
@@ -1335,7 +1376,7 @@ function bukaForm(k, arg) {
       <label>Warna (1 baris = 1 warna)</label><textarea id="mwarna" style="min-height:64px">${v('warna')}</textarea><label>Link PO</label><input id="mlinkpo" inputmode="url" value="${v('linkpo')}">
       <label>Status materi</label><select id="mstatus">${['Belum', 'Siap', 'Terkirim ke Alif'].map(s => `<option ${s === m.status ? 'selected' : ''}>${s}</option>`).join('')}</select></div><button class="big" id="kirim">Simpan materi</button>`; }
   };
-  buka((k === 'materi' && TAB === 'materi' || ['paket', 'blok', 'idesh', 'tempel', 'brief'].includes(k) ? '' : bk) + F[k]());
+  buka((k === 'materi' && TAB === 'materi' || ['paket', 'blok', 'idesh', 'tempel', 'brief', 'review'].includes(k) ? '' : bk) + F[k]());
   const sh = $('sheet');
   sh.querySelectorAll('#untuk .pf,#ikut .pf,#prd .pf').forEach(b => b.onclick = () => { if (b.dataset.p === 'Semua') sh.querySelectorAll('#untuk .pf').forEach(x => x.classList.toggle('on', x === b)); else { b.classList.toggle('on'); const s = sh.querySelector('#untuk [data-p="Semua"]'); if (s) s.classList.toggle('on', !sh.querySelectorAll('#untuk .pf.on:not([data-p="Semua"])').length); } });
   const f2 = $('file2'); COVER = null; if (f2) f2.onchange = e => { const f = e.target.files[0]; if (!f) return; const im = new Image(), rd = new FileReader();
@@ -1345,6 +1386,7 @@ function bukaForm(k, arg) {
     rd.onload = () => { im.onload = () => { const s = Math.min(1, 1400 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = im.width * s; c.height = im.height * s; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
       const u = c.toDataURL('image/jpeg', .72); FOTO = { data: u.split(',')[1], mime: 'image/jpeg' }; $('drop').innerHTML = '<img src="' + u + '" alt="Foto nota"><span>Foto siap · ' + Math.round(u.length * .75 / 1024) + ' KB</span>'; }; im.src = rd.result; }; rd.readAsDataURL(f); };
   if (k === 'caption') siapCaption(arg);
+  if (k === 'review') sh.querySelectorAll('#rvj button').forEach(b => b.onclick = () => { sh.querySelectorAll('#rvj button').forEach(y => y.classList.remove('on')); b.classList.add('on'); RVL.jenis = b.dataset.v; });
   if (k === 'produk') sh.querySelectorAll('#prs button').forEach(b => b.onclick = () => { sh.querySelectorAll('#prs button').forEach(y => y.classList.remove('on')); b.classList.add('on'); });
   if (k === 'agsyifa') { sh.querySelectorAll('#yk button').forEach(b => b.onclick = () => { sh.querySelectorAll('#yk button').forEach(y => y.classList.remove('on')); b.classList.add('on'); });
     sh.querySelectorAll('#yt button').forEach(b => b.onclick = () => { const on = !b.classList.contains('on');
@@ -1400,6 +1442,11 @@ function kirim(k, arg) {
     const fe = arg === undefined ? null : typeof arg === 'object' ? arg : D.feed[arg]; PER = null;
     if (fe) return run('apiPerintahUbah', [fe.id, { isi: g('p1'), tenggat: g('p2'), untuk: u }], 'perintah', 'Menyimpan…');
     return run('apiPerintah', [{ isi: g('p1'), tenggat: g('p2'), untuk: u }], 'perintah', 'Mengirim…'); }
+  if (k === 'review') { const x = arg !== undefined && RV ? RV.list[arg] : null; if (!FOTO && !g('rv5')) return react('bingung', 'Pilih foto atau tempel link dulu ya');
+    const d = x ? { id: x.id, foto: FOTO, link: g('rv5') } : { ps: $('rv1').value, produk: g('rv2'), warna: g('rv3'), jenis: (sh.querySelector('#rvj .on') || {}).dataset.v || 'Feed', foto: FOTO, link: g('rv5') };
+    if (!x) { RVL.ps = d.ps; RVL.produk = d.produk; RVL.warna = d.warna; RVL.jenis = d.jenis; }
+    tutup(); loading(true, FOTO ? 'Mengunggah foto…' : 'Menyimpan…');
+    return gsr('apiReviewUpload', [TOKEN, d], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); react('selesai', r.pesan); RVF = 'Menunggu'; muatReview(() => { if (TAB !== 'review') go('review'); else render(); }); muat(true); }); }
   if (k === 'brief') { if (!SH) return; const P = SH.paket;
     const d = { moodboard: P.moodboard, arah: P.arah, kunci: (P.kunci || []).join(', '), props: (P.props || []).map(x => x.n + (x.q ? ' | ' + x.q : '')).join('\n'), callsheet: P.callsheet, folder: P.folder, catatan: P.catatan, brief: $('br1').value.trim() };
     tutup(); loading(true, 'Menyimpan brief…'); return gsr('apiShootSimpan', [TOKEN, SH.id, d], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); react('selesai', '📣 Brief tersimpan'); SH = null; render(); }); }
