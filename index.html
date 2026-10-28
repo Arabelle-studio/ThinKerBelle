@@ -287,6 +287,11 @@ body{font:400 15px/1.5 'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;ba
 .msmini{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:10px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600}.msmini span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.msmini .lk{flex:none;white-space:nowrap}
 .msseg3{margin-top:10px;background:var(--chip);border-radius:999px;padding:4px}.msseg3 button{background:transparent;color:var(--mut);min-height:34px;font-size:13px}.msseg3 button.on{background:#fff;color:var(--deep)}
 .msurut small{flex:none;white-space:nowrap;margin-left:auto;padding-left:6px}.msseg2{overflow-x:auto;scrollbar-width:none}.msseg2 button{flex:1 0 auto;white-space:nowrap;padding:0 12px}
+/* Mode Shooting · gaya prototipe: pill teks, kartu putih lembut, 1 kartu gelap saja */
+.mstab{display:flex;gap:6px;overflow:visible}.mstab button{flex:1 1 auto;min-width:0;min-height:36px;padding:0 8px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:600;font-size:13.5px;white-space:nowrap;display:block;line-height:34px}.mstab button.on{border-color:transparent;background:var(--deep);color:#fff}
+.msg,.msblok,.mssiap{box-shadow:none}.msg{border:0}.msblok{border:1px solid var(--line)}.mstip{font-size:13px;color:var(--mut);margin:12px 2px 0}
+.msbar{height:8px;border-radius:999px;background:var(--chip);overflow:hidden}.msbar i{display:block;height:100%;border-radius:999px;background:var(--ok)}.mssiap details summary{font-size:13px;color:var(--deep);font-weight:600;cursor:pointer;margin-top:4px}.mssiap .mssi i{border-color:var(--line)}
+.msempty .msbuka{width:100%}.msm img{border-radius:16px}.msarah{font-size:14px;color:#6E3954;margin:0}
 </style>
 </head><body>
 <style>
@@ -641,8 +646,8 @@ function vHome() {
   if (semuaBeres) setTimeout(() => { const k = 'arabelleRayakan', hr = isoL(); try { if (localStorage.getItem(k) !== hr) { localStorage.setItem(k, hr); const m = $('mas'); if (m) { const q = m.getBoundingClientRect(); for (let i = 0; i < 3; i++) setTimeout(() => fx('🎉', q.left + q.width / 2, q.top + q.height / 2), i * 250); } } } catch (e) {} }, 400);
   else if (!vHome.sapa) { vHome.sapa = true; setTimeout(() => react('sapa', jam < 11 ? 'Selamat pagi! ☀️' : jam < 15 ? 'Halo, semangat ya!' : jam < 18 ? 'Sore! Hampir beres 💪' : 'Jangan lupa istirahat 🌙'), 900); }
   const H = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'], t = new Date();
-  if ((D.shootHari || []).length) h += D.shootHari.map(x => `<button class="mscard" onclick="bukaShoot('${esc(x.id)}','home')"><span class="msc1"><span>${x.h === 1 ? 'BESOK' : 'HARI INI'}${x.jam ? ' · ' + esc(x.jam) : ''}</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
-    <b>${esc(x.nama)}</b>${x.lokasi ? `<small>${esc(x.lokasi)}</small>` : ''}<span class="msc2"><span>${x.tot ? x.lengkap + '/' + x.tot + ' produk' : 'Rundown & ide'}</span><span>Moodboard</span><span>Props &amp; tim</span>${x.h === 1 && x.brief ? '<span>Brief ✓</span>' : ''}</span><span class="msc3">Buka Mode Shooting ${ic('arr', 18)}</span></button>`).join('');
+  if ((D.shootHari || []).length) h += D.shootHari.map(x => `<button class="mscard" onclick="bukaShoot('${esc(x.id)}','home')"><span class="msc1"><span>${x.h === 1 ? 'BESOK' : 'HARI INI'}${x.mulai || x.jam ? ' · ' + esc(x.mulai || x.jam) : ''}</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
+    <b>${esc(x.nama)}</b>${x.lokasi ? `<small>${esc(x.lokasi)}</small>` : ''}<span class="msc2"><span>${x.tot ? x.lengkap + '/' + x.tot + ' produk' : 'Ide & rundown'}</span><span>Moodboard</span><span>Props</span>${x.h === 1 && x.brief ? '<span>Brief ✓</span>' : ''}</span><span class="msc3">Buka Mode Shooting ${ic('arr', 18)}</span></button>`).join('');
   if (D.review && D.review.revisiku) h += `<button class="card psk" onclick="RVF='Revisi';go('review')" style="border-color:var(--deep)"><span class="chip no">✏️ Revisi foto</span><b>${D.review.revisiku} foto perlu direvisi</b><small>Catatan dari Umi Syifa · ketuk untuk lihat</small></button>`;
   if (D.bolehReview && D.review && D.review.menunggu) h += `<button class="card psk" onclick="RVF='Menunggu';go('review')"><span class="chip wr">⏳ Review foto</span><b>${D.review.menunggu} foto menunggu review</b><small>Ketuk untuk setujui atau minta revisi</small></button>`;
   h += '<div class="pills">' + [...Array(7)].map((_, i) => { const x = new Date(t); x.setDate(t.getDate() + i); return `<button class="pill ${i === SEL ? 'on' : ''}" data-i="${i}"><span>${i === 0 ? 'Hari ini' : H[x.getDay()]}</span><b>${x.getDate()}</b>${D.kal.some(k => k.h === i) || D.kalTim.some(k => k.h === i) ? '<i class="dot"></i>' : ''}</button>`; }).join('') + '</div>';
@@ -992,13 +997,15 @@ const WARNA_HEX = { 'light grey': '#CDCFD1', 'light gray': '#CDCFD1', grey: '#A9
   maroon: '#5E1A2A', burgundy: '#6A1F2E', lime: '#CDBA4E', mauve: '#A68C99', peach: '#F0CDB8', blush: '#C9AAA0', biscuit: '#E8D2AE', beige: '#E6C7A6', nude: '#D9B8A0', navy: '#2B3A55', olive: '#6B6B3A', army: '#5A5E3D', mustard: '#C9A13B',
   terracotta: '#B7735C', rose: '#D7A1A8', pink: '#F2B5C8', lilac: '#C7B5D6', lavender: '#C8BFE0', ungu: '#7E5A8E', purple: '#7E5A8E', mint: '#BFE3D0', denim: '#56688C', blue: '#5B7DB1', biru: '#5B7DB1', green: '#5E8C61', hijau: '#5E8C61',
   red: '#B03A3A', merah: '#B03A3A', yellow: '#E8C95A', kuning: '#E8C95A', orange: '#E08A4A', oranye: '#E08A4A', tosca: '#3F9C9A', teal: '#3F7F7E', khaki: '#BDAE85', taupe: '#8F8174', silver: '#C4C6C8', gold: '#C8A45A',
+  dusk: '#9C87A1', champagne: '#D9C39C', azure: '#7FA4C8', indigo: '#4E5A8C', roselle: '#C66C7B', nilam: '#3F5B7D', madu: '#C99A4B', asmara: '#C66676', indu: '#9AA8BA',
+  rosewood: '#A15F63', terracota: '#C46A48', terracotta: '#C46A48', slate: '#6D7985', mist: '#B6C0C3',
   bhumi: '#8C6467', kirana: '#E3C3C4', samudra: '#7F8C99', forest: '#4E5540', agni: '#6F3B3D', optimis: '#6C6F73', artsy: '#C8CACE', dignity: '#CDBAA3', love: '#B88E95', ruby: '#8E2E37' };
 const KUNCI_WARNA = Object.keys(WARNA_HEX).sort((a, b) => b.length - a.length);
 function hexWarna(w) {
   const m = String(w || '').match(/#([0-9a-f]{6}|[0-9a-f]{3})\b/i); if (m) return '#' + m[1];
   const n = String(w || '').toLowerCase().trim(); if (WARNA_HEX[n]) return WARNA_HEX[n];
   const k = KUNCI_WARNA.find(x => new RegExp('\\b' + x + '\\b').test(n)); if (k) return WARNA_HEX[k];
-  let h = 0; for (const c of n) h = (h * 31 + c.charCodeAt(0)) % 360; return `hsl(${h} 32% 78%)`;
+  const netral = ['#D8D1CA', '#CCC4BC', '#E2DCD5', '#C2BBB5', '#D3CDC8']; let h = 0; for (const c of n) h = (h * 31 + c.charCodeAt(0)) % netral.length; return netral[h];   // nama tidak dikenal (mis. A–E): netral
 }
 const namaWarna = w => String(w || '').replace(/#([0-9a-f]{6}|[0-9a-f]{3})\b/i, '').trim();
 // ---------- antrean offline: centang tetap tercatat di HP, terkirim otomatis saat sinyal kembali ----------
@@ -1031,6 +1038,8 @@ function blokSekarang(S) {
 const kecil = s => String(s || '').toLowerCase().trim();
 const pisahNama = s => String(s || '').split(/\s*(?:,|\+|&|\/|\n|;|\bdan\b)\s*/i).map(x => x.trim()).filter(Boolean);
 // ide masuk blok kalau kolom Blok sama, atau warna baju ide = warna/blok di rundown
+// ide di blok rundown: dari kolom "Ide (no)" call sheet kalau ada, selain itu cocokkan Blok / warna baju
+const ideDiBlok = (S, b) => b.ideKeys ? S.ide.filter(x => b.ideKeys.includes(x.key)) : S.ide.filter(x => cocokBlok(x, b));
 const cocokBlok = (ide, b) => { const nb = [kecil(b.blok), kecil(b.warna)].filter(Boolean), ia = [kecil(ide.blok), kecil(ide.warna)].filter(x => x && x !== 'bebas');
   return ia.some(a => nb.some(x => x === a || x.split(/\s*(?:,|×|x|\+|&|\/)\s*/).includes(a))); };
 // "Imel, Icha" + "Dusk, Indigo" → "Imel – Dusk · Icha – Indigo"
@@ -1072,7 +1081,7 @@ function vShoot() {
   // 5 tab ikon + label pendek: selalu muat di lebar 360 tanpa geser. Rundown sudah digabung ke tab Ide (urutan Per jam).
   // Di hari H & H-1, Ide jadi tab pertama dan langsung urut Per jam.
   const hariIni = !S.arsip && (S.h === 0 || S.h === 1);
-  let tabs = [['produk', '👗', 'Produk'], ['mood', '🎨', 'Mood'], ['prep', '🧺', 'Props'], ['ide', '💡', 'Ide'], ['progres', '📊', 'Progres']];
+  let tabs = [['produk', 'Produk'], ['mood', 'Mood'], ['prep', 'Props'], ['ide', 'Ide'], ['progres', 'Progres']];
   if (hariIni) tabs = tabs.filter(t => t[0] === 'ide').concat(tabs.filter(t => t[0] !== 'ide'));
   if (SHT === 'rundown') SHT = 'ide';
   if (!tabs.some(t => t[0] === SHT)) SHT = hariIni || (!n.tot && n.ideN) ? 'ide' : 'produk';
@@ -1082,14 +1091,15 @@ function vShoot() {
   let h = `<div class="msh"><div class="msh1"><button class="msbk" onclick="go('${kmb}')" aria-label="Kembali"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
     <div class="msh2"><small>MODE SHOOTING · ${tglBesar}${S.jam ? ' · ' + esc(S.jam) : ''}</small><b>${esc(S.nama)}</b></div></div>
     <div class="msp"><div><span><b>${dn}</b> / ${tot} ${pakaiProduk ? 'produk difoto' : 'ide sudah take'}</span><em>${pct}%</em></div><div class="bar"><i style="width:${pct}%"></i></div></div>
-    <div class="mstab" style="grid-template-columns:repeat(${tabs.length},minmax(0,1fr))">${tabs.map(t => `<button class="${SHT === t[0] ? 'on' : ''}" onclick="SHT='${t[0]}';render()" aria-label="${t[2]}"><span aria-hidden="true">${t[1]}</span>${t[2]}</button>`).join('')}</div></div>`;
-  if (menunggu) h += `<div class="info">📶 ${menunggu} centang tersimpan di HP, terkirim otomatis begitu ada sinyal.</div>`;
-  if (S.h > 0 && !S.arsip) h += `<div class="info">👀 Mode preview ${S.h === 1 ? '(H-1)' : '(H-' + S.h + ')'}: cek produk, moodboard, props & ide. Centang mulai hari H.</div>`;
-  if (S.arsip) h += `<div class="info">📸 Photoshoot ini sudah direkap & diarsipkan.</div>`;
+    <div class="mstab">${tabs.map(t => `<button class="${SHT === t[0] ? 'on' : ''}" onclick="SHT='${t[0]}';render()">${t[1]}</button>`).join('')}</div></div>`;
+  if (menunggu) h += `<p class="mstip">📶 ${menunggu} centang menunggu sinyal.</p>`;
+  if (S.h > 0 && !S.arsip) h += `<p class="mstip">Preview H-${S.h} · centang mulai hari H.</p>`;
+  if (S.arsip) h += `<p class="mstip">Sudah direkap & diarsipkan.</p>`;
   const kurang = (S.siap || []).filter(x => !x.ok);
-  if (!S.arsip && S.h >= 0 && (S.siap || []).length && (SHT === 'progres' || (SHT === 'ide' && S.h === 1))) h += `<div class="card mssiap"><div class="msgh"><b>Kesiapan Mode Shooting</b><small>${S.siap.length - kurang.length} / ${S.siap.length}</small></div>
-    ${S.siap.map(x => `<div class="mssi ${x.ok ? 'ok' : ''}"><i>${x.ok ? '✓' : ''}</i><span>${esc(x.label)}</span>${x.ok ? '' : `<small>${esc(x.pic.join(', ') || 'belum ada PIC')}</small>`}</div>`).join('')}
-    ${kurang.length ? `<small style="color:var(--mut)">PIC mendapat japri gabungan H-3 & H-1 pagi untuk bagiannya. H-1 malam yang masih kurang dikabarkan ke ${esc(S.leader || 'leader')}.</small>` : ''}</div>`;
+  if (!S.arsip && S.h >= 0 && (S.siap || []).length && (SHT === 'progres' || (SHT === 'ide' && S.h === 1))) { const sp = Math.round((S.siap.length - kurang.length) / S.siap.length * 100);
+    h += `<div class="card msg mssiap"><div class="msgh"><b>Kesiapan</b><small>${S.siap.length - kurang.length} / ${S.siap.length}</small></div><div class="msbar"><i style="width:${sp}%"></i></div>
+    ${kurang.length ? kurang.map(x => `<div class="mssi"><i></i><span>${esc(x.label)}</span><small>${esc(x.pic.join(', ') || '—')}</small></div>`).join('') : '<small class="msd">Semua siap ✓</small>'}
+    <details><summary>Lihat semua</summary>${S.siap.map(x => `<div class="mssi ${x.ok ? 'ok' : ''}"><i>${x.ok ? '✓' : ''}</i><span>${esc(x.label)}</span></div>`).join('')}</details></div>`; }
   if (SHT === 'produk') {
     if (!S.produk.length) h += kosong('s21', 'Belum ada produk di agenda ini. Ubah agenda → pilih produk yang difoto. Warna diambil dari kolom Warna / varian di tab PRODUK.');
     else h += `<p class="mstip">Ketuk warna atau motif yang sudah difoto. Yang belum, tetap terlihat sampai akhir sesi.</p>` + S.produk.map((p, pi) => { const sd = p.warna.filter(w => difoto(S, p.nama, w)).length;
@@ -1100,27 +1110,27 @@ function vShoot() {
         ${S.boleh && !S.arsip ? `<button class="lk" onclick="bukaForm('warna',${pi})">✏️ Atur warna · tandai tidak difoto</button>` : ''}</div>`; }).join('');
   }
   if (SHT === 'mood') {
-    const P = S.paket;
-    if (P.brief || (S.boleh && !S.arsip)) h += `<div class="card shbrief"><div class="shbh"><b>📣 Brief leader</b>${S.boleh && !S.arsip ? `<button class="shed" onclick="bukaForm('brief')">✏️ ${P.brief ? 'Ubah' : 'Tulis brief'}</button>` : ''}</div>
-      ${P.brief ? `<p class="uc" style="white-space:pre-line;margin:8px 0 0">${esc(P.brief)}</p>` : '<small style="color:var(--mut)">Belum ada brief. Tulis arahan untuk tim: tujuan shoot, mood, yang wajib diambil, pembagian tugas.</small>'}
-      ${P.brief && S.boleh && !S.arsip ? `<button class="big alt" style="margin-top:12px" onclick="kirimBrief()">📣 Kirim brief ke grup WA & HP tim</button>` : ''}</div>`;
-    h += `<div class="card msg"><b class="msgt">Arah visual</b>${P.arah ? `<p class="msarah">${esc(P.arah)}</p>` : '<small style="color:var(--mut)">Belum diisi.</small>'}${P.kunci.length ? `<div class="mskunci">${P.kunci.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}
-      ${P.callsheet || P.folder ? `<div class="acts">${P.callsheet ? `<a class="chip" href="${esc(P.callsheet)}" target="_blank" rel="noopener">📄 Call sheet</a>` : ''}${P.folder ? `<a class="chip" href="${esc(P.folder)}" target="_blank" rel="noopener">📁 Folder Drive</a>` : ''}</div>` : ''}</div>`;
-    h += (P.gambar || []).map(g => mediaShoot(g.m, g.judul)).join('');
-    if ((P.folderFile || []).length) h += `<div class="msgg"><i style="background:var(--deep)"></i><b>Dari folder Drive</b><small>${P.folderFile.length} file</small></div>` + P.folderFile.map(f => mediaShoot(f.m, f.judul)).join('');
-    if (P.folderErr) h += `<div class="info">⚠️ ${esc(P.folderErr)}</div>`;
+    const P = S.paket, bukanProps = g => !/props?\b/i.test(g.judul || '');
+    h += `<div class="card msg"><b class="msgt">Arah visual</b>${P.arah ? `<p class="msarah">${esc(P.arah)}</p>` : '<small class="msd">Belum diisi.</small>'}${P.kunci.length ? `<div class="mskunci">${P.kunci.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</div>`;
+    h += (P.gambar || []).filter(bukanProps).map(g => mediaShoot(g.m, g.judul)).join('');
+    h += (P.folderFile || []).filter(f => f.m.jenis === 'gambar' && bukanProps(f)).map(f => mediaShoot(f.m, f.judul)).join('');
     if (P.mood) h += P.mood.embed ? mediaShoot(P.mood, 'Moodboard lengkap') : (P.mood.jenis === 'gambar' || P.mood.src ? mediaShoot(P.mood, 'Moodboard') : '') + `<a class="msbuka besar" href="${esc(P.mood.url)}" target="_blank" rel="noopener">Buka moodboard lengkap${P.mood.situs ? ' (' + esc(P.mood.situs) + ')' : ''}</a>`;
-    else if (!(P.gambar || []).length) h += kosong('s21', S.boleh ? 'Belum ada moodboard. Ketuk <b>Ubah moodboard</b> lalu tempel link PDF/Drive/Canva dan gambar referensi pose & lokasi.' : 'Moodboard belum diisi leader.');
-    if (P.callM) h += mediaShoot(P.callM, 'Call sheet');
-    if (P.rundownM) h += mediaShoot(P.rundownM, 'File rundown');
+    else if (!(P.gambar || []).length) h += kosong('s21', S.boleh ? 'Belum ada moodboard. Upload di bawah atau tempel link di paket.' : 'Moodboard belum diisi leader.');
+    if (P.brief || (S.boleh && !S.arsip)) h += `<div class="card msg"><div class="msgh"><b>Brief leader</b>${S.boleh && !S.arsip ? `<button class="lk" onclick="bukaForm('brief')">✏️ ${P.brief ? 'Ubah' : 'Tulis'}</button>` : ''}</div>
+      ${P.brief ? `<p class="msarah">${esc(P.brief)}</p>` : '<small class="msd">Belum ada brief.</small>'}${P.brief && S.boleh && !S.arsip ? `<button class="msbuka" onclick="kirimBrief()">Kirim brief ke grup WA & HP tim</button>` : ''}</div>`;
+    const lain = (P.folderFile || []).filter(f => f.m.jenis !== 'gambar' && bukanProps(f));
+    if (P.callM || P.rundownM || lain.length) h += `<div class="msgg"><i style="background:var(--deep)"></i><b>File lain</b></div>` + (P.callM ? mediaShoot(P.callM, 'Call sheet') : '') + (P.rundownM ? mediaShoot(P.rundownM, 'File rundown') : '') + lain.map(f => mediaShoot(f.m, f.judul)).join('');
+    if (P.folderErr) h += `<p class="mstip">⚠️ ${esc(P.folderErr)}</p>`;
     if (!S.arsip && S.boleh) h += `<div class="msup"><button onclick="pilihUpload('moodboard')">📎 Moodboard</button><button onclick="pilihUpload('pose')">📎 Referensi pose</button><button onclick="pilihUpload('callsheet')">📎 Call sheet</button><button onclick="pilihUpload('rundown')">📎 File rundown</button></div>
-      <small class="msd" style="margin-top:8px">Maks 20 MB per file. File lebih besar: simpan langsung ke folder Drive photoshoot ini, otomatis tampil di sini.</small>${P.folder ? `<a class="msbuka" style="margin-top:10px" href="${esc(P.folder)}" target="_blank" rel="noopener">📁 Buka folder Drive photoshoot</a>` : ''}<button class="big alt" onclick="bukaForm('paket')">✏️ Ubah moodboard, gambar & link</button>`;
+      <p class="mstip">Maks 20 MB per file; file besar simpan di folder Drive photoshoot.</p>${P.folder ? `<a class="msbuka" href="${esc(P.folder)}" target="_blank" rel="noopener">Buka folder Drive photoshoot</a>` : ''}<button class="big alt" onclick="bukaForm('paket')">✏️ Ubah moodboard & link</button>`;
   }
   if (SHT === 'prep') {
     const P = S.paket, pn = P.props.filter(x => S.shot['prop|' + x.n]).length;
     if (P.props.length) h += `<div class="card msg"><div class="msgh"><b>Props</b><small>${pn} / ${P.props.length}</small></div>${P.props.map((x, i) => { const on = !!S.shot['prop|' + x.n];
       return `<button class="msprop" ${S.arsip ? 'disabled' : ''} onclick="tapProp(${i})"><span class="mscb ${on ? 'on' : ''}">${on ? ikonCek : ''}</span><b>${esc(x.n)}</b><small>${esc(x.q)}</small></button>`; }).join('')}</div>`;
-    else h += `<div class="card msempty"><span style="font-size:34px" aria-hidden="true">🧺</span><b>Kebutuhan props ada di moodboard</b><small>Belum ada daftar props yang bisa dicentang untuk shoot ini.</small><button class="big" onclick="SHT='mood';render()">🎨 Buka moodboard</button></div>`;
+    const gp = (P.gambar || []).concat((P.folderFile || []).filter(f => f.m.jenis === 'gambar')).filter(g => /props?\b/i.test(g.judul || ''));
+    if (!P.props.length) h += `<div class="card msg msempty"><b>Kebutuhan props ada di moodboard</b>${gp.length ? '' : `<button class="msbuka" onclick="SHT='mood';render()">Buka moodboard</button>`}</div>`;
+    h += gp.map(g => mediaShoot(g.m, g.judul)).join('');
     if (!S.arsip && S.boleh) h += `<button class="big alt" onclick="bukaForm('paket')">✏️ ${P.props.length ? 'Ubah' : 'Tambah'} daftar props</button>`;
   }
   if (SHT === 'ide') {
@@ -1157,25 +1167,25 @@ function vShoot() {
 function perJam(S, now) {
   if (SHDRAFT) return vDraft(S);
   let h = '';
-  const blok = S.rundown.filter(b => b.blok), masuk = S.ide.filter(x => blok.some(b => cocokBlok(x, b)));
-  // rundown sudah dipakai: ringkas jadi 1 baris supaya daftar jam langsung terlihat
-  if (blok.length) h += `<div class="msmini"><span>🗓️ Rundown aktif · ${masuk.length} ide</span>${S.skema && S.boleh && !S.arsip ? `<button class="lk" onclick="draftShoot()">⟳ buat ulang draf</button>` : ''}</div>${S.skema && S.skema.peringatan.length ? `<div class="mswarn">⚠️ ${S.skema.peringatan.map(esc).join('<br>')}</div>` : ''}`;
+  const blok = S.rundown.filter(b => b.blok), masuk = S.ide.filter(x => blok.some(b => ideDiBlok(S, b).includes(x))), dariCs = S.rundownSumber === 'callsheet';
+  // rundown sudah ada: ringkas jadi 1 baris supaya daftar jam langsung terlihat
+  if (blok.length) h += `<div class="msmini"><span>${dariCs ? 'Rundown dari call sheet' : 'Rundown aktif'} · ${masuk.length} ide</span>${S.skema && S.boleh && !S.arsip ? `<button class="lk" onclick="draftShoot()">⟳ buat ulang draf</button>` : ''}</div>${S.skema && S.skema.peringatan.length ? `<div class="mswarn">⚠️ ${S.skema.peringatan.map(esc).join('<br>')}</div>` : ''}`;
   else if (S.skema) h += `<div class="card msg"><div class="msgh"><b>Skema & ide konten</b><small>${esc(S.skema.talent.join(', '))}</small></div><small class="msd">Skema: ${esc(S.skema.sumberSkema)}${S.skema.sumberIde ? ' · Ide: ' + esc(S.skema.sumberIde) : ' · file IDE KONTEN belum ada'} · mulai shooting ${esc(S.skema.jamMulai)}</small>
     ${S.skema.peringatan.length ? `<div class="mswarn">⚠️ ${S.skema.peringatan.map(esc).join('<br>')}</div>` : ''}${S.boleh && !S.arsip ? `<button class="big" onclick="draftShoot()">✨ Buat draf rundown dari skema & ide</button>` : ''}</div>`;
-  const cek = S.ide.filter(x => { const b = blok.find(b => cocokBlok(x, b)); return b && cekModel(x, b); });
+  const cek = S.ide.filter(x => { const b = blok.find(b => ideDiBlok(S, b).includes(x)); return b && !b.ideKeys && cekModel(x, b); });
   if (blok.length && cek.length) h += `<div class="msseg msseg3">${[[false, 'Semua blok'], [true, 'Perlu dicek (' + cek.length + ')']].map(o => `<button class="${SHCEK === o[0] ? 'on' : ''}" onclick="SHCEK=${o[0]};render()">${o[1]}</button>`).join('')}</div>`;
   if (!blok.length) h += `<div class="info">Rundown belum ada.${S.skema && S.boleh ? ' Ketuk <b>✨ Buat draf rundown</b> di atas, lalu <b>Pakai rundown ini</b>.' : S.boleh ? ' Tambah lewat <b>＋ Blok</b> atau tempel dari Excel.' : ''} File rundown (PDF/gambar) ada di tab Mood.</div>`;
-  if (S.boleh && !S.arsip && !S.skema) h += `<div class="acts" style="margin-top:10px"><button class="sbtn" onclick="bukaForm('blok')">＋ Blok</button><button class="sbtn" onclick="bukaForm('tempel','rundown')">📋 Tempel rundown dari Excel</button></div>`;
-  h += S.rundown.map((b, i) => { const ub = S.boleh && !S.arsip ? `<button class="shed" onclick="bukaForm('blok',${i})" aria-label="Ubah blok">✏️</button>` : '';
-    if (!b.blok) return SHCEK ? '' : `<div class="shev"><b>${esc(b.jam)}</b><span>${esc([b.seri, b.catatan, b.setup].filter(Boolean).join(' · '))}</span>${ub}</div>`;
-    let ide = S.ide.filter(x => cocokBlok(x, b)); if (SHCEK) ide = ide.filter(x => cekModel(x, b)); if (SHCEK && !ide.length) return '';
+  if (S.boleh && !S.arsip && !S.skema && !dariCs) h += `<div class="acts" style="margin-top:10px"><button class="sbtn" onclick="bukaForm('blok')">＋ Blok</button><button class="sbtn" onclick="bukaForm('tempel','rundown')">📋 Tempel rundown dari Excel</button></div>`;
+  h += S.rundown.map((b, i) => { const ub = S.boleh && !S.arsip && !dariCs ? `<button class="shed" onclick="bukaForm('blok',${i})" aria-label="Ubah blok">✏️</button>` : '';
+    if (!b.blok) return SHCEK ? '' : `<div class="shev"><b>${esc(b.jam)}</b><span>${esc([b.catatan, b.setup].filter(Boolean).join(' · ') || b.seri)}</span>${ub}</div>`;
+    let ide = ideDiBlok(S, b); if (SHCEK) ide = ide.filter(x => cekModel(x, b)); if (SHCEK && !ide.length) return '';
     const tk = ide.filter(x => x.take).length, lim = SHBUKA[i] ? 999 : 3, ws = pisahNama(b.warna || b.blok).slice(0, 4);
-    return `<div class="msblok ${i === now ? 'now' : ''}" id="blok${i}"><div class="msbh"><div class="msdots">${ws.map(w => `<i style="background:${hexWarna(w)}"></i>`).join('')}</div><div class="msbt"><small>${esc([b.jam, b.seri].filter(Boolean).join(' · '))}</small><b>${esc(b.blok)}</b></div>${i === now ? '<span class="msnow">SEDANG JALAN</span>' : ''}${ub}</div>
+    return `<div class="msblok ${i === now ? 'now' : ''}" id="blok${i}"><div class="msbh"><div class="msdots">${ws.map(w => `<i style="background:${hexWarna(w)}"></i>`).join('')}</div><div class="msbt"><small>${esc([b.jam, b.seri].filter(Boolean).join(' · '))}</small><b>${esc(b.warna ? pisahNama(b.warna).join(' × ') : b.blok)}</b></div>${i === now ? '<span class="msnow">SEDANG JALAN</span>' : ''}${ub}</div>
       ${b.talent ? `<small class="msd">👥 ${esc(talentWarna(b.talent, b.warna))}</small>` : ''}${b.scene && !ide.length ? `<div class="msscene">🎬 <span><b>Video:</b> ${esc(b.scene)}</span></div>` : ''}
       ${b.setup ? `<div class="msset"><small>FOTO KATALOG</small>${b.setup.split(/\n|;/).map(x => x.trim()).filter(Boolean).map(x => `<span>• ${esc(x)}</span>`).join('')}</div>` : ''}${b.pose ? `<small class="msd">🖼️ Pose: ${esc(b.pose)}</small>` : ''}${b.catatan ? `<small class="msd">📝 ${esc(b.catatan)}</small>` : ''}
       ${ide.length ? `<div class="msih"><small>IDE KONTEN DI BLOK INI</small><small>${tk} / ${ide.length} sudah take</small></div>` + ide.slice(0, lim).map(x => barisIde(x, b, true)).join('') : ''}
       ${ide.length > 3 ? `<button class="msmore" onclick="SHBUKA[${i}]=!SHBUKA[${i}];render()">${SHBUKA[i] ? 'Ringkas' : 'Tampilkan semua (' + ide.length + ')'}</button>` : ''}</div>`; }).join('');
-  const lepas = S.ide.filter(x => !blok.some(b => cocokBlok(x, b)));
+  const lepas = S.ide.filter(x => !masuk.includes(x) && x.kategori !== 'Cadangan');
   if (lepas.length && blok.length && !SHCEK) h += `<div class="msblok"><div class="msbt"><small>BELUM ADA DI RUNDOWN</small><b>Ide di luar jadwal · ${lepas.length}</b></div>${lepas.slice(0, SHBUKA.lepas ? 999 : 5).map(x => barisIde(x, null, true)).join('')}${lepas.length > 5 ? `<button class="msmore" onclick="SHBUKA.lepas=!SHBUKA.lepas;render()">${SHBUKA.lepas ? 'Ringkas' : 'Tampilkan semua (' + lepas.length + ')'}</button>` : ''}</div>`;
   return h;
 }
@@ -1235,7 +1245,7 @@ function progresShoot(S, n, now) {
   if (S.produk.length) h += `<div class="card" style="margin-top:12px"><h3>👗 Per produk</h3>${S.produk.map(p => { const ws = p.warna.filter(w => !tidakFoto(S, p.nama, w)), sd = ws.filter(w => difoto(S, p.nama, w)).length, kurang = ws.filter(w => !difoto(S, p.nama, w));
     return `<div class="pgl"><span>${esc(p.nama)}${p.bawaan ? ' <small>(sisa)</small>' : ''}</span><small>${sd}/${ws.length}</small></div>${bar(sd, ws.length)}${kurang.length && kurang.length < ws.length ? `<small style="display:block;color:var(--mut);margin:-2px 0 8px">Belum: ${esc(kurang.slice(0, 6).map(namaWarna).join(', '))}${kurang.length > 6 ? ' +' + (kurang.length - 6) : ''}</small>` : ''}`; }).join('')}</div>`;
   const blok = S.rundown.map((b, i) => Object.assign({ i }, b)).filter(b => b.blok);
-  if (blok.length) h += `<div class="card" style="margin-top:12px"><h3>🗓️ Rundown · ${blok.length} blok</h3>${blok.map(b => { const ide = S.ide.filter(x => cocokBlok(x, b)), tk = ide.filter(x => x.take).length;
+  if (blok.length) h += `<div class="card" style="margin-top:12px"><h3>🗓️ Rundown · ${blok.length} blok</h3>${blok.map(b => { const ide = ideDiBlok(S, b), tk = ide.filter(x => x.take).length;
     const st = S.h > 0 ? ['belum', 'Belum mulai'] : b.i === now ? ['now', 'Sedang jalan'] : now >= 0 && b.i < now ? ['done', 'Lewat'] : S.h < 0 ? ['done', 'Selesai'] : ['belum', 'Belum'];
     return `<div class="pgk ${st[0]}"><i></i><div><b>${esc(b.jam)} · ${esc(b.blok)}</b><small>${st[1]}${ide.length ? ' · ide ' + tk + '/' + ide.length + ' take' : ''}</small></div></div>`; }).join('')}</div>`;
   if (S.ide.length) h += `<div class="card" style="margin-top:12px"><h3>🎬 Ide konten</h3><div class="pgl"><span>Sudah take</span><small>${n.ideT}/${n.ideN}</small></div>${bar(n.ideT, n.ideN)}</div>`;
@@ -1436,14 +1446,17 @@ function notifSiapkan() {
     sc.onerror = () => notifSet('gagal', 'Layanan notifikasi gagal dimuat. Cek internet, lalu buka ulang app.');
     document.head.appendChild(sc);
     window.OneSignalDeferred.push(async OS => {
+      // jaringan putus sesaat (NetworkError / Load failed): coba ulang 3x dengan jeda 2, 4, 6 detik
+      const jaringan = e => /network|load failed|failed to fetch|timed? ?out/i.test(String((e && e.message) || e));
+      const ulang = async f => { for (let i = 1; ; i++) { try { return await f(); } catch (e) { if (/already/i.test(String((e && e.message) || e))) return; if (!jaringan(e) || i >= 3) throw e; await new Promise(t => setTimeout(t, i * 2000)); } } };
       try {
-        await OS.init({ appId: info.appId, serviceWorkerPath: base.slice(1) + 'OneSignalSDKWorker.js', serviceWorkerParam: { scope: base } });
+        await ulang(() => OS.init({ appId: info.appId, serviceWorkerPath: base.slice(1) + 'OneSignalSDKWorker.js', serviceWorkerParam: { scope: base } }));
         NOTIF.os = OS; NOTIF.id = info.id;
         if (!OS.Notifications.isPushSupported()) return notifSet('tidak', 'HP/browser ini belum mendukung notifikasi web.');
-        if (OS.Notifications.permission) { await OS.login(info.id); return notifSet('on', 'Notifikasi aktif di HP ini ✓'); }
+        if (OS.Notifications.permission) { await ulang(() => OS.login(info.id)); return notifSet('on', 'Notifikasi aktif di HP ini ✓'); }
         if (Notification.permission === 'denied') return notifSet('tolak', 'Notifikasi pernah ditolak. Nyalakan lewat Pengaturan HP → Notifikasi → ThinKerBelle (iPhone) atau Info aplikasi → Notifikasi (Android).');
         notifSet('tanya', 'Notifikasi belum dinyalakan di HP ini.', true);
-      } catch (e) { notifSet('gagal', 'Notifikasi belum bisa disiapkan: ' + (e && e.message || e)); laporError('Notif: ' + (e && e.message || e), 'notifikasi'); }
+      } catch (e) { notifSet('gagal', 'Notifikasi belum bisa disiapkan: ' + (e && e.message || e)); if (!jaringan(e)) laporError('Notif: ' + (e && e.message || e), 'notifikasi'); }
     });
     setTimeout(() => { if (NOTIF.st === 'muat') notifSet('gagal', 'Layanan notifikasi lama merespons. Coba buka ulang app.'); }, 20000);
   }).withFailureHandler(e => notifSet('gagal', 'Gagal mengambil pengaturan notifikasi: ' + e.message)).apiNotifInfo(TOKEN);
