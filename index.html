@@ -1432,13 +1432,23 @@ function notifSet(st, pesan, bar) {
   if (TAB === 'akun' && !$('sheet').classList.contains('show')) render();
 }
 function notifNanti() { $('notifbar').classList.remove('show'); try { localStorage.setItem('tkbNotifNanti', String(Date.now() + 3 * 864e5)); } catch (e) {} }
+// Gangguan jaringan sesaat di HP (NetworkError / Load failed / Failed to fetch): coba ulang 2× (jeda 3 lalu 10 detik), tidak dicatat ke LOG ERROR. Error lain tetap dicatat.
+const notifJaringan = e => /network|load failed|failed to fetch|timed? ?out/i.test(String((e && e.message) || e));
+async function notifUlang(f) {
+  const jeda = [3000, 10000];
+  for (let i = 0; ; i++) { try { return await f(); } catch (e) { if (/already/i.test(String((e && e.message) || e))) return; if (!notifJaringan(e) || i >= jeda.length) throw e; await new Promise(t => setTimeout(t, jeda[i])); } }
+}
+function notifLapor(e) { if (!notifJaringan(e)) laporError('Notif: ' + ((e && e.message) || e), 'notifikasi'); }
 function notifSiapkan() {
   if (notifSiapkan.jalan || !TOKEN) return; notifSiapkan.jalan = true;
   if (!diGitHub()) return notifSet('na', 'Notifikasi HP hanya jalan kalau ThinKerBelle dibuka lewat link GitHub (link dari #APP).');
   if (isIOS() && !modeApp()) return notifSet('ios', 'Di iPhone: buka lewat Safari → Bagikan → Tambahkan ke Layar Utama, lalu buka ThinKerBelle dari ikonnya (iOS 16.4 ke atas).', true);
   if (!('serviceWorker' in navigator) || !('Notification' in window)) return notifSet('tidak', 'Browser ini belum mendukung notifikasi. Pakai Chrome (Android) atau ikon layar utama (iPhone).');
   notifSet('muat', 'Menyiapkan notifikasi…');
-  google.script.run.withSuccessHandler(info => {
+  const ambilInfo = (siap, coba) => google.script.run.withSuccessHandler(siap).withFailureHandler(e => {
+    if (notifJaringan(e) && coba < 2) return setTimeout(() => ambilInfo(siap, coba + 1), [3000, 10000][coba]);
+    notifSet('gagal', notifJaringan(e) ? 'Sinyal sedang putus, notifikasi disiapkan lagi saat app dibuka ulang.' : 'Gagal mengambil pengaturan notifikasi: ' + e.message); notifLapor(e); }).apiNotifInfo(TOKEN);
+  ambilInfo(info => {
     if (!info || !info.appId || !info.id) return notifSet('belum', 'Notifikasi HP belum diatur admin (menu ✨ Arabelle → 🔔 Notifikasi HP).');
     const base = location.pathname.replace(/[^/]*$/, '');
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -1446,29 +1456,26 @@ function notifSiapkan() {
     sc.onerror = () => notifSet('gagal', 'Layanan notifikasi gagal dimuat. Cek internet, lalu buka ulang app.');
     document.head.appendChild(sc);
     window.OneSignalDeferred.push(async OS => {
-      // jaringan putus sesaat (NetworkError / Load failed): coba ulang 3x dengan jeda 2, 4, 6 detik
-      const jaringan = e => /network|load failed|failed to fetch|timed? ?out/i.test(String((e && e.message) || e));
-      const ulang = async f => { for (let i = 1; ; i++) { try { return await f(); } catch (e) { if (/already/i.test(String((e && e.message) || e))) return; if (!jaringan(e) || i >= 3) throw e; await new Promise(t => setTimeout(t, i * 2000)); } } };
       try {
-        await ulang(() => OS.init({ appId: info.appId, serviceWorkerPath: base.slice(1) + 'OneSignalSDKWorker.js', serviceWorkerParam: { scope: base } }));
+        await notifUlang(() => OS.init({ appId: info.appId, serviceWorkerPath: base.slice(1) + 'OneSignalSDKWorker.js', serviceWorkerParam: { scope: base } }));
         NOTIF.os = OS; NOTIF.id = info.id;
         if (!OS.Notifications.isPushSupported()) return notifSet('tidak', 'HP/browser ini belum mendukung notifikasi web.');
-        if (OS.Notifications.permission) { await ulang(() => OS.login(info.id)); return notifSet('on', 'Notifikasi aktif di HP ini ✓'); }
+        if (OS.Notifications.permission) { await notifUlang(() => OS.login(info.id)); return notifSet('on', 'Notifikasi aktif di HP ini ✓'); }
         if (Notification.permission === 'denied') return notifSet('tolak', 'Notifikasi pernah ditolak. Nyalakan lewat Pengaturan HP → Notifikasi → ThinKerBelle (iPhone) atau Info aplikasi → Notifikasi (Android).');
         notifSet('tanya', 'Notifikasi belum dinyalakan di HP ini.', true);
-      } catch (e) { notifSet('gagal', 'Notifikasi belum bisa disiapkan: ' + (e && e.message || e)); if (!jaringan(e)) laporError('Notif: ' + (e && e.message || e), 'notifikasi'); }
+      } catch (e) { notifSet('gagal', notifJaringan(e) ? 'Sinyal sedang putus, notifikasi disiapkan lagi saat app dibuka ulang.' : 'Notifikasi belum bisa disiapkan: ' + ((e && e.message) || e)); notifLapor(e); }
     });
     setTimeout(() => { if (NOTIF.st === 'muat') notifSet('gagal', 'Layanan notifikasi lama merespons. Coba buka ulang app.'); }, 20000);
-  }).withFailureHandler(e => notifSet('gagal', 'Gagal mengambil pengaturan notifikasi: ' + e.message)).apiNotifInfo(TOKEN);
+  }, 0);
 }
 async function notifNyalakan() {
   const OS = NOTIF.os; if (!OS) { if (NOTIF.st === 'ios' || NOTIF.st === 'na') hasil(NOTIF.pesan, 'sapa'); return; }
   $('notifbtn').disabled = true;
   try {
     await OS.Notifications.requestPermission();
-    if (OS.Notifications.permission) { await OS.login(NOTIF.id); notifSet('on', 'Notifikasi aktif di HP ini ✓'); react('selesai', 'Notifikasi HP aktif 🔔'); }
+    if (OS.Notifications.permission) { await notifUlang(() => OS.login(NOTIF.id)); notifSet('on', 'Notifikasi aktif di HP ini ✓'); react('selesai', 'Notifikasi HP aktif 🔔'); }
     else { notifSet('tolak', 'Izin notifikasi belum diberikan. Nyalakan lewat pengaturan HP/browser.'); react('gagal', 'Izin notifikasi belum diberikan'); }
-  } catch (e) { react('gagal', 'Notifikasi belum bisa dinyalakan di HP ini'); }
+  } catch (e) { react('gagal', notifJaringan(e) ? '📶 Sinyal putus, coba lagi sebentar' : 'Notifikasi belum bisa dinyalakan di HP ini'); notifLapor(e); }
   finally { $('notifbtn').disabled = false; }
 }
 function kartuNotif() {
