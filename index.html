@@ -276,6 +276,12 @@ body{font:400 15px/1.5 'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;ba
 .mssiap{margin-top:14px;display:flex;flex-direction:column;gap:6px;border-radius:22px;padding:14px}.mssi{display:flex;align-items:center;gap:10px;font-size:14px}.mssi i{width:22px;height:22px;border-radius:50%;border:2px solid var(--mid);display:grid;place-items:center;font-style:normal;font-size:12px;color:#fff;flex:none}.mssi.ok i{background:var(--ok);border-color:var(--ok)}.mssi.ok span{color:var(--mut)}.mssi small{margin-left:auto;color:var(--warn);font-size:12px;text-align:right}
 .msup{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.msup button{flex:1 1 auto;min-height:44px;border-radius:999px;border:1.5px dashed var(--deep);background:var(--card);color:var(--deep);font-weight:600;font-size:14px;padding:0 14px}
 .mswr{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.mswr input[type=color]{width:40px;height:40px;border:0;padding:0;border-radius:12px;background:none;flex:none}.mswr .wn{flex:1;min-width:0}.mswr label{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;white-space:nowrap}.mswr label input{width:auto}.mswr button{border:0;background:var(--chip);color:var(--mut);border-radius:50%;width:32px;height:32px;flex:none}
+.msw small em.t{color:var(--mut);font-weight:500}.mstal{display:flex;flex-wrap:wrap;gap:8px}.mstal button{min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--mut);font-weight:600}.mstal button.on{border-color:var(--ok);background:var(--okbg);color:var(--ok)}
+.msdr{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-top:10px;display:flex;flex-direction:column;gap:6px}.msdr.inf{background:transparent;border-style:dashed}.msdr.tetap{opacity:.85}
+.msdrh{display:flex;align-items:baseline;gap:10px}.msdrh span{flex:none;font-size:12px;font-weight:700;color:var(--mut);min-width:92px}.msdrh b{flex:1;font-size:15px}.msdrh em{font-style:normal;font-size:11px;font-weight:700;color:var(--ok);background:var(--okbg);border-radius:999px;padding:2px 8px}
+.msdi{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;font-size:13px;padding:6px 8px;border-radius:10px;background:var(--bg)}.msdi i{color:var(--mut);font-style:normal}.msdi a{flex:none;padding:3px 9px;border-radius:999px;background:#4A1D33;color:#fff;text-decoration:none;font-weight:600;font-size:12px}
+.msdra{display:flex;align-items:center;gap:6px;margin-top:2px}.msdra label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);flex:1}.msdra input{width:64px;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}.msdra button{width:34px;height:34px;border-radius:50%;border:0;background:var(--chip);color:var(--deep);font-weight:700}
+.mstab{display:grid;gap:4px;overflow:visible}.mstab button{min-width:0;min-height:50px;padding:4px 2px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:11px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mstab button span{font-size:17px;line-height:1}
 </style>
 </head><body>
 <style>
@@ -957,9 +963,9 @@ function cariPrd(q) { q = String(q || '').trim().toLowerCase(); document.querySe
 function jadikanCover(i, j) { const p = PROD[i]; if (!p) return; loading(true, 'Mengganti cover…');
   gsr('apiCoverProduk', [TOKEN, p.id, p.foto[j]], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); p.cover = p.foto[j]; p.coverId = p.fotoId[j]; react('selesai', r.pesan); bukaProduk(i); if (TAB === 'produk') render(); }); }
 // =========================== PAKET SHOOTING & MODE SHOOTING (prototipe Mode Shooting HP) ===========================
-let SH = null, SHID = '', SHT = 'produk', SH_DARI = 'agenda', SHSERI = '', SHURUT = 'baju', SHMODEL = '', SHCEK = false, SHBUKA = {};
+let SH = null, SHID = '', SHT = 'produk', SH_DARI = 'agenda', SHSERI = '', SHURUT = 'baju', SHMODEL = '', SHCEK = false, SHBUKA = {}, SHDRAFT = null;
 const JS3 = [['C', 'Candid'], ['K', 'Katalog'], ['D', 'Detail']];
-function bukaShoot(id, dari) { SHID = id || ''; SH = null; SHT = ''; SHSERI = ''; SHMODEL = ''; SHCEK = false; SHBUKA = {}; SH_DARI = dari || TAB; tutup(); go('shoot'); }
+function bukaShoot(id, dari) { SHID = id || ''; SH = null; SHT = ''; SHDRAFT = null; SHSERI = ''; SHMODEL = ''; SHCEK = false; SHBUKA = {}; SH_DARI = dari || TAB; tutup(); go('shoot'); }
 function muatShoot(segar) {
   gsr('apiShoot', [TOKEN, SHID, !!segar], r => { if (!r || !r.ok) { if (!SH || SH.gagal) SH = { gagal: (r && r.pesan) || 'Gagal memuat' }; } else { SH = r.data; SHID = SH.id; terapkanAntre(); simpanLokal('tkbShoot1_' + SH.id, SH); kirimAntre(); } if (TAB === 'shoot' && !$('sheet').classList.contains('show')) render(); },
     e => { if (!SH || SH.gagal) SH = { gagal: putus(e) ? '📶 Belum ada sinyal dan data shooting ini belum tersimpan di HP. Coba lagi saat ada sinyal.' : e.message }; if (TAB === 'shoot') render(); });
@@ -1019,6 +1025,8 @@ const pisahNama = s => String(s || '').split(/\s*(?:,|\+|&|\/|\n|;|\bdan\b)\s*/i
 // ide masuk blok kalau kolom Blok sama, atau warna baju ide = warna/blok di rundown
 const cocokBlok = (ide, b) => { const nb = [kecil(b.blok), kecil(b.warna)].filter(Boolean), ia = [kecil(ide.blok), kecil(ide.warna)].filter(x => x && x !== 'bebas');
   return ia.some(a => nb.some(x => x === a || x.split(/\s*(?:,|×|x|\+|&|\/)\s*/).includes(a))); };
+// "Imel, Icha" + "Dusk, Indigo" → "Imel – Dusk · Icha – Indigo"
+const talentWarna = (t, w) => { const a = pisahNama(t), b = String(w || '').split(/\s*,\s*/).filter(Boolean); return a.length && a.length === b.length ? a.map((x, i) => x + ' – ' + b[i]).join(' · ') : [t, w].filter(Boolean).join(' · '); };
 const grupModel = m => /^semua|ciwi|cewek|cowok|couple|model$/i.test(m);
 function cekModel(x, b) {
   if (!b || !b.talent || !x.model) return ''; const tal = pisahNama(b.talent).map(kecil);
@@ -1035,8 +1043,9 @@ function barisIde(x, b, kat) {
   const i = SH.ide.indexOf(x), c = !!x.take, warn = b ? cekModel(x, b) : '', saran = !b && SH.rundown.some(r => r.blok) ? saranBlok(SH, x) : '';
   return `<div class="msi ${c ? 'on' : ''} ${warn ? 'wr' : ''}"><button class="mscb" onclick="takeIde(${i})" aria-label="${c ? 'Batalkan tanda sudah take' : 'Tandai sudah take'}">${c ? ikonCek : ''}</button>
     <div class="msix">${kat && (x.kategori || x.format) ? `<small class="msk">${esc(String(x.kategori || x.format).toUpperCase())}</small>` : ''}<b>${x.no ? esc(x.no) + '. ' : ''}${esc(x.ide || 'Deskripsi belum diisi di sheet')}</b>${x.desk ? `<small class="msd">${esc(x.desk)}</small>` : ''}
-    <div class="mschip">${x.model ? `<span>${esc(pisahNama(x.model).join(' + '))}</span>` : ''}${!kat && x.warna && kecil(x.warna) !== 'bebas' && SHURUT !== 'baju' ? `<span class="w">${esc(x.warna)}</span>` : ''}${x.opsi ? '<span class="g">Opsi</span>' : ''}${x.pic ? `<span class="g">PIC ${esc(x.pic)}</span>` : ''}${x.ref ? `<a href="${esc(x.ref)}" target="_blank" rel="noopener">▶ ${esc(x.platform || 'Referensi')}</a>` : ''}</div>
-    ${warn ? `<div class="mswarn">⚠️ ${esc(warn)}${saranBlok(SH, x) ? ' · ' + esc(saranBlok(SH, x)) : ''}</div>` : ''}${saran ? `<div class="mssaran">${esc(saran)}</div>` : ''}
+    <div class="mschip">${x.talentWarna ? `<span>${esc(x.talentWarna)}</span>` : x.model ? `<span>${esc(pisahNama(x.model).join(' + '))}</span>` : ''}${(x.luar || []).length ? '<span class="w">di luar skema</span>' : ''}${!kat && x.warna && kecil(x.warna) !== 'bebas' && SHURUT !== 'baju' ? `<span class="w">${esc(x.warna)}</span>` : ''}${x.opsi ? '<span class="g">Opsi</span>' : ''}${x.pic ? `<span class="g">PIC ${esc(x.pic)}</span>` : ''}${x.ref ? `<a href="${esc(x.ref)}" target="_blank" rel="noopener">▶ ${esc(x.platform || 'Referensi')}</a>` : ''}</div>
+    ${(x.absen || []).length ? `<div class="mswarn">🚫 ${esc(x.absen.join(', '))} tidak hadir · ide ini perlu disesuaikan</div>` : ''}${(x.cek || []).length ? `<div class="mswarn">⚠️ ${esc(x.cek.join(' · '))}</div>` : ''}
+    ${warn && !x.talentWarna ? `<div class="mswarn">⚠️ ${esc(warn)}${saranBlok(SH, x) ? ' · ' + esc(saranBlok(SH, x)) : ''}</div>` : ''}${saran ? `<div class="mssaran">${esc(saran)}</div>` : ''}
     ${x.take && !/baru saja|offline/.test(x.take) ? `<small class="msok">${esc(x.take)}</small>` : ''}${SH.boleh && !SH.arsip && x.sumber !== 'sheet' ? `<button class="lk" onclick="bukaForm('idesh',${i})">✏️ Ubah ide</button>` : ''}</div></div>`;
 }
 function mediaShoot(m, judul) {
@@ -1053,14 +1062,17 @@ function vShoot() {
   const S = SH, n = hitungShoot(S), now = blokSekarang(S), adaBlok = S.rundown.some(b => b.blok);
   const pakaiProduk = n.tot > 0 || !n.ideN, dn = pakaiProduk ? n.lengkap : n.ideT, tot = pakaiProduk ? n.tot : n.ideN, pct = tot ? Math.round(dn / tot * 100) : 0;
   const adaRd = adaBlok || !!S.paket.rundownFile || (S.boleh && !S.arsip);
-  const tabs = [['produk', 'Produk'], ['mood', 'Moodboard'], ['prep', 'Props & tim']].concat(adaRd ? [['rundown', adaBlok ? 'Rundown & ide' : 'Rundown']] : [], [['ide', adaBlok ? 'Semua ide' : 'Ide konten'], ['progres', 'Progres']]);
-  if (!tabs.some(t => t[0] === SHT)) SHT = !n.tot && adaBlok ? 'rundown' : 'produk';
+  // ikon + label pendek supaya semua tab muat di lebar 375 tanpa geser; di hari H & H-1 Rundown jadi tab pertama
+  const hariIni = !S.arsip && (S.h === 0 || S.h === 1);
+  let tabs = [['produk', '👗', 'Produk'], ['mood', '🎨', 'Mood'], ['prep', '🧺', 'Props']].concat(adaRd ? [['rundown', '🗓️', 'Rundown']] : [], [['ide', '💡', 'Ide'], ['progres', '📊', 'Progres']]);
+  if (hariIni && adaRd) tabs = tabs.filter(t => t[0] === 'rundown').concat(tabs.filter(t => t[0] !== 'rundown'));
+  if (!tabs.some(t => t[0] === SHT)) SHT = (hariIni && adaRd) || (!n.tot && adaBlok) ? 'rundown' : 'produk';
   const d0 = new Date(S.tgl + 'T00:00:00'), tglBesar = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'][d0.getDay()] + ' ' + d0.getDate() + ' ' + BLN3[d0.getMonth()].toUpperCase();
   const kunci = S.arsip || S.h > 0, menunggu = ANTRE.filter(x => x.args[0] === S.id).length;
   let h = `<div class="msh"><div class="msh1"><button class="msbk" onclick="go('${kmb}')" aria-label="Kembali"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
     <div class="msh2"><small>MODE SHOOTING · ${tglBesar}${S.jam ? ' · ' + esc(S.jam) : ''}</small><b>${esc(S.nama)}</b></div></div>
     <div class="msp"><div><span><b>${dn}</b> / ${tot} ${pakaiProduk ? 'produk difoto' : 'ide sudah take'}</span><em>${pct}%</em></div><div class="bar"><i style="width:${pct}%"></i></div></div>
-    <div class="mstab">${tabs.map(t => `<button class="${SHT === t[0] ? 'on' : ''}" onclick="SHT='${t[0]}';render()">${t[1]}</button>`).join('')}</div></div>`;
+    <div class="mstab" style="grid-template-columns:repeat(${tabs.length},minmax(0,1fr))">${tabs.map(t => `<button class="${SHT === t[0] ? 'on' : ''}" onclick="SHT='${t[0]}';render()" aria-label="${t[2]}"><span aria-hidden="true">${t[1]}</span>${t[2]}</button>`).join('')}</div></div>`;
   if (menunggu) h += `<div class="info">📶 ${menunggu} centang tersimpan di HP, terkirim otomatis begitu ada sinyal.</div>`;
   if (S.h > 0 && !S.arsip) h += `<div class="info">👀 Mode preview ${S.h === 1 ? '(H-1)' : '(H-' + S.h + ')'}: cek produk, moodboard, props & ide. Centang mulai hari H.</div>`;
   if (S.arsip) h += `<div class="info">📸 Photoshoot ini sudah direkap & diarsipkan.</div>`;
@@ -1074,7 +1086,7 @@ function vShoot() {
       const tdk = p.warna.filter(w => tidakFoto(S, p.nama, w)).length;
       return `<div class="card msg"><div class="msgh"><b>${esc(p.nama)}${p.warna.length > 1 || p.warna[0] !== 'Semua warna' ? ' · ' + p.warna.length + ' warna' : ''}</b><small>${sd} / ${p.warna.length - tdk}</small></div>${p.bawaan ? `<small class="msdari">↪ Sisa dari ${esc(p.bawaan)}</small>` : ''}
         <div class="msw">${p.warna.map((w, wi) => { const x = tidakFoto(S, p.nama, w), on = !x && difoto(S, p.nama, w), nm = w === 'Semua warna' ? 'Semua warna' : namaWarna(w);
-          return `<button ${kunci ? 'disabled' : ''} onclick="tapWarna(${pi},${wi})" aria-label="${esc(nm)}, ${x ? 'tidak difoto' : on ? 'sudah difoto' : 'belum difoto'}"><span class="${on ? 'on' : x ? 'x' : ''}" style="background:${hexWarna(w)}">${on ? `<i>${ikonCek}</i>` : ''}</span><small>${esc(nm)}${x ? '<em>tidak difoto</em>' : ''}</small></button>`; }).join('')}</div>
+          return `<button ${kunci ? 'disabled' : ''} onclick="tapWarna(${pi},${wi})" aria-label="${esc(nm)}, ${x ? 'tidak difoto' : on ? 'sudah difoto' : 'belum difoto'}"><span class="${on ? 'on' : x ? 'x' : ''}" style="background:${hexWarna(w)}">${on ? `<i>${ikonCek}</i>` : ''}</span><small>${esc(nm)}${x ? '<em>tidak difoto</em>' : p.talentWarna && p.talentWarna[nm] ? `<em class="t">${esc(p.talentWarna[nm].join(', '))}</em>` : ''}</small></button>`; }).join('')}</div>
         ${S.boleh && !S.arsip ? `<button class="lk" onclick="bukaForm('warna',${pi})">✏️ Atur warna · tandai tidak difoto</button>` : ''}</div>`; }).join('');
   }
   if (SHT === 'mood') {
@@ -1096,13 +1108,19 @@ function vShoot() {
     const P = S.paket, pn = P.props.filter(x => S.shot['prop|' + x.n]).length;
     h += `<div class="card msg"><div class="msgh"><b>Props</b><small>${pn} / ${P.props.length}</small></div>${P.props.length ? P.props.map((x, i) => { const on = !!S.shot['prop|' + x.n];
       return `<button class="msprop" ${S.arsip ? 'disabled' : ''} onclick="tapProp(${i})"><span class="mscb ${on ? 'on' : ''}">${on ? ikonCek : ''}</span><b>${esc(x.n)}</b><small>${esc(x.q)}</small></button>`; }).join('') : '<small style="color:var(--mut)">Belum diisi.</small>'}</div>`;
+    if (S.skema && S.skema.talent.length) { const ab = t => S.skema.absen.some(a => kecil(a) === kecil(t));
+      h += `<div class="card msg"><div class="msgh"><b>Talent hadir</b><small>${S.skema.talent.filter(t => !ab(t)).length} / ${S.skema.talent.length}</small></div><div class="mstal">${S.skema.talent.map(t => `<button class="${ab(t) ? '' : 'on'}" ${S.boleh && !S.arsip ? '' : 'disabled'} onclick="tapAbsen(this.dataset.t)" data-t="${esc(t)}">${ab(t) ? '🚫' : '✓'} ${esc(t)}</button>`).join('')}</div>
+        <small class="msd">${S.boleh && !S.arsip ? 'Ketuk talent yang tidak hadir. ' : ''}Ide yang memakai talent yang tidak hadir ditandai 🚫 di Rundown & Ide.</small></div>`; }
     const peran = P.peran && P.peran.length ? P.peran : [['Tim', S.tim.join(', ')], ['Talent', S.talent.join(', ')], ['Model', S.model]].filter(x => x[1]).map(x => ({ r: x[0], n: x[1] }));
     h += `<div class="card msg"><b class="msgt">Tim hari ini</b>${peran.length ? peran.map(x => `<div class="msrow"><span>${esc(x.r)}</span><b>${esc(x.n)}</b></div>`).join('') : '<small style="color:var(--mut)">Belum ada.</small>'}</div>`;
     if (P.callM) h += mediaShoot(P.callM, 'Call sheet');
     if (!S.arsip && S.boleh) h += `<div class="msup"><button onclick="pilihUpload('callsheet')">📎 Upload call sheet (PDF/gambar)</button></div><button class="big alt" onclick="bukaForm('paket')">✏️ Ubah props & tim</button>`;
     if (P.diubah) h += `<small style="display:block;color:var(--mut);margin-top:8px;text-align:center">Terakhir diubah ${esc(P.diubah)}</small>`;
   }
-  if (SHT === 'rundown') {
+  if (SHT === 'rundown' && SHDRAFT) h += vDraft(S);
+  if (SHT === 'rundown' && !SHDRAFT) {
+    if (S.skema) h += `<div class="card msg"><div class="msgh"><b>Skema & ide konten</b><small>${esc(S.skema.talent.join(', '))}</small></div><small class="msd">Skema: ${esc(S.skema.sumberSkema)}${S.skema.sumberIde ? ' · Ide: ' + esc(S.skema.sumberIde) : ' · file IDE KONTEN belum ada'} · mulai shooting ${esc(S.skema.jamMulai)}</small>
+      ${S.skema.peringatan.length ? `<div class="mswarn">⚠️ ${S.skema.peringatan.map(esc).join('<br>')}</div>` : ''}${S.boleh && !S.arsip ? `<button class="big" onclick="draftShoot()">✨ Buat draf rundown dari skema & ide</button>` : ''}</div>`;
     const blok = S.rundown.filter(b => b.blok), masuk = S.ide.filter(x => blok.some(b => cocokBlok(x, b))), cek = S.ide.filter(x => { const b = blok.find(b => cocokBlok(x, b)); return b && cekModel(x, b); });
     const bb = blok.find(b => b.jam), mulai = bb ? String(bb.jam).split(/[–-]/)[0].trim() : '';
     if (S.paket.rundownM) h += mediaShoot(S.paket.rundownM, 'File rundown');
@@ -1117,7 +1135,7 @@ function vShoot() {
       let ide = S.ide.filter(x => cocokBlok(x, b)); if (SHCEK) ide = ide.filter(x => cekModel(x, b)); if (SHCEK && !ide.length) return '';
       const tk = ide.filter(x => x.take).length, lim = SHBUKA[i] ? 999 : 3, ws = pisahNama(b.warna || b.blok).slice(0, 4);
       return `<div class="msblok ${i === now ? 'now' : ''}" id="blok${i}"><div class="msbh"><div class="msdots">${ws.map(w => `<i style="background:${hexWarna(w)}"></i>`).join('')}</div><div class="msbt"><small>${esc([b.jam, b.seri].filter(Boolean).join(' · '))}</small><b>${esc(b.blok)}</b></div>${i === now ? '<span class="msnow">SEDANG JALAN</span>' : ''}${ub}</div>
-        ${b.talent ? `<small class="msd">👥 ${esc(b.talent)}</small>` : ''}${b.scene ? `<div class="msscene">🎬 <span><b>Video:</b> ${esc(b.scene)}</span></div>` : ''}
+        ${b.talent ? `<small class="msd">👥 ${esc(talentWarna(b.talent, b.warna))}</small>` : ''}${b.scene && !ide.length ? `<div class="msscene">🎬 <span><b>Video:</b> ${esc(b.scene)}</span></div>` : ''}
         ${b.setup ? `<div class="msset"><small>FOTO KATALOG</small>${b.setup.split(/\n|;/).map(x => x.trim()).filter(Boolean).map(x => `<span>• ${esc(x)}</span>`).join('')}</div>` : ''}${b.pose ? `<small class="msd">🖼️ Pose: ${esc(b.pose)}</small>` : ''}${b.catatan ? `<small class="msd">📝 ${esc(b.catatan)}</small>` : ''}
         <div class="msih"><small>IDE KONTEN DI BLOK INI</small><small>${tk} / ${ide.length} sudah take</small></div>${ide.length ? ide.slice(0, lim).map(x => barisIde(x, b, true)).join('') : '<small class="msd">Tidak ada ide konten khusus di blok ini.</small>'}
         ${ide.length > 3 ? `<button class="msmore" onclick="SHBUKA[${i}]=!SHBUKA[${i}];render()">${SHBUKA[i] ? 'Ringkas' : 'Tampilkan semua (' + ide.length + ')'}</button>` : ''}</div>`; }).join('');
@@ -1149,6 +1167,42 @@ function vShoot() {
   h += `<div class="msfin"><button onclick="lihatRekap()">${S.arsip ? '📸 Lihat rekap' : 'Selesai shooting · lihat rekap'}</button></div>`;
   if (now >= 0 && SHT === 'rundown') setTimeout(() => { const el = $('blok' + now); if (el && !lihatRekap.gulir) { lihatRekap.gulir = 1; el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }, 300);
   return h;
+}
+// ---------- draf rundown dari skema + ide (belum disimpan sampai "Pakai rundown ini") ----------
+const mntJ = s => { const x = String(s || '').match(/(\d{1,2})[.:](\d{2})/); return x ? +x[1] * 60 + +x[2] : 0; }, jamM = x => String(Math.floor(x / 60) % 24).padStart(2, '0') + '.' + String(x % 60).padStart(2, '0');
+function hitungDraft() {
+  const R = SHDRAFT.rows; let cur = mntJ(SHDRAFT.info.mulai) - (R[0] && R[0].pra ? R[0].mnt : 0);
+  R.forEach(r => { r.mnt = Math.max(0, Math.round(+r.mnt || 0)); r.jam = jamM(cur) + '–' + jamM(cur + r.mnt); cur += r.mnt; });
+  SHDRAFT.info.akhirM = cur;
+}
+function draftShoot() {
+  if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat.'); loading(true, 'Menyusun draf rundown…');
+  gsr('apiShootDraft', [TOKEN, SH.id], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); SHDRAFT = r.draft; SHDRAFT.ada = r.adaRundown; hitungDraft(); render(); });
+}
+function vDraft(S) {
+  const D0 = SHDRAFT, I = D0.info, sisa = mntJ(I.maks) - I.akhirM;
+  let h = `<div class="msdark"><small>DRAF RUNDOWN · BELUM DISIMPAN</small><b>Perkiraan selesai ${jamM(I.akhirM)} · ${sisa >= 0 ? 'sisa ' + sisa + ' menit' : '⚠️ lewat ' + (-sisa) + ' menit'} sampai ${esc(I.maks)}</b>
+    <div class="msst"><div><b>${esc(I.mulai)}</b><small>mulai shooting</small></div><div><b>${esc(I.kumpul || '—')}</b><small>kumpul (agenda)</small></div><div><b class="${I.video < I.videoAwal ? 'or' : ''}">${I.video} mnt</b><small>per ide video${I.video < I.videoAwal ? ' · dipadatkan dari ' + I.videoAwal : ''}</small></div></div></div>`;
+  if (D0.belum.length) h += `<div class="mswarn" style="margin-top:12px">⚠️ Tidak bisa dijadwalkan:<br>${D0.belum.map(x => esc(x.seri + ' #' + x.no + ' · ' + x.alasan)).join('<br>')}</div>`;
+  if (D0.tidakMuat.length) h += `<details class="card msg"><summary><b>Tidak muat hari ini · dibawa ke shooting berikutnya (${D0.tidakMuat.length})</b></summary>${D0.tidakMuat.map(x => `<small class="msd">• ${esc(x.seri)}${x.no ? ' #' + esc(x.no) : ''} ${esc((x.desk || '').slice(0, 70))} <i>(${esc(x.alasan)})</i></small>`).join('')}</details>`;
+  h += D0.rows.map((r, i) => `<div class="msdr ${r.blok ? '' : 'inf'} ${r.tetap ? 'tetap' : ''}"><div class="msdrh"><span>${esc(r.jam)}</span><b>${esc(r.blok || r.catatan)}</b>${r.tambahan ? `<em>+${r.tambahan} mnt</em>` : ''}</div>
+    ${r.pasangan ? `<small class="msd">👥 ${esc(r.pasangan)}</small>` : ''}${r.setup ? `<small class="msd">📷 ${esc(r.setup)}</small>` : ''}${r.blok && r.catatan ? `<small class="msd">📝 ${esc(r.catatan)}</small>` : ''}
+    ${(r.ideInfo || []).map(x => `<div class="msdi"><span><b>#${esc(x.no)}</b> ${esc(x.judul)}${x.talentWarna && !r.pasangan ? ` <i>(${esc(x.talentWarna)})</i>` : ''}</span>${x.ref ? `<a href="${esc(x.ref)}" target="_blank" rel="noopener">▶ ${esc(x.platform || 'Referensi')}</a>` : ''}</div>`).join('')}
+    ${r.tetap ? '' : `<div class="msdra"><label>Durasi <input type="number" min="0" max="240" step="5" value="${r.mnt}" onchange="SHDRAFT.rows[${i}].mnt=this.value;hitungDraft();render()"> mnt</label><button onclick="geserDraft(${i},-1)" aria-label="Naikkan">↑</button><button onclick="geserDraft(${i},1)" aria-label="Turunkan">↓</button><button onclick="SHDRAFT.rows.splice(${i},1);hitungDraft();render()" aria-label="Hapus blok">✕</button></div>`}</div>`).join('');
+  return h + `<button class="big" onclick="pakaiDraft(false)">Pakai rundown ini${D0.ada ? ' (ganti rundown lama)' : ''}</button><button class="big alt" onclick="if(confirm('Buang draf ini?')){SHDRAFT=null;render()}">Buang draf</button>`;
+}
+function geserDraft(i, a) { const R = SHDRAFT.rows, j = i + a; if (j < 0 || j >= R.length || R[j].tetap && R[j].pra) return; [R[i], R[j]] = [R[j], R[i]]; hitungDraft(); render(); }
+function pakaiDraft(ganti) {
+  if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat.');
+  const rows = SHDRAFT.rows.map(r => ({ jam: r.jam, blok: r.blok, seri: r.seri, warna: r.warna, talent: r.talent, setup: r.setup, scene: (r.ideInfo || []).map(x => '#' + x.no + ' ' + x.judul).join('\n') || r.scene, catatan: r.catatan, ide: r.ide }));
+  loading(true, 'Menyimpan rundown…');
+  gsr('apiShootPakaiRundown', [TOKEN, SH.id, rows, !!ganti], q => { loading(false);
+    if (q && q.konfirmasi) { if (confirm(q.pesan + '. Ganti dengan draf ini? Rundown lama dihapus dari tab RUNDOWN.')) pakaiDraft(true); return; }
+    if (!q || !q.ok) return react('gagal', (q && q.pesan) || 'Gagal'); react('selesai', q.pesan); SHDRAFT = null; const id = SH.id; SH = null; SHID = id; render(); });
+}
+function tapAbsen(t) {
+  if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat.'); const a = SH.skema.absen.slice(), i = a.findIndex(x => kecil(x) === kecil(t)); if (i >= 0) a.splice(i, 1); else a.push(t);
+  loading(true, 'Menyimpan…'); gsr('apiShootAbsen', [TOKEN, SH.id, a], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); react('selesai', r.pesan); const id = SH.id; SH = null; SHID = id; render(); });
 }
 function vPsList() {
   const ps = (D.kalTim || []).filter(k => k.jenis === 'Photoshoot' && k.id), depan = ps.filter(k => (k.hs !== undefined ? k.hs : k.h) >= 0), lalu = ps.filter(k => (k.hs !== undefined ? k.hs : k.h) < 0).reverse();
@@ -1518,7 +1572,9 @@ function bukaForm(k, arg) {
       <label>Link call sheet <span style="font-weight:500;color:var(--mut)">(atau 📎 upload di tab Props & tim)</span></label><input id="k5" placeholder="https://…" value="${v('callsheet')}">
       <label>File rundown <span style="font-weight:500;color:var(--mut)">(link PDF/Sheets, atau 📎 upload di tab Rundown)</span></label><input id="k11" placeholder="https://…" value="${v('rundownFile')}">
       <label>Folder Drive photoshoot <span style="font-weight:500;color:var(--mut)">(dibuat otomatis; PDF & gambar di sini langsung tampil)</span></label><input id="k6" placeholder="https://drive.google.com/…" value="${v('folder')}">
-      <label>Link sheet ide konten <span style="font-weight:500;color:var(--mut)">(Google Sheet, dibaca otomatis)</span></label><input id="k8" placeholder="https://docs.google.com/spreadsheets/…" value="${v('sheetIde')}">
+      <label>Link sheet ide konten <span style="font-weight:500;color:var(--mut)">(Google Sheet / .xlsx · kosong = file berjudul IDE KONTEN di Folder Drive)</span></label><input id="k8" placeholder="https://docs.google.com/spreadsheets/…" value="${v('sheetIde')}">
+      <label>Link skema pembagian <span style="font-weight:500;color:var(--mut)">(Google Sheet / .xlsx · kosong = file berjudul SKEMA di Folder Drive)</span></label><input id="k12" placeholder="https://docs.google.com/spreadsheets/…" value="${v('skemaLink')}">
+      <label>Jam mulai shooting <span style="font-weight:500;color:var(--mut)">(kosong = ${esc((SH && SH.skema && SH.skema.jamMulai) || '08.00')})</span></label><input id="k13" inputmode="numeric" placeholder="08.00" value="${v('jamMulai')}">
       <label>Gambar moodboard <span style="font-weight:500;color:var(--mut)">(1 baris = judul | link gambar/PDF Drive, Canva, Pinterest)</span></label><textarea id="k9" style="min-height:90px" placeholder="Referensi pose · Solo | https://drive.google.com/…&#10;Lokasi · 543 Backyard | https://…">${esc((P.gambar || []).map(x => (x.judul ? x.judul + ' | ' : '') + x.m.url).join('\n'))}</textarea>
       <label>Tim hari ini <span style="font-weight:500;color:var(--mut)">(1 baris = peran | nama)</span></label><textarea id="k10" style="min-height:90px" placeholder="VG & FG | Bontot&#10;Stylist | Wafiq">${esc((P.peran || []).map(x => (x.r ? x.r + ' | ' : '') + x.n).join('\n'))}</textarea>
       <label>Catatan</label><textarea id="k7" style="min-height:64px">${v('catatan')}</textarea></div>
@@ -1662,7 +1718,7 @@ function kirim(k, arg) {
     const list = [...sh.querySelectorAll('.mswr')].map(x => ({ n: x.querySelector('.wn').value.trim(), hex: x.querySelector('input[type=color]').value, tidak: x.querySelector('input[type=checkbox]').checked })).filter(x => x.n);
     if (!list.length) return react('bingung', 'Minimal 1 warna ya'); tutup(); loading(true, 'Menyimpan warna…');
     return gsr('apiShootWarna', [TOKEN, SH.id, p.nama, list], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); react('selesai', r.pesan); const id = SH.id; SH = null; SHID = id; render(); }); }
-  if (k === 'paket') { if (!SH) return; const d = { moodboard: g('k1'), arah: $('k2').value.trim(), kunci: g('k3'), props: $('k4').value.trim(), callsheet: g('k5'), folder: g('k6'), catatan: $('k7').value.trim(), brief: SH.paket.brief || '', sheetIde: g('k8'), gambar: $('k9').value.trim(), peran: $('k10').value.trim(), rundownFile: g('k11') };
+  if (k === 'paket') { if (!SH) return; const d = { moodboard: g('k1'), arah: $('k2').value.trim(), kunci: g('k3'), props: $('k4').value.trim(), callsheet: g('k5'), folder: g('k6'), catatan: $('k7').value.trim(), brief: SH.paket.brief || '', sheetIde: g('k8'), gambar: $('k9').value.trim(), peran: $('k10').value.trim(), rundownFile: g('k11'), skema: g('k12'), jamMulai: g('k13') };
     tutup(); loading(true, 'Menyimpan paket…'); return gsr('apiShootSimpan', [TOKEN, SH.id, d], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); react('selesai', r.pesan); SH = null; render(); }); }
   if (k === 'produk') { if (!g('pr1')) return react('bingung', 'Isi nama produknya dulu ya'); const p = arg !== undefined && PROD ? PROD[arg] : null;
     const d = { id: p ? p.id : '', nama: g('pr1'), status: (sh.querySelector('#prs .on') || {}).dataset.v || 'Sampel', kategori: g('pr2'), warna: g('pr3'), ukuran: g('pr4'), ps: g('pr5'), launch: g('pr6'), catatan: $('pr7').value.trim(), linkFoto: g('pr8'), foto: FOTO, cover: COVER, coverLink: g('pr9') };
