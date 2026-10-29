@@ -246,8 +246,9 @@ body{font:400 15px/1.5 'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;ba
 .msw{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.msw button{border:0;background:transparent;padding:0;display:flex;flex-direction:column;gap:4px;align-items:center;color:var(--ink);min-width:0}.msw button:disabled{opacity:.75}
 .msw span{width:100%;aspect-ratio:1/1;border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(74,29,51,.12);box-sizing:border-box}.msw span.on{border:3px solid var(--ok)}.msw span i{width:26px;height:26px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.25)}.msw span i svg{width:15px;height:15px}.msw small{font-size:11px;line-height:1.2;text-align:center;overflow-wrap:anywhere}
 .msarah{font-size:14px;color:var(--mut);margin:0;white-space:pre-line}.mskunci{display:flex;flex-wrap:wrap;gap:6px}.mskunci span{padding:4px 10px;border-radius:999px;background:var(--chip);color:#8F1E4B;font-size:12px;font-weight:600}
+.msdok{display:flex;flex-direction:column;gap:10px;margin-top:14px}.msdokh{display:flex;flex-direction:column;gap:1px}.msdokh b{font-weight:600;font-size:16px}.msdokh small{font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.msgb{display:block;width:100%;padding:0;border:0;background:var(--tile);border-radius:16px;overflow:hidden;line-height:0}.msgb img{width:100%;height:auto;display:block}.msfb{display:none;align-items:center;gap:12px;padding:16px;border-radius:16px;background:var(--tile);text-align:left;line-height:1.35}.msfb i{font-style:normal;font-size:30px;flex:none}.msfb span{font-size:14px;font-weight:600;word-break:break-word}.gagal .msgb{display:none}.gagal .msfb{display:flex}.mscs{display:flex;flex-direction:column;gap:6px}.mscs1{display:flex;gap:10px;align-items:baseline;padding:6px 4px;font-size:13px;color:var(--mut);border:0;background:none;text-align:left;width:100%;min-width:0}.mscs1 b{flex:none;color:var(--ink);font-weight:600;min-width:44px}.mscs1 span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mscs1.buka span{white-space:normal}.mscsb{border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--card)}.mscsb small.j{font-size:12px;font-weight:600;color:var(--mut)}.mscsb b{font-size:15px;font-weight:600}.mswc{display:flex;flex-wrap:wrap;gap:5px}.mswc span{padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.02em;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}.mssk{display:flex;flex-direction:column;gap:8px}.mssk1{display:flex;align-items:center;gap:10px;font-size:14px}.mssk1>b{flex:none;min-width:52px;font-weight:600}.mssk2{font-size:13px;color:var(--mut);display:flex;flex-direction:column;gap:4px}.mssk2 small{font-size:12px;font-weight:700}.mslayar{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;flex-direction:column;height:100vh;height:100dvh}.mslayar>div{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px 16px;background:var(--card);border-bottom:1px solid var(--line)}.mslayar>div b{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mslayar>div button{width:44px;height:44px;border-radius:50%;border:0;background:var(--chip);font-size:18px;flex:none}.mslayar iframe{flex:1;width:100%;border:0;background:#fff}
 .msm{display:flex;flex-direction:column;gap:6px;margin-top:14px}.msmt{font-weight:600}.msm img{width:100%;border-radius:16px;display:block;background:var(--tile)}.msm iframe{width:100%;height:70vh;max-height:620px;border:0;border-radius:16px;background:var(--tile)}
-.msbuka{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:999px;border:1.5px solid var(--deep);color:var(--deep);font-weight:600;text-decoration:none;font-size:14px}.msbuka.besar{min-height:48px;margin-top:14px}
+.msbuka{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:999px;border:1.5px solid var(--deep);color:var(--deep);font-weight:600;text-decoration:none;font-size:14px;background:none;font-family:inherit}.msbuka.besar{min-height:48px;margin-top:14px}
 .msprop{display:flex;align-items:center;gap:12px;min-height:48px;border:0;background:transparent;padding:0;text-align:left;color:var(--ink);font-size:15px;width:100%}.msprop b{flex:1;font-weight:500}.msprop small{font-size:13px;color:var(--mut)}
 .mscb{width:30px;height:30px;min-width:30px;border-radius:10px;border:2px solid var(--mid);background:#fff;display:flex;align-items:center;justify-content:center;padding:0;flex:none}.mscb.on,.msi.on .mscb{border:0;background:var(--ok)}.msprop .mscb{border-radius:9px}
 .msrow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}.msrow span{color:var(--mut)}.msrow b{font-weight:600;text-align:right}
@@ -323,6 +324,7 @@ setTimeout(function () { if (!window.__siap) { var v = document.getElementById('
 <div class="toast" id="toast" role="status"><img id="tim" alt=""><span id="tt"></span></div>
 <div id="load"><img src="" id="loadimg" class="a-wiggle" alt=""><span id="loadt">Memuat…</span></div>
 <script>
+window.__UIVERSI = '5.6 · 29 Okt 2026 #8d2355';
 // ===== ThinKerBelle · tampilan GitHub: penghubung ke server Apps Script (dibuat otomatis oleh buat_github.command) =====
 (function () {
   var EXEC = 'https://script.google.com/macros/s/AKfycbxglVQKBvsnks_7C_XnrLXEx0GiIoZFT4xjSTDQ74YPVP_sAA-DaVlJdG_6Tvnx1Gk/exec', LS = 'arabelleStudioToken', CK = 'tkbCfg1';
@@ -376,7 +378,7 @@ setTimeout(function () { if (!window.__siap) { var v = document.getElementById('
 </script>
 <script type="text/plain" id="tkbMain">
 const CFG = window.__CFG || {};
-let TOKEN = CFG.token || ''; const URL_APP = CFG.urlApp || '', URL_PUBLIK = CFG.urlPublik || '', DIBUNGKUS = CFG.dibungkus === '1', VERSI = CFG.versi || '';
+let TOKEN = CFG.token || ''; const URL_APP = CFG.urlApp || '', URL_PUBLIK = CFG.urlPublik || '', DIBUNGKUS = CFG.dibungkus === '1', VERSI = window.__UIVERSI || CFG.versi || '';
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP' + '\u002F\u002F\u002FyH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 let STK_DATA = {}; try { STK_DATA = JSON.parse(localStorage.getItem('arabelleStiker1') || '{}') || {}; } catch (e) {}
 const STK = new Proxy({}, { get: (o, k) => STK_DATA[k] || BLANK });
@@ -542,8 +544,14 @@ function gagalMuat(pesan) { laporError(pesan, 'gagal muat');
     <button class="big" onclick="location.reload()">Coba lagi</button><button class="big alt" onclick="keluar()">Masuk ulang</button></div></div>`;
 }
 window.addEventListener('error', ev => { const m = (ev.message || 'Error') + (ev.lineno ? ' (baris ' + ev.lineno + ')' : ''); laporError(m); if (!D || !$('view').innerHTML.trim()) gagalMuat(m); else react('gagal', '⚠️ ' + m); });
-function cekVersi() { if (!TOKEN || cekVersi.jalan) return; cekVersi.jalan = true; google.script.run.withSuccessHandler(v => { cekVersi.jalan = false; if (v && v.versi && v.versi !== VERSI) tampilUpdate(v); }).withFailureHandler(() => { cekVersi.jalan = false; }).apiVersi(); }
-function tampilUpdate(v) {
+// Banner hanya kalau ISI tampilan beda (sidik setelah '#'). Kalau sudah dicoba update dari versi ini ke versi itu tapi tampilan
+// masih sama (index.html di GitHub belum di-upload), banner tidak muncul lagi → tidak berulang.
+const sidikVersi = v => String(v || '').split('#').pop().trim();
+const UPD_COBA = 'tkbUpdCoba1';
+function cekVersi() { if (!TOKEN || cekVersi.jalan) return; cekVersi.jalan = true; google.script.run.withSuccessHandler(v => { cekVersi.jalan = false;
+  if (!v || !v.versi || sidikVersi(v.versi) === sidikVersi(VERSI)) return; let coba = ''; try { coba = localStorage.getItem(UPD_COBA) || ''; } catch (e) {}
+  if (coba === v.versi + '|' + VERSI) return; tampilUpdate(v); }).withFailureHandler(() => { cekVersi.jalan = false; }).apiVersi(); }
+function tampilUpdate(v) { tampilUpdate.v = v;
   $('updimg').src = STK.s03; $('updt').textContent = 'v' + v.versi + (v.catatan && v.catatan.length ? ' · ' + v.catatan[0] : ''); $('upd').classList.add('show');
   clearTimeout(tampilUpdate.t);
   const sibuk = () => $('sheet').classList.contains('show') || /INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '');
@@ -552,7 +560,8 @@ function tampilUpdate(v) {
 }
 function pasangUpdate() {
   $('updt').textContent = 'Memperbarui…';
-  try { localStorage.setItem('arabelleUpdateDari', VERSI || '-'); } catch (e) {}
+  try { localStorage.setItem('arabelleUpdateDari', VERSI || '-'); if (tampilUpdate.v) localStorage.setItem(UPD_COBA, tampilUpdate.v.versi + '|' + VERSI); } catch (e) {}
+  $('upd').classList.remove('show');
   const url = (URL_PUBLIK ? URL_PUBLIK + '/?t=' + TOKEN : URL_APP + '?app=1&t=' + TOKEN) + '&u=' + Date.now();
   kabariInduk({ arabelleReload: true }); setTimeout(() => window.open(url, '_top'), 300);
 }
@@ -564,6 +573,7 @@ function cekSetelahUpdate() {
   const pasangUlang = false;   // ajakan pasang ulang ikon dimatikan (mengganggu); ikon cukup dari GitHub
   if (!dari && !pasangUlang) return;
   try { localStorage.removeItem('arabelleUpdateDari'); } catch (e) {}
+  if (dari && sidikVersi(dari) === sidikVersi(VERSI)) return;   // tampilan belum berganti (mis. index.html GitHub belum di-upload): jangan bilang berhasil
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const langkah = (ios ? ['Tekan lama ikon ThinKerBelle di layar utama → <strong>Hapus App</strong> → <strong>Hapus dari Layar Utama</strong>.', 'Ketuk <strong>Salin link app</strong> di bawah, lalu buka link itu di <strong>Safari</strong>.', 'Ketuk tombol <strong>Bagikan</strong> (kotak dengan panah ke atas) → <strong>Tambahkan ke Layar Utama</strong> → <strong>Tambah</strong>.']
     : ['Tekan lama ikon ThinKerBelle di layar utama → <b>Hapus</b> / <b>Copot</b>.', 'Ketuk <b>Salin link app</b> di bawah, lalu buka link itu di <b>Chrome</b>.', 'Ketuk <b>⋮</b> di kanan atas → <b>Tambahkan ke layar utama</b> (atau <b>Instal aplikasi</b>).']).map(x => x.replace(/<b>/g, '<strong>').replace(/<\/b>/g, '</strong>'));
@@ -1072,6 +1082,81 @@ function mediaShoot(m, judul) {
   if (m.src) return `<div class="msm">${t}<a href="${esc(m.url)}" target="_blank" rel="noopener"><img src="${esc(m.src)}" alt="${esc(judul || 'Pratinjau ' + m.situs)}" loading="lazy" referrerpolicy="no-referrer"></a>${buka('Buka di ' + esc(m.situs))}</div>`;
   return `<div class="msm">${t}${buka('Buka ' + esc(m.situs || 'link'))}</div>`;
 }
+// ---------- tab Mood: kartu dokumen (gambar sampul + layar penuh), call sheet & skema dari data. Tanpa iframe di halaman ----------
+// jenis file di folder photoshoot: sumber skema / ide (dari server) dulu, lalu nama file
+function jenisFileShoot(f, sk) {
+  const id = f.m.id, n = f.judul || '';
+  if (id && id === sk.skemaId) return 'skema'; if (id && id === sk.ideId) return 'ide';
+  if (/skema/i.test(n)) return 'skema'; if (/ide\s*konten/i.test(n)) return 'ide'; if (/call\s*sheet|rundown/i.test(n)) return 'rundown';
+  return /spreadsheets|document/.test(f.m.embed || '') ? 'dok' : 'mood';   // PDF / Slides di folder = moodboard (seperti sebelumnya)
+}
+const judulDok = (jenis, nama) => `<div class="msdokh"><b>${esc(jenis)}</b>${nama ? `<small>${esc(nama)}</small>` : ''}</div>`;
+const tblLayar = (u, j, l) => `<button class="msbuka" data-u="${esc(u)}" data-j="${esc(j)}" onclick="bukaLayar(this.dataset.u,this.dataset.j)">${l}</button>`;
+// Moodboard / PDF / Slides: sampul selebar kartu (thumbnail Drive). Gagal dimuat → kartu ikon + nama file. Isi lengkap dibuka di layar penuh.
+function kartuDok(m, jenis, nama) {
+  if (!m) return ''; const ikon = jenis === 'Moodboard' ? '🎨' : jenis === 'Call sheet' || jenis === 'File rundown' ? '🗓️' : '📄', lj = jenis.toLowerCase();
+  const sampul = m.id ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(m.id) + '&sz=w1000' : m.src || '';
+  const lyr = m.embed ? tblLayar(m.embed, jenis + (nama ? ' · ' + nama : ''), 'Buka ' + lj) : `<a class="msbuka" href="${esc(m.url)}" target="_blank" rel="noopener">Buka ${esc(lj)}${m.situs ? ' (' + esc(m.situs) + ')' : ''}</a>`;
+  const fb = `<div class="msfb"><i>${ikon}</i><span>${esc(nama || jenis)}</span></div>`;
+  const gb = sampul ? (m.embed ? `<button class="msgb" data-u="${esc(m.embed)}" data-j="${esc(jenis)}" onclick="bukaLayar(this.dataset.u,this.dataset.j)" aria-label="Buka ${esc(lj)}">` : `<a class="msgb" href="${esc(m.url)}" target="_blank" rel="noopener">`)
+    + `<img src="${esc(sampul)}" alt="${esc(jenis + (nama ? ' ' + nama : ''))}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.msdok').classList.add('gagal')">${m.embed ? '</button>' : '</a>'}` : '';
+  return `<div class="card msg msdok ${sampul ? '' : 'gagal'}">${judulDok(jenis, nama)}${gb}${fb}${lyr}</div>`;
+}
+// lapisan layar penuh (iframe hanya di sini). Tombol ✕ atau tombol back HP menutupnya.
+function bukaLayar(u, j) {
+  tutupLayar(true); const d = document.createElement('div'); d.className = 'mslayar'; d.id = 'mslayar'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', j || 'Dokumen');
+  d.innerHTML = `<div><b>${esc(j || '')}</b><button onclick="tutupLayar()" aria-label="Tutup">✕</button></div><iframe src="${esc(u)}" title="${esc(j || 'Dokumen')}" allow="autoplay" allowfullscreen></iframe>`;
+  document.body.appendChild(d); document.body.style.overflow = 'hidden';
+  try { history.pushState({ mslayar: 1 }, ''); bukaLayar.riwayat = true; } catch (e) { bukaLayar.riwayat = false; }
+}
+function tutupLayar(diam) {
+  const d = $('mslayar'); if (!d) return; d.remove(); document.body.style.overflow = '';
+  if (!diam && bukaLayar.riwayat) { bukaLayar.riwayat = false; try { history.back(); } catch (e) {} }
+}
+window.addEventListener('popstate', () => { if ($('mslayar')) { bukaLayar.riwayat = false; tutupLayar(true); } });
+// warna asli: kode #hex dari tab PRODUK (warna produk di shoot ini) → kamus warna → netral
+function warnaAsli(S, w) {
+  const n = String(w || '').toLowerCase().trim(); let hex = '';
+  (S.produk || []).some(p => (p.warna || []).some(x => { if (namaWarna(x).toLowerCase() === n && /#[0-9a-f]{3,6}\b/i.test(x)) { hex = hexWarna(x); return true; } return false; }));
+  return hex || hexWarna(w);
+}
+function tintaWarna(hex) { const m = String(hex).replace('#', ''), f = m.length === 3 ? m.split('').map(c => c + c).join('') : m;
+  const [r, g, b] = [0, 2, 4].map(i => parseInt(f.slice(i, i + 2), 16) / 255); return 0.299 * r + 0.587 * g + 0.114 * b > 0.62 ? '#3A2A30' : '#fff'; }
+const chipWarna = (S, ws) => `<div class="mswc">${ws.map(w => { const c = warnaAsli(S, w); return `<span style="background:${c};color:${tintaWarna(c)}">${esc(String(w).toUpperCase())}</span>`; }).join('')}</div>`;
+const pendekSeri = x => String(x || '').replace(/\s*\(.*?\)\s*/g, ' ').replace(/\bseries\b/i, '').trim() || String(x || '');
+// Call sheet: dibaca dari sheet (rundownSumber callsheet) → linimasa ringkas per seri. Kolom Photoshoot tidak ditampilkan.
+let SHCS = '';
+function kartuCallSheet(S) {
+  const P = S.paket, rows = S.rundownSumber === 'callsheet' ? S.rundown : [], asli = P.callsheet || (P.callM && P.callM.url) || '';
+  if (!rows.length) return P.callM ? (/spreadsheets/.test(P.callM.embed || '') ? `<div class="card msg msdok">${judulDok('Call sheet', P.callM.nama)}<small class="msd">Isi call sheet belum terbaca app (judul kolom Jam & Blok/Kegiatan).</small><a class="msbuka" href="${esc(asli)}" target="_blank" rel="noopener">Buka call sheet asli</a></div>` : kartuDok(P.callM, 'Call sheet', P.callM.nama)) : '';
+  const seri = [...new Set(rows.filter(r => r.blok && r.seri).map(r => r.seri))]; if (!seri.includes(SHCS)) SHCS = '';
+  let tampil = rows;
+  if (SHCS) { const ix = rows.map((r, i) => r.blok && r.seri === SHCS ? i : -1).filter(i => i >= 0); let a = ix[0]; while (a > 0 && !rows[a - 1].blok) a--;   // ikut kegiatan persiapan sebelum blok pertama seri ini
+    tampil = rows.slice(a, ix[ix.length - 1] + 1).filter(r => !r.blok || r.seri === SHCS); }
+  const pil = seri.length > 1 ? `<div class="msurut" data-gulir="cs">${[['', 'Semua']].concat(seri.map(x => [x, pendekSeri(x)])).map(o => `<button class="${SHCS === o[0] ? 'on' : ''}" data-s="${esc(o[0])}" onclick="SHCS=this.dataset.s;render()">${esc(o[1])}</button>`).join('')}</div>` : '';
+  const baris = tampil.map(r => {
+    if (!r.blok) { const t = r.catatan || r.setup || r.seri || ''; return `<button class="mscs1" onclick="this.classList.toggle('buka')"><b>${esc(r.jam)}</b><span>${esc(t)}</span></button>`; }
+    const ws = pisahNama(r.warna);
+    return `<div class="mscsb"><small class="j">${esc([r.jam, SHCS ? '' : pendekSeri(r.seri)].filter(Boolean).join(' · '))}</small><b>${esc(r.blok)}</b>${ws.length ? chipWarna(S, ws) : ''}${r.talent ? `<small class="msd">👥 ${esc(talentWarna(r.talent, r.warna))}</small>` : ''}</div>`;
+  }).join('');
+  return `<div class="card msg msdok">${judulDok('Call sheet', P.callM && P.callM.nama)}${pil}<div class="mscs">${baris}</div>${asli ? `<a class="msbuka" href="${esc(asli)}" target="_blank" rel="noopener">Buka call sheet asli</a>` : ''}</div>`;
+}
+// Skema pembagian: kartu per seri (talent → warna, Seri Scarf (2)). File aslinya di layar penuh.
+let SHSK = '';
+function kartuSkema(S, f) {
+  const sk = S.skema || {}, seri = sk.seri || []; if (!seri.length) return '';
+  if (!seri.some(s => s.seri === SHSK)) SHSK = seri[0].seri;
+  const s = seri.find(x => x.seri === SHSK), nama = sk.skemaNama || (f && f.judul) || '', lyr = sk.skemaEmbed || (f && f.m.embed) || '';
+  const pil = seri.length > 1 ? `<div class="msurut" data-gulir="sk">${seri.map(x => `<button class="${x.seri === SHSK ? 'on' : ''}" data-s="${esc(x.seri)}" onclick="SHSK=this.dataset.s;render()">${esc(pendekSeri(x.seri))}</button>`).join('')}</div>` : '';
+  const isi = `<div class="mssk"><small class="msd">${esc([s.seri, s.produk && s.produk !== s.seri ? s.produk : ''].filter(Boolean).join(' · '))}${(s.warna || []).length ? ' · ' + s.warna.length + ' warna' : ''}</small>
+    ${(s.talent || []).map(t => `<div class="mssk1"><b>${esc(t.nama)}</b>${t.warna.length ? chipWarna(S, t.warna) : '<small class="msd">—</small>'}</div>`).join('')}
+    ${(s.pasangan || []).length ? `<div class="mssk2"><small>SERI SCARF (2)</small>${s.pasangan.map(q => `<span>${esc(q.map(x => x.talent + ' (' + x.warna + ')').join(' + '))}</span>`).join('')}</div>` : ''}</div>`;
+  const tbl = lyr ? tblLayar(lyr, 'Skema pembagian' + (nama ? ' · ' + nama : ''), 'Lihat skema asli') : sk.skemaUrl ? `<a class="msbuka" href="${esc(sk.skemaUrl)}" target="_blank" rel="noopener">Lihat skema asli</a>` : '';
+  return `<div class="card msg msdok">${judulDok('Skema pembagian', nama)}${pil}${isi}${tbl}</div>`;
+}
+function kartuIde(nama, url) {
+  return `<div class="card msg msdok">${judulDok('Ide konten', nama)}<small class="msd">Semua ide dari file ini sudah tampil di tab Ide.</small><button class="msbuka" onclick="SHT='ide';render();scrollTo(0,0)">Lihat di tab Ide</button>${url ? `<a class="msbuka" href="${esc(url)}" target="_blank" rel="noopener">Buka file asli</a>` : ''}</div>`;
+}
 function vShoot() {
   const kmb = ['home', 'pslist'].includes(SH_DARI) ? SH_DARI : 'agenda';
   if (!SH) { const c = SHID && bacaLokal('tkbShoot1_' + SHID); muatShoot(); if (c && !LIHAT) { SH = c; terapkanAntre(); } else return `<button class="back" onclick="go('${kmb}')">‹ Kembali</button>` + judul('🎬 Mode Shooting', 'Memuat…') + kosong('s11', 'Menyiapkan Mode Shooting…'); }
@@ -1110,16 +1195,24 @@ function vShoot() {
         ${S.boleh && !S.arsip ? `<button class="lk" onclick="bukaForm('warna',${pi})">✏️ Atur warna · tandai tidak difoto</button>` : ''}</div>`; }).join('');
   }
   if (SHT === 'mood') {
-    const P = S.paket, bukanProps = g => !/props?\b/i.test(g.judul || '');
+    const P = S.paket, bukanProps = g => !/props?\b/i.test(g.judul || ''), sk = S.skema || {};
     h += `<div class="card msg"><b class="msgt">Arah visual</b>${P.arah ? `<p class="msarah">${esc(P.arah)}</p>` : '<small class="msd">Belum diisi.</small>'}${P.kunci.length ? `<div class="mskunci">${P.kunci.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</div>`;
-    h += (P.gambar || []).filter(bukanProps).map(g => mediaShoot(g.m, g.judul)).join('');
+    h += (P.gambar || []).filter(bukanProps).map(g => g.m.jenis === 'gambar' ? mediaShoot(g.m, g.judul) : kartuDok(g.m, 'Moodboard', g.judul)).join('');
     h += (P.folderFile || []).filter(f => f.m.jenis === 'gambar' && bukanProps(f)).map(f => mediaShoot(f.m, f.judul)).join('');
-    if (P.mood) h += P.mood.embed ? mediaShoot(P.mood, 'Moodboard lengkap') : (P.mood.jenis === 'gambar' || P.mood.src ? mediaShoot(P.mood, 'Moodboard') : '') + `<a class="msbuka besar" href="${esc(P.mood.url)}" target="_blank" rel="noopener">Buka moodboard lengkap${P.mood.situs ? ' (' + esc(P.mood.situs) + ')' : ''}</a>`;
-    else if (!(P.gambar || []).length) h += kosong('s21', S.boleh ? 'Belum ada moodboard. Upload di bawah atau tempel link di paket.' : 'Moodboard belum diisi leader.');
+    // file non-gambar di folder: dikelompokkan menurut jenisnya (judul kartu = jenis, nama file = subjudul)
+    const lain = (P.folderFile || []).filter(f => f.m.jenis !== 'gambar' && bukanProps(f)).map(f => Object.assign({ jenis: jenisFileShoot(f, sk) }, f));
+    const moodF = lain.filter(f => f.jenis === 'mood');
+    if (P.mood) h += P.mood.jenis === 'gambar' ? mediaShoot(P.mood, 'Moodboard') : kartuDok(P.mood, 'Moodboard', P.mood.nama);
+    h += moodF.map(f => kartuDok(f.m, 'Moodboard', f.judul)).join('');
+    if (!P.mood && !moodF.length && !(P.gambar || []).length) h += kosong('s21', S.boleh ? 'Belum ada moodboard. Upload di bawah atau tempel link di paket.' : 'Moodboard belum diisi leader.');
     if (P.brief || (S.boleh && !S.arsip)) h += `<div class="card msg"><div class="msgh"><b>Brief leader</b>${S.boleh && !S.arsip ? `<button class="lk" onclick="bukaForm('brief')">✏️ ${P.brief ? 'Ubah' : 'Tulis'}</button>` : ''}</div>
       ${P.brief ? `<p class="msarah">${esc(P.brief)}</p>` : '<small class="msd">Belum ada brief.</small>'}${P.brief && S.boleh && !S.arsip ? `<button class="msbuka" onclick="kirimBrief()">Kirim brief ke grup WA & HP tim</button>` : ''}</div>`;
-    const lain = (P.folderFile || []).filter(f => f.m.jenis !== 'gambar' && bukanProps(f));
-    if (P.callM || P.rundownM || lain.length) h += `<div class="msgg"><i style="background:var(--deep)"></i><b>File lain</b></div>` + (P.callM ? mediaShoot(P.callM, 'Call sheet') : '') + (P.rundownM ? mediaShoot(P.rundownM, 'File rundown') : '') + lain.map(f => mediaShoot(f.m, f.judul)).join('');
+    const adaSk = (sk.seri || []).length, ideF = lain.find(f => f.jenis === 'ide');
+    let fl = kartuCallSheet(S) + (P.rundownM ? kartuDok(P.rundownM, 'File rundown', P.rundownM.nama) : '') + kartuSkema(S, lain.find(f => f.jenis === 'skema'));
+    if (sk.ideNama || ideF) fl += kartuIde(sk.ideNama || (ideF && ideF.judul), sk.ideUrl || (ideF && ideF.m.url));
+    fl += lain.filter(f => f.jenis === 'rundown').map(f => kartuDok(f.m, 'File rundown', f.judul)).join('')
+      + lain.filter(f => f.jenis === 'dok' || (f.jenis === 'skema' && !adaSk)).map(f => kartuDok(f.m, f.jenis === 'skema' ? 'Skema pembagian' : 'Dokumen', f.judul)).join('');
+    if (fl) h += `<div class="msgg"><i style="background:var(--deep)"></i><b>File lain</b></div>` + fl;
     if (P.folderErr) h += `<p class="mstip">⚠️ ${esc(P.folderErr)}</p>`;
     if (!S.arsip && S.boleh) h += `<div class="msup"><button onclick="pilihUpload('moodboard')">📎 Moodboard</button><button onclick="pilihUpload('pose')">📎 Referensi pose</button><button onclick="pilihUpload('callsheet')">📎 Call sheet</button><button onclick="pilihUpload('rundown')">📎 File rundown</button></div>
       <p class="mstip">Maks 20 MB per file; file besar simpan di folder Drive photoshoot.</p>${P.folder ? `<a class="msbuka" href="${esc(P.folder)}" target="_blank" rel="noopener">Buka folder Drive photoshoot</a>` : ''}<button class="big alt" onclick="bukaForm('paket')">✏️ Ubah moodboard & link</button>`;
