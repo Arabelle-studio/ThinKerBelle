@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="1">
-<script>window.__UIVERSI = 1;</script>
+<meta name="tkb-tampilan" content="2">
+<script>window.__UIVERSI = 2;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -165,11 +165,11 @@ button{font:inherit;color:inherit;cursor:pointer}a{color:var(--acct)}
 .back{align-self:flex-start;border:0;background:var(--chip);color:var(--acct);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;margin-bottom:6px}
 pre{white-space:pre-wrap;font:13.5px 'Outfit',sans-serif;margin:0}
 .upd{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translate(-50%,-170%);width:min(92vw,410px);background:#B9466F;color:#fff;border-radius:24px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(61,26,43,.35);transition:transform .45s cubic-bezier(.3,1.5,.5,1);z-index:20}
-.upd.show{transform:translate(-50%,0)}.upd img{width:46px}.upd p{margin:0;flex:1;font-size:13px;min-width:0}.upd b{display:block;font-size:14.5px}
+.upd.show{transform:translate(-50%,0)}#upd{z-index:400}.upd img{width:46px}.upd p{margin:0;flex:1;font-size:13px;min-width:0}.upd b{display:block;font-size:14.5px}
 .upd button{border:0;border-radius:999px;padding:9px 14px;font-weight:600;font-size:13.5px;background:#FCE4EC;color:#B9466F}
-.updw{position:fixed;inset:0;z-index:40;background:rgba(61,26,43,.55);display:none;align-items:center;justify-content:center;padding:20px}.updw.show{display:flex}
+.updw{position:fixed;inset:0;z-index:410;background:rgba(61,26,43,.55);display:none;align-items:center;justify-content:center;padding:20px}.updw.show{display:flex}
 .updw>div{background:var(--card);border-radius:28px;padding:26px 22px 22px;width:min(380px,100%);text-align:center;box-shadow:0 20px 50px rgba(61,26,43,.35)}
-.updw img{width:120px}.updw h2{margin:6px 0 6px;font-size:21px}.updw p{margin:0 0 16px;color:var(--mut);font-size:14.5px;line-height:1.5}
+.updw img{width:120px}.updw ul{text-align:left;margin:0 0 14px;padding-left:20px;color:var(--ink);font-size:14px;line-height:1.5}.updw h2{margin:6px 0 6px;font-size:21px}.updw p{margin:0 0 16px;color:var(--mut);font-size:14.5px;line-height:1.5}
 .toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;background:#B9466F;color:#fff;border-radius:18px;padding:10px 14px 10px 10px;display:flex;align-items:center;gap:10px;width:min(90vw,380px);transition:.3s;z-index:21;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}.toast img{width:52px;will-change:transform}
 #load{position:fixed;inset:0;background:var(--fade);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:30;color:var(--acct);font-weight:600;gap:6px}#load img{width:110px}
@@ -335,7 +335,7 @@ setTimeout(function () { if (!window.__siap) { var v = document.getElementById('
 <nav class="nav" id="nav"></nav>
 <div class="dim" id="dim"></div><div class="sheet" id="sheet"></div>
 <div class="upd" id="upd" role="status"><img id="updimg" alt=""><p><b id="updj">Pembaruan siap</b><span id="updt"></span></p><button id="updbtn">Lihat caranya</button></div>
-<div class="updw" id="updw" role="dialog" aria-modal="true" aria-labelledby="updwj"><div><img id="updwimg" alt=""><h2 id="updwj">Ada pembaruan ThinKerBelle</h2><p id="updwt">Semua data sudah terkirim. Ketuk tombol di bawah untuk memakai versi terbaru.</p><button class="big" id="updwbtn">Perbarui sekarang</button></div></div>
+<div class="updw" id="updw" role="dialog" aria-modal="true" aria-labelledby="updwj"><div><img id="updwimg" alt=""><h2 id="updwj">Ada pembaruan ThinKerBelle</h2><p id="updwt">Semua data sudah terkirim. Ketuk tombol di bawah untuk memakai versi terbaru.</p><ul id="updwl"></ul><button class="big" id="updwbtn">Perbarui sekarang</button></div></div>
 <div class="upd" id="notifbar" role="status"><img id="notifimg" alt=""><p><b id="notift1">Nyalakan notifikasi 🔔</b><span id="notift2">Diingatkan perintah baru, balasan, &amp; 1 jam sebelum posting/agenda.</span></p><button id="notifbtn" onclick="notifNyalakan()">Nyalakan</button><button onclick="notifNanti()" aria-label="Nanti saja" style="background:transparent;color:#fff;padding:9px 6px">✕</button></div>
 <div class="toast" id="toast" role="status"><img id="tim" alt=""><span id="tt"></span></div>
 <div id="load"><img src="" id="loadimg" class="a-wiggle" alt=""><span id="loadt">Memuat…</span></div>
@@ -587,12 +587,18 @@ function cekVersi() { if (!TOKEN || cekVersi.jalan || LIHAT) return; cekVersi.ja
     if (!N || (!UI_N && UJI_N === null) || v.popup === false) return;   // saklar POPUP_UPDATE_AKTIF = Tidak → tidak pernah muncul
     if (N <= UI_N) { if (lsAmbil(UPD_GAGAL)) { lsTaruh(UPD_GAGAL, null); google.script.run.withFailureHandler(() => {}).apiCatatUpdate(TOKEN, UI_N, UI_N, true); } return; }
     if (Number(lsAmbil(UPD_GAGAL)) >= N) return tampilManual(N);   // sudah pernah dicoba untuk nomor ini: jangan pop-up lagi
-    buktikan(N, 0, v);
+    if (LIHAT_N.n !== N) LIHAT_N = { n: N, t: Date.now(), ke: 0, jalan: false, tunggu: false, siap: false };   // dicatat sekali per nomor, tidak direset tiap cekVersi
+    buktikan(N, v);
   }).withFailureHandler(() => { cekVersi.jalan = false; }).apiVersi(); }
-function buktikan(N, ke, v) { clearTimeout(buktikan.t);
-  nomorDiGitHub().then(g => {
-    if (g === null || g < N) { if (ke < 7) buktikan.t = setTimeout(() => buktikan(N, ke + 1, v), 120000); return; }   // GitHub belum siap: coba tiap 2 menit, ±15 menit
-    tungguAman(N, v);
+// Bukti index.html baru: langsung, lalu jeda 2, 4, 8 menit (±15 menit sejak angka server pertama terlihat). Setelah itu berhenti
+// sampai app dibuka lagi (LIHAT_N hanya hidup selama halaman ini terbuka).
+let LIHAT_N = { n: 0, t: 0, ke: 0, jalan: false };
+const JEDA_BUKTI = [2, 4, 8];
+function buktikan(N, v) { const L = LIHAT_N; if (L.n !== N || L.jalan || L.tunggu || L.siap || L.ke > JEDA_BUKTI.length) return;   // cekVersi tiap 5 menit tidak menyela jeda
+  L.jalan = true;
+  nomorDiGitHub().then(g => { L.jalan = false;
+    if (g !== null && g >= N) { L.siap = true; return tungguAman(N, v); }
+    const m = JEDA_BUKTI[L.ke++]; if (m && Date.now() - L.t < 16 * 60000) { L.tunggu = true; setTimeout(() => { L.tunggu = false; buktikan(N, v); }, m * 60000); } else L.ke = JEDA_BUKTI.length + 1;
   });
 }
 function aman() { return !KOTOR && !(ANTRE && ANTRE.length) && $('load').style.display !== 'flex'; }
@@ -603,12 +609,14 @@ function tungguAman(N, v) { clearTimeout(tungguAman.t);
 }
 function popUpdate(N, v) { const w = $('updw'); if (w.classList.contains('show')) return;
   $('updwimg').src = STK.s03; $('updwj').textContent = 'Ada pembaruan ThinKerBelle';
-  $('updwt').textContent = (v && v.baru && v.baru.length ? 'Yang baru: ' + v.baru[0] + '. ' : '') + 'Semua data sudah terkirim. Ketuk tombol di bawah untuk memakai versi terbaru.';
+  const baru = (v && v.baru || []).slice(0, 6);
+  $('updwt').textContent = 'Semua data sudah terkirim. Ketuk tombol di bawah untuk memakai versi terbaru.' + (baru.length ? ' Yang baru di versi ini:' : '');
+  $('updwl').innerHTML = baru.map(x => '<li>' + esc(x) + '</li>').join(''); $('updwl').style.display = baru.length ? '' : 'none';
   $('updwbtn').textContent = 'Perbarui sekarang'; $('updwbtn').onclick = () => perbarui(N); w.classList.add('show');
 }
 function perbarui(N) { const b = $('updwbtn'); b.disabled = true; b.textContent = 'Memeriksa koneksi…';
   nomorDiGitHub().then(g => { b.disabled = false;
-    if (g === null) { $('updwt').textContent = 'Tidak ada koneksi. Sambungkan internet, lalu coba lagi.'; b.textContent = 'Coba lagi'; return; }
+    if (g === null) { $('updwt').textContent = 'Tidak ada koneksi. Sambungkan internet, lalu coba lagi.'; $('updwl').style.display = 'none'; b.textContent = 'Coba lagi'; return; }
     lsTaruh(UPD_KE, String(N)); lsTaruh('arabelleUpdateDari', String(UI_N)); b.textContent = 'Memperbarui…';
     const url = urlBaru(); if (DIBUNGKUS) { kabariInduk({ arabelleReload: true }); setTimeout(() => window.open(url, '_top'), 300); } else location.replace(url);
   });
