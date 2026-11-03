@@ -1540,7 +1540,21 @@ async function notifUlang(f) {
   const jeda = [3000, 10000];
   for (let i = 0; ; i++) { try { return await f(); } catch (e) { if (/already/i.test(String((e && e.message) || e))) return; if (!notifJaringan(e) || i >= jeda.length) throw e; await new Promise(t => setTimeout(t, jeda[i])); } }
 }
-function notifLapor(e) { if (!notifJaringan(e)) laporError('Notif: ' + ((e && e.message) || e), 'notifikasi'); }
+// Gagal karena perangkat → dicatat ringan (info, tidak masuk LOG ERROR). File worker 404 / sebab lain tetap error.
+// "script evaluation failed" = file worker termuat, tapi importScripts ke CDN OneSignal gagal di HP itu (jaringan/pemblokir).
+const UA_DALAM_APP = /FBAN|FBAV|FB_IAB|Instagram|Line\/|WhatsApp|TikTok|musical_ly|Twitter|; wv\)/i;
+function notifSebabHP(m) {
+  if (/\b404\b|bad HTTP response|not found/i.test(m)) return '';
+  if (UA_DALAM_APP.test(navigator.userAgent)) return 'browser di dalam aplikasi lain';
+  if (isIOS() && !modeApp()) return 'iPhone belum dibuka dari Layar Utama';
+  if (window.Notification && Notification.permission === 'denied') return 'izin notifikasi diblokir';
+  if (/denied permission|SecurityError|insecure|IndexedDB|storage|private|incognito/i.test(m)) return 'mode privat / penyimpanan diblokir';
+  if (/permission|blocked|not allowed/i.test(m)) return 'izin notifikasi diblokir';
+  if (/script evaluation failed/i.test(m)) return 'layanan OneSignal tidak termuat di HP ini (jaringan/pemblokir)';
+  return '';
+}
+function notifLapor(e) { if (notifJaringan(e)) return; const m = String((e && e.message) || e), s = notifSebabHP(m);
+  laporError('Notif: ' + (s ? '[' + s + '] ' : '') + m, s ? 'notifikasi (info)' : 'notifikasi'); }
 function notifSiapkan() {
   if (notifSiapkan.jalan || !TOKEN) return; notifSiapkan.jalan = true;
   if (!diGitHub()) return notifSet('na', 'Notifikasi HP hanya jalan kalau ThinKerBelle dibuka lewat link GitHub (link dari #APP).');
