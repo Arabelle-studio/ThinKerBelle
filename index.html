@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
+<meta name="tkb-tampilan" content="1">
+<script>window.__UIVERSI = 1;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -165,6 +167,9 @@ pre{white-space:pre-wrap;font:13.5px 'Outfit',sans-serif;margin:0}
 .upd{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translate(-50%,-170%);width:min(92vw,410px);background:#B9466F;color:#fff;border-radius:24px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(61,26,43,.35);transition:transform .45s cubic-bezier(.3,1.5,.5,1);z-index:20}
 .upd.show{transform:translate(-50%,0)}.upd img{width:46px}.upd p{margin:0;flex:1;font-size:13px;min-width:0}.upd b{display:block;font-size:14.5px}
 .upd button{border:0;border-radius:999px;padding:9px 14px;font-weight:600;font-size:13.5px;background:#FCE4EC;color:#B9466F}
+.updw{position:fixed;inset:0;z-index:40;background:rgba(61,26,43,.55);display:none;align-items:center;justify-content:center;padding:20px}.updw.show{display:flex}
+.updw>div{background:var(--card);border-radius:28px;padding:26px 22px 22px;width:min(380px,100%);text-align:center;box-shadow:0 20px 50px rgba(61,26,43,.35)}
+.updw img{width:120px}.updw h2{margin:6px 0 6px;font-size:21px}.updw p{margin:0 0 16px;color:var(--mut);font-size:14.5px;line-height:1.5}
 .toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;background:#B9466F;color:#fff;border-radius:18px;padding:10px 14px 10px 10px;display:flex;align-items:center;gap:10px;width:min(90vw,380px);transition:.3s;z-index:21;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}.toast img{width:52px;will-change:transform}
 #load{position:fixed;inset:0;background:var(--fade);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:30;color:var(--acct);font-weight:600;gap:6px}#load img{width:110px}
@@ -329,7 +334,8 @@ setTimeout(function () { if (!window.__siap) { var v = document.getElementById('
 </script>
 <nav class="nav" id="nav"></nav>
 <div class="dim" id="dim"></div><div class="sheet" id="sheet"></div>
-<div class="upd" id="upd" role="status"><img id="updimg" alt=""><p><b>Ada update baru ✨</b><span id="updt"></span></p><button id="updbtn">Update sekarang</button></div>
+<div class="upd" id="upd" role="status"><img id="updimg" alt=""><p><b id="updj">Pembaruan siap</b><span id="updt"></span></p><button id="updbtn">Lihat caranya</button></div>
+<div class="updw" id="updw" role="dialog" aria-modal="true" aria-labelledby="updwj"><div><img id="updwimg" alt=""><h2 id="updwj">Ada pembaruan ThinKerBelle</h2><p id="updwt">Semua data sudah terkirim. Ketuk tombol di bawah untuk memakai versi terbaru.</p><button class="big" id="updwbtn">Perbarui sekarang</button></div></div>
 <div class="upd" id="notifbar" role="status"><img id="notifimg" alt=""><p><b id="notift1">Nyalakan notifikasi 🔔</b><span id="notift2">Diingatkan perintah baru, balasan, &amp; 1 jam sebelum posting/agenda.</span></p><button id="notifbtn" onclick="notifNyalakan()">Nyalakan</button><button onclick="notifNanti()" aria-label="Nanti saja" style="background:transparent;color:#fff;padding:9px 6px">✕</button></div>
 <div class="toast" id="toast" role="status"><img id="tim" alt=""><span id="tt"></span></div>
 <div id="load"><img src="" id="loadimg" class="a-wiggle" alt=""><span id="loadt">Memuat…</span></div>
@@ -387,7 +393,14 @@ setTimeout(function () { if (!window.__siap) { var v = document.getElementById('
 </script>
 <script type="text/plain" id="tkbMain">
 const CFG = window.__CFG || {};
-let TOKEN = CFG.token || ''; const URL_APP = CFG.urlApp || '', URL_PUBLIK = CFG.urlPublik || '', DIBUNGKUS = CFG.dibungkus === '1', VERSI = window.__UIVERSI || CFG.versi || '';
+let TOKEN = CFG.token || ''; const URL_APP = CFG.urlApp || '', URL_PUBLIK = CFG.urlPublik || '', DIBUNGKUS = CFG.dibungkus === '1', VERSI = CFG.versi || '';
+// R1 · nomor tampilan: GitHub = tertanam di index.html (window.__UIVERSI), ?app=1 = dari server (selalu sama dengan server)
+const DI_GITHUB = typeof window.__UIVERSI === 'number';
+// Uji (index uji di subfolder, mis. /ThinKerBelle/uji/): ?ujiN=0 berpura-pura HP lama; ?ujiTetap=1 tetap lama setelah dimuat ulang (uji langkah manual)
+const UJI = window.__UJI === true, QU = new URLSearchParams(location.search), UJI_N = UJI && QU.has('ujiN') ? Number(QU.get('ujiN')) : null;
+const UI_N = UJI_N !== null ? UJI_N : DI_GITHUB ? window.__UIVERSI : Number(CFG.tampilan) || 0;
+// Folder halaman ini (bukan URL_PUBLIK), supaya index uji di subfolder membuktikan & memuat ulang dirinya sendiri
+const BASE_HAL = location.origin + location.pathname.replace(/[^/]*$/, '');
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP' + '\u002F\u002F\u002FyH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 let STK_DATA = {}; try { STK_DATA = JSON.parse(localStorage.getItem('arabelleStiker1') || '{}') || {}; } catch (e) {}
 const STK = new Proxy({}, { get: (o, k) => STK_DATA[k] || BLANK });
@@ -405,8 +418,9 @@ const I = { home: '<path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/>
   task: '<path d="M4 6.5l1.5 1.5L8 5.5M4 12.5 5.5 14 8 11.5M4 18.5 5.5 20 8 17.5"/><path d="M11 7h9M11 13h9M11 19h9"/>', more: '<rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/>',
   bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>', arr: '<path d="M9 6l6 6-6 6"/>', up: '<path d="M12 19V5M6 11l6-6 6 6"/>', down: '<path d="M12 5v14M6 13l6 6 6-6"/>', cam: '<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>' };
 Object.assign(I, { trend: '<path d="M3.5 17 9 11.5l4 4 7.5-8"/><path d="M15 7.5h5.5V13"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', spark: '<path d="M12 3.5v4M12 16.5v4M3.5 12h4M16.5 12h4M6.6 6.6l2.3 2.3M15.1 15.1l2.3 2.3M17.4 6.6l-2.3 2.3M8.9 15.1l-2.3 2.3"/>', users: '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2c2.4.2 4 1.8 4.5 4.8"/>', lock: '<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>', rocket: '<path d="M12 3c3 2 4.5 5.5 4 10l-2 3h-4l-2-3c-.5-4.5 1-8 4-10z"/><circle cx="12" cy="9.5" r="1.6"/><path d="M8.5 13.5 6 16v2.5l3-1M15.5 13.5 18 16v2.5l-3-1"/>', alert: '<path d="M12 4 2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.3"/>', flower: '<circle cx="12" cy="12" r="2.2"/><path d="M12 9.8c-1.8-2.2-1.8-4.8 0-6.3 1.8 1.5 1.8 4.1 0 6.3zM12 14.2c1.8 2.2 1.8 4.8 0 6.3-1.8-1.5-1.8-4.1 0-6.3zM9.8 12c-2.2 1.8-4.8 1.8-6.3 0 1.5-1.8 4.1-1.8 6.3 0zM14.2 12c2.2-1.8 4.8-1.8 6.3 0-1.5 1.8-4.1 1.8-6.3 0z"/>', eye: '<path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>', pin: '<path d="M12 21s-6.5-6.2-6.5-11A6.5 6.5 0 0 1 18.5 10c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>', pen: '<path d="M15.5 4.5l4 4L8 20H4v-4z"/><path d="M13.5 6.5l4 4"/>', phone: '<rect x="7" y="2.8" width="10" height="18.4" rx="2.5"/><path d="M11 17.8h2"/>', video: '<rect x="3" y="6.5" width="13" height="11" rx="2.5"/><path d="M16 10.5l5-3v9l-5-3"/>', clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', bulb: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>', mega: '<path d="M3.5 10v4h3l8 4.5v-13l-8 4.5z"/><path d="M18 9.5a3.5 3.5 0 0 1 0 5"/>', doc: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>', link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>', chart: '<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>', box: '<path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/>', trash: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>', case: '<rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V5h6v2.5M3.5 12.5h17"/>', chat: '<path d="M4 5h16v11H9l-5 4z"/>', at: '<circle cx="12" cy="12" r="3.5"/><path d="M15.5 12v1.5a2.5 2.5 0 0 0 5 0V12a8.5 8.5 0 1 0-3.3 6.7"/>', music: '<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>', image: '<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m20.5 16-5-5-8 8.5"/>', ring: '<circle cx="12" cy="12" r="8.5"/>', user: '<circle cx="12" cy="8" r="3.8"/><path d="M4.5 20c.8-4 3.8-6.3 7.5-6.3s6.7 2.3 7.5 6.3"/>', gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/>', money: '<rect x="3" y="6.5" width="18" height="11" rx="2.5"/><circle cx="12" cy="12" r="2.6"/>', sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"/>', moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>', heart: '<path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/>', out: '<path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/>', star: '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.5 9.7l5.9-.9z"/>', x: '<path d="M6 6l12 12M18 6 6 18"/>', palette: '<path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.2-1-1.6-1-2.6 0-.9.7-1.4 1.7-1.4h2.2a3.8 3.8 0 0 0 3.8-3.8c0-4.2-3.8-7.5-8.5-7.5z"/><circle cx="8" cy="11" r="1"/><circle cx="12" cy="8" r="1"/><circle cx="16" cy="11" r="1"/>' });
+Object.assign(I, { fotoCek: '<rect x="4" y="5" width="16" height="14" rx="3"/><path d="m8.6 12.2 2.4 2.4 4.4-4.8"/>', muatUlang: '<path d="M19 12a7 7 0 1 1-2.05-4.95"/><path d="M19 4.5V8h-3.5"/>' });
 Object.assign(I, { dress: '<path d="M8.5 3.5 4 6.2l1.6 4.3h2.6v10h7.6v-10h2.6L20 6.2l-4.5-2.7c-.5 1.5-1.9 2.4-3.5 2.4s-3-.9-3.5-2.4z"/>', cut: '<circle cx="6" cy="6.5" r="2.5"/><circle cx="6" cy="17.5" r="2.5"/><path d="M8.2 7.8 20 18M8.2 16.2 20 6"/>' });
-const EMO = { '👗': 'dress', '✂': 'cut', '✅': 'check', '✓': 'check', '✨': 'spark', '🎉': 'spark', '🎊': 'spark', '👥': 'users', '👭': 'users', '🔒': 'lock', '🚀': 'rocket', '🗓': 'cal', '📅': 'cal', '📆': 'cal', '⚠': 'alert', '❌': 'x', '🌸': 'flower', '👀': 'eye', '📌': 'pin', '📍': 'pin', '✍': 'pen', '✏': 'pen', '📝': 'task', '📲': 'phone', '📱': 'phone', '📸': 'cam', '📷': 'cam', '🎬': 'video', '🎞': 'video', '⏰': 'clock', '⏳': 'clock', '💡': 'bulb', '💭': 'bulb', '📣': 'mega', '📄': 'doc', '📋': 'doc', '📁': 'doc', '🧾': 'doc', '🔗': 'link', '📎': 'link', '📊': 'chart', '📈': 'trend', '🏆': 'star', '🎯': 'star', '📦': 'box', '🗑': 'trash', '🔍': 'search', '🧳': 'case', '🤝': 'chat', '💬': 'chat', '🧵': 'at', '🎵': 'music', '🖼': 'image', '⭕': 'ring', '⬜': 'ring', '⚪': 'ring', '👤': 'user', '👑': 'star', '🛠': 'gear', '⚙': 'gear', '💰': 'money', '🌴': 'sun', '☀': 'sun', '🌙': 'moon', '😴': 'moon', '💗': 'heart', '❤': 'heart', '🚪': 'out', '🎨': 'palette', '✋': 'user' };
+const EMO = { '📤': 'fotoCek', '✕': 'x', '🔄': 'muatUlang', '🔔': 'bell', '👗': 'dress', '✂': 'cut', '✅': 'check', '✓': 'check', '✨': 'spark', '🎉': 'spark', '🎊': 'spark', '👥': 'users', '👭': 'users', '🔒': 'lock', '🚀': 'rocket', '🗓': 'cal', '📅': 'cal', '📆': 'cal', '⚠': 'alert', '❌': 'x', '🌸': 'flower', '👀': 'eye', '📌': 'pin', '📍': 'pin', '✍': 'pen', '✏': 'pen', '📝': 'task', '📲': 'phone', '📱': 'phone', '📸': 'cam', '📷': 'cam', '🎬': 'video', '🎞': 'video', '⏰': 'clock', '⏳': 'clock', '💡': 'bulb', '💭': 'bulb', '📣': 'mega', '📄': 'doc', '📋': 'doc', '📁': 'doc', '🧾': 'doc', '🔗': 'link', '📎': 'link', '📊': 'chart', '📈': 'trend', '🏆': 'star', '🎯': 'star', '📦': 'box', '🗑': 'trash', '🔍': 'search', '🧳': 'case', '🤝': 'chat', '💬': 'chat', '🧵': 'at', '🎵': 'music', '🖼': 'image', '⭕': 'ring', '⬜': 'ring', '⚪': 'ring', '👤': 'user', '👑': 'star', '🛠': 'gear', '⚙': 'gear', '💰': 'money', '🌴': 'sun', '☀': 'sun', '🌙': 'moon', '😴': 'moon', '💗': 'heart', '❤': 'heart', '🚪': 'out', '🎨': 'palette', '✋': 'user' };
 const reEmo = new RegExp('(' + Object.keys(EMO).join('|') + ')\uFE0F?', 'gu'), reSisa = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B1C}\u{2B55}\u{231A}-\u{23FF}]\uFE0F?/gu, adaEmo = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B1C}\u{2B55}\u{231A}-\u{23FF}\u2713]/u;
 function rapikanIkon(root) {
   if (!root || !root.querySelectorAll) return;
@@ -553,26 +567,70 @@ function gagalMuat(pesan) { laporError(pesan, 'gagal muat');
     <button class="big" onclick="location.reload()">Coba lagi</button><button class="big alt" onclick="keluar()">Masuk ulang</button></div></div>`;
 }
 window.addEventListener('error', ev => { const m = (ev.message || 'Error') + (ev.lineno ? ' (baris ' + ev.lineno + ')' : ''); laporError(m); if (!D || !$('view').innerHTML.trim()) gagalMuat(m); else react('gagal', '⚠️ ' + m); });
-// Banner hanya kalau ISI tampilan beda (sidik setelah '#'). Kalau sudah dicoba update dari versi ini ke versi itu tapi tampilan
-// masih sama (index.html di GitHub belum di-upload), banner tidak muncul lagi → tidak berulang.
-const sidikVersi = v => String(v || '').split('#').pop().trim();
-const UPD_COBA = 'tkbUpdCoba1';
-function cekVersi() { if (!TOKEN || cekVersi.jalan) return; cekVersi.jalan = true; google.script.run.withSuccessHandler(v => { cekVersi.jalan = false;
-  if (!v || !v.versi || sidikVersi(v.versi) === sidikVersi(VERSI)) return; let coba = ''; try { coba = localStorage.getItem(UPD_COBA) || ''; } catch (e) {}
-  if (coba === v.versi + '|' + VERSI) return; tampilUpdate(v); }).withFailureHandler(() => { cekVersi.jalan = false; }).apiVersi(); }
-function tampilUpdate(v) { tampilUpdate.v = v;
-  $('updimg').src = STK.s03; $('updt').textContent = 'v' + v.versi + (v.catatan && v.catatan.length ? ' · ' + v.catatan[0] : ''); $('upd').classList.add('show');
-  clearTimeout(tampilUpdate.t);
-  const sibuk = () => $('sheet').classList.contains('show') || /INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '');
-  const coba = () => { if (document.hidden) return; if (sibuk()) { tampilUpdate.t = setTimeout(coba, 15000); return; } $('updt').textContent = 'Memasang update…'; pasangUpdate(); };
-  tampilUpdate.t = setTimeout(coba, 4000);
+// ===== R1 · Pembaruan tampilan wajib =====
+// 1) server.tampilan > UI_N → 2) buktikan index.html baru sudah bisa diambil (melewati cache) → 3) tunggu sampai tidak ada data
+// yang belum terkirim (form terisi, antrean Mode Shooting, upload/simpan berjalan) → 4) pop-up wajib "Perbarui sekarang".
+// Setelah dimuat ulang tapi nomornya masih lama (iOS memakai salinan lama): tidak ada pop-up lagi untuk nomor itu,
+// tampil langkah manual dan server dicatat sekali (Kesehatan sistem).
+const UPD_KE = 'tkbUpdKe', UPD_GAGAL = 'tkbUpdGagal';
+let KOTOR = false;   // ada isian di lembar bawah yang belum disimpan
+const lsAmbil = k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, lsTaruh = (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} };
+function urlBaru() { return (DI_GITHUB ? BASE_HAL + '?t=' + TOKEN : URL_APP + '?app=1&t=' + TOKEN) + (UJI && QU.get('ujiTetap') === '1' ? '&ujiN=' + UJI_N + '&ujiTetap=1' : '') + '&u=' + Date.now(); }
+// nomor tampilan di index.html yang sekarang ada di GitHub (kueri unik + no-store: melewati cache HP & CDN). null = tanpa koneksi
+function nomorDiGitHub() {
+  if (!DI_GITHUB) return Promise.resolve(Infinity);   // ?app=1: halaman dilayani server sendiri
+  return fetch(BASE_HAL + 'index.html?cek=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => {
+    const m = t.match(/<meta name="tkb-tampilan" content="(\d+)"/); return m ? Number(m[1]) : 0; }, () => null);
 }
-function pasangUpdate() {
-  $('updt').textContent = 'Memperbarui…';
-  try { localStorage.setItem('arabelleUpdateDari', VERSI || '-'); if (tampilUpdate.v) localStorage.setItem(UPD_COBA, tampilUpdate.v.versi + '|' + VERSI); } catch (e) {}
-  $('upd').classList.remove('show');
-  const url = (URL_PUBLIK ? URL_PUBLIK + '/?t=' + TOKEN : URL_APP + '?app=1&t=' + TOKEN) + '&u=' + Date.now();
-  kabariInduk({ arabelleReload: true }); setTimeout(() => window.open(url, '_top'), 300);
+function cekVersi() { if (!TOKEN || cekVersi.jalan || LIHAT) return; cekVersi.jalan = true;
+  google.script.run.withSuccessHandler(v => { cekVersi.jalan = false; const N = v && Number(v.tampilan) || 0;
+    if (!N || (!UI_N && UJI_N === null) || v.popup === false) return;   // saklar POPUP_UPDATE_AKTIF = Tidak → tidak pernah muncul
+    if (N <= UI_N) { if (lsAmbil(UPD_GAGAL)) { lsTaruh(UPD_GAGAL, null); google.script.run.withFailureHandler(() => {}).apiCatatUpdate(TOKEN, UI_N, UI_N, true); } return; }
+    if (Number(lsAmbil(UPD_GAGAL)) >= N) return tampilManual(N);   // sudah pernah dicoba untuk nomor ini: jangan pop-up lagi
+    buktikan(N, 0, v);
+  }).withFailureHandler(() => { cekVersi.jalan = false; }).apiVersi(); }
+function buktikan(N, ke, v) { clearTimeout(buktikan.t);
+  nomorDiGitHub().then(g => {
+    if (g === null || g < N) { if (ke < 7) buktikan.t = setTimeout(() => buktikan(N, ke + 1, v), 120000); return; }   // GitHub belum siap: coba tiap 2 menit, ±15 menit
+    tungguAman(N, v);
+  });
+}
+function aman() { return !KOTOR && !(ANTRE && ANTRE.length) && $('load').style.display !== 'flex'; }
+function tungguAman(N, v) { clearTimeout(tungguAman.t);
+  if (!aman()) { $('updimg').src = STK.s03; $('updj').textContent = 'Pembaruan siap'; $('updt').textContent = 'Menunggu data terkirim…'; $('updbtn').style.display = 'none'; $('upd').classList.add('show');
+    tungguAman.t = setTimeout(() => tungguAman(N, v), 15000); return; }
+  $('upd').classList.remove('show'); popUpdate(N, v);
+}
+function popUpdate(N, v) { const w = $('updw'); if (w.classList.contains('show')) return;
+  $('updwimg').src = STK.s03; $('updwj').textContent = 'Ada pembaruan ThinKerBelle';
+  $('updwt').textContent = (v && v.baru && v.baru.length ? 'Yang baru: ' + v.baru[0] + '. ' : '') + 'Semua data sudah terkirim. Ketuk tombol di bawah untuk memakai versi terbaru.';
+  $('updwbtn').textContent = 'Perbarui sekarang'; $('updwbtn').onclick = () => perbarui(N); w.classList.add('show');
+}
+function perbarui(N) { const b = $('updwbtn'); b.disabled = true; b.textContent = 'Memeriksa koneksi…';
+  nomorDiGitHub().then(g => { b.disabled = false;
+    if (g === null) { $('updwt').textContent = 'Tidak ada koneksi. Sambungkan internet, lalu coba lagi.'; b.textContent = 'Coba lagi'; return; }
+    lsTaruh(UPD_KE, String(N)); lsTaruh('arabelleUpdateDari', String(UI_N)); b.textContent = 'Memperbarui…';
+    const url = urlBaru(); if (DIBUNGKUS) { kabariInduk({ arabelleReload: true }); setTimeout(() => window.open(url, '_top'), 300); } else location.replace(url);
+  });
+}
+// Sesudah dimuat ulang: nomor sudah benar → selesai; masih lama → catat sekali + langkah manual
+function cekHasilUpdate() { const ke = Number(lsAmbil(UPD_KE)) || 0; if (!ke) return;
+  lsTaruh(UPD_KE, null);
+  if (UI_N >= ke) return;
+  lsTaruh(UPD_GAGAL, String(ke)); lsTaruh('arabelleUpdateDari', null);
+  if (TOKEN) google.script.run.withFailureHandler(() => {}).apiCatatUpdate(TOKEN, UI_N, ke, false);
+  tampilManual(ke);
+}
+function tampilManual(N) { if (tampilManual.sudah) return; tampilManual.sudah = true;
+  $('updimg').src = STK.s03; $('updj').textContent = 'Pembaruan belum masuk'; $('updt').textContent = 'Tutup ThinKerBelle sepenuhnya, lalu buka lagi.'; $('updbtn').style.display = '';
+  $('updbtn').textContent = 'Lihat caranya'; $('updbtn').onclick = langkahManual; $('upd').classList.add('show'); setTimeout(() => $('upd').classList.remove('show'), 12000);
+}
+function langkahManual() { $('upd').classList.remove('show'); const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const l = ios ? ['Geser ke atas dari bawah layar dan tahan sebentar sampai daftar app terbuka.', 'Geser kartu ThinKerBelle ke atas untuk menutupnya.', 'Buka lagi ThinKerBelle dari ikon di layar utama.']
+    : ['Ketuk tombol daftar app (kotak atau garis tiga di bawah layar).', 'Geser kartu ThinKerBelle ke atas atau ke samping untuk menutupnya.', 'Buka lagi ThinKerBelle dari ikon di layar utama.'];
+  buka(`<h2>Pembaruan belum masuk</h2><p style="color:var(--mut);margin:0 0 12px">HP masih memakai salinan lama. Tutup app sepenuhnya, lalu buka lagi:</p>
+    ${l.map((x, i) => `<div class="lc"><span class="chip">${i + 1}</span><div class="x"><small style="color:var(--ink);font-size:14px;line-height:1.5">${x}</small></div></div>`).join('')}
+    <p style="color:var(--mut);font-size:13px;margin:12px 0">Kalau masih belum berubah, kabari Admin.</p><button class="big alt" onclick="tutup()">Oke</button>`);
 }
 const IKON_VERSI = '2026-10-21';
 function linkPribadi() { return URL_PUBLIK ? URL_PUBLIK + '/?t=' + TOKEN : URL_APP + '?app=1&t=' + TOKEN; }
@@ -582,7 +640,7 @@ function cekSetelahUpdate() {
   const pasangUlang = false;   // ajakan pasang ulang ikon dimatikan (mengganggu); ikon cukup dari GitHub
   if (!dari && !pasangUlang) return;
   try { localStorage.removeItem('arabelleUpdateDari'); } catch (e) {}
-  if (dari && sidikVersi(dari) === sidikVersi(VERSI)) return;   // tampilan belum berganti (mis. index.html GitHub belum di-upload): jangan bilang berhasil
+  if (dari && UI_N && Number(dari) >= UI_N) return;   // nomor tampilan belum naik: jangan bilang berhasil (lihat cekHasilUpdate)
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const langkah = (ios ? ['Tekan lama ikon ThinKerBelle di layar utama → <strong>Hapus App</strong> → <strong>Hapus dari Layar Utama</strong>.', 'Ketuk <strong>Salin link app</strong> di bawah, lalu buka link itu di <strong>Safari</strong>.', 'Ketuk tombol <strong>Bagikan</strong> (kotak dengan panah ke atas) → <strong>Tambahkan ke Layar Utama</strong> → <strong>Tambah</strong>.']
     : ['Tekan lama ikon ThinKerBelle di layar utama → <b>Hapus</b> / <b>Copot</b>.', 'Ketuk <b>Salin link app</b> di bawah, lalu buka link itu di <b>Chrome</b>.', 'Ketuk <b>⋮</b> di kanan atas → <b>Tambahkan ke layar utama</b> (atau <b>Instal aplikasi</b>).']).map(x => x.replace(/<b>/g, '<strong>').replace(/<\/b>/g, '</strong>'));
@@ -1609,7 +1667,7 @@ function vAkun() {
     <div class="card"><h3>🔒 Keamanan</h3><small style="color:var(--mut)">HP ini sudah diingat. Kalau HP dipinjam atau dijual, tekan keluar.</small><button class="big" style="background:#C2456B" onclick="if(confirm('Keluar dari ThinKerBelle di HP ini?'))keluar()">🚪 Keluar dari HP ini</button></div>`;
 }
 function buka(h) { $('sheet').innerHTML = '<div class="grab"></div>' + h; $('sheet').classList.add('show'); $('dim').classList.add('show'); const f = $('fab'); if (f) f.classList.add('open'); $('sheet').scrollTop = 0; }
-function tutup() { $('nav').classList.remove('ngetik'); $('sheet').classList.remove('show'); $('dim').classList.remove('show'); const f = $('fab'); if (f) f.classList.remove('open'); }
+function tutup() { KOTOR = false; $('nav').classList.remove('ngetik'); $('sheet').classList.remove('show'); $('dim').classList.remove('show'); const f = $('fab'); if (f) f.classList.remove('open'); }
 function quick() {
   const q = [['lapor', '📝', 'Lapor harian', D.sudah ? 'Tambah laporan' : 'Selesai & progres', 'var(--tile)'], ['caption', '✍️', 'Tulis caption', 'Kalender + auto post', 'var(--tile)']];
   q.push(D.rab ? ['rab', '🧾', 'Catat + foto nota', 'RAB kegiatan', 'var(--tile)'] : ['agenda', '🗓️', 'Agenda baru', 'Kalender tim', 'var(--tile)'], ['ide', '💡', 'Tulis ide', 'Simpan ke Bank ide', 'var(--tile)']);
@@ -1958,8 +2016,8 @@ function kirim(k, arg) {
       tutup(); react(auto ? 'auto' : 'caption', r.pesan); muat(true); });
   }
 }
-$('updbtn').onclick = pasangUpdate;
-muat(); muatStiker(); setTimeout(cekVersi, 8000);
+$('updbtn').onclick = langkahManual; $('sheet').addEventListener('input', () => { KOTOR = true; });
+muat(); muatStiker(); setTimeout(cekHasilUpdate, 1500); setTimeout(cekVersi, 8000);
 </script>
 
 </body></html>
