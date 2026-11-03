@@ -147,6 +147,16 @@ button{font:inherit;color:inherit;cursor:pointer}a{color:var(--acct)}
 .drop{display:block;border:2px dashed #E77FA6;border-radius:18px;padding:14px;text-align:center;color:var(--mut);cursor:pointer}.drop img{max-width:100%;max-height:170px;border-radius:12px;display:block;margin:0 auto 6px}
 .pfs{display:flex;flex-wrap:wrap;gap:8px}.pf{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;color:var(--mut)}
 .pf.on{background:var(--deep);border-color:var(--acct);color:#fff}.pf:disabled{opacity:.45}
+.cvrow{display:flex;gap:12px;align-items:flex-start}.cvth{flex:0 0 72px;aspect-ratio:9/16;border-radius:12px;background:var(--chip);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mut);text-align:center}.cvth img{width:100%;height:100%;object-fit:cover}.cvr{flex:1;min-width:0}
+.pvtab{display:flex;gap:8px;margin:10px 0 8px}.pvtab button{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 10px;font-size:13px;font-weight:600;color:var(--mut)}.pvtab button.on{background:var(--chip);color:var(--acct);border-color:var(--acct)}
+.pvsl{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.pvsl::-webkit-scrollbar{display:none}.pvp{flex:0 0 100%;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:8px}
+.pvr{position:relative;width:min(230px,100%);aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#222;color:#fff}.pvr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.pvr .kos{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font-size:12px;opacity:.8}
+.pvr .bw{position:absolute;left:0;right:0;bottom:0;padding:34px 12px 12px;background:linear-gradient(transparent,rgba(0,0,0,.72));font-size:12px;line-height:1.4}.pvr .ak{display:flex;align-items:center;gap:6px;font-weight:700;margin-bottom:4px}.pvr .av{width:22px;height:22px;border-radius:50%;background:var(--acct);flex:none}
+.pvr .cp{white-space:pre-line;word-break:break-word;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}.pvr .cp.buka{-webkit-line-clamp:unset;max-height:150px;overflow-y:auto}.pvr .cp b{font-weight:500;color:#9CC9FF}.pvr .sl{background:none;border:0;color:rgba(255,255,255,.75);font-size:12px;padding:0;margin-top:2px}
+.pvg{display:flex;gap:14px;align-items:flex-start;justify-content:center;width:100%}.pvg figure{margin:0;text-align:center;font-size:11px;color:var(--mut)}.pvg .gk{position:relative;width:150px;aspect-ratio:3/4;overflow:hidden;border-radius:6px;background:#222}.pvg .gk img{width:100%;height:100%;object-fit:cover}
+.pvg .am{position:absolute;inset:8%;border:1.5px dashed #fff;box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none}.pvg .am::before,.pvg .am::after{content:"";position:absolute;background:rgba(255,255,255,.55)}.pvg .am::before{left:50%;top:0;bottom:0;width:1px}.pvg .am::after{top:50%;left:0;right:0;height:1px}
+.pvg .pn{position:relative;width:84px;border-radius:6px;overflow:hidden;background:#222;margin:0 auto}.pvg .pn img{display:block;width:100%;height:100%;object-fit:cover}.pvg .pn i{position:absolute;background:rgba(0,0,0,.6);pointer-events:none}.pvg .pn u{position:absolute;border:1.5px solid #fff;pointer-events:none;text-decoration:none}
+.big:disabled{opacity:.5}
 .info{background:var(--chip);color:var(--acct);border-radius:16px;padding:10px 12px;font-size:12.5px;margin-top:12px;line-height:1.55}
 .big{width:100%;border:0;border-radius:18px;padding:14px;font-weight:600;font-size:15px;background:var(--deep);color:#fff;margin-top:16px}
 .big.alt{background:var(--chip);color:var(--acct)}
@@ -324,7 +334,6 @@ setTimeout(function () { if (!window.__siap) { var v = document.getElementById('
 <div class="toast" id="toast" role="status"><img id="tim" alt=""><span id="tt"></span></div>
 <div id="load"><img src="" id="loadimg" class="a-wiggle" alt=""><span id="loadt">Memuat…</span></div>
 <script>
-window.__UIVERSI = '5.6 · 29 Okt 2026 #8d2355';
 // ===== ThinKerBelle · tampilan GitHub: penghubung ke server Apps Script (dibuat otomatis oleh buat_github.command) =====
 (function () {
   var EXEC = 'https://script.google.com/macros/s/AKfycbxglVQKBvsnks_7C_XnrLXEx0GiIoZFT4xjSTDQ74YPVP_sAA-DaVlJdG_6Tvnx1Gk/exec', LS = 'arabelleStudioToken', CK = 'tkbCfg1';
@@ -1622,6 +1631,10 @@ function bukaForm(k, arg) {
       <div id="cjenw"><label>Jenis konten Threads</label><select id="cjen"><option value="">—</option>${opt((D.pilihan || {}).jenis || [])}</select></div>
       <label>Cara posting</label><div class="seg" id="md"><button class="${!x || x.mode !== 'Auto' ? 'on' : ''}" data-m="manual">✋ Manual</button><button class="${x && x.mode === 'Auto' ? 'on' : ''}" data-m="auto">🚀 Auto post</button></div>
       <div class="two"><div><label>Tanggal</label><input type="date" id="tgl" value="${x ? x.iso : hari}"></div><div><label>Jam</label><input type="time" id="jam" value="${x && x.jam ? x.jam.replace('.', ':') : '19:00'}"></div></div>
+      <div id="cvw" style="display:none"><label>Cover Reels 9:16 <span class="cnt" id="cvn"></span></label>
+      <div class="cvrow"><div class="cvth" id="cvth"></div><div class="cvr"><input id="cvl" inputmode="url" placeholder="Ganti dengan link Drive (opsional)" value="${esc(x ? x.cover || '' : '')}"><small id="cvi" style="display:block;font-size:12px;color:var(--mut);margin-top:6px;line-height:1.5"></small></div></div></div>
+      <button type="button" class="sbtn" id="pvb" style="margin-top:14px">👀 Buka preview</button>
+      <div id="pvbox" style="display:none"><div class="pvtab" id="pvt"><button class="on" data-v="0">Reels 9:16</button><button data-v="1">Grid profil 3:4</button></div><div class="pvsl" id="pvsl"><div class="pvp" id="pvr"></div><div class="pvp" id="pvg"></div></div></div>
       <div class="info" id="info"></div></div><button class="big" id="kirim">Simpan ke kalender</button>`; },
     rab: () => `<h2>Catat pengeluaran</h2><div class="fm"><label class="drop" id="drop"><input type="file" accept="image&#47;*" capture="environment" id="file" hidden><span>📷 Foto nota atau pilih dari galeri</span></label>
       <label>Kegiatan</label><select id="r1">${D.rab.grup.map((g, i) => `<option value="${esc(g.nama)}" ${i === RG ? 'selected' : ''}>${g.anggota.length > 1 ? '📦 ' : ''}${esc(g.nama)}${g.sisa != null ? ' · sisa ' + rp(g.sisa) : ''}</option>`).join('')}</select>
@@ -1774,7 +1787,9 @@ function bukaForm(k, arg) {
     sh.querySelectorAll('#wr button').forEach(b => b.onclick = () => { sh.querySelectorAll('#wr button').forEach(y => y.classList.remove('on')); b.classList.add('on'); }); }
   $('kirim').onclick = () => kirim(k, arg);
 }
+let PVOK = false;
 function siapCaption(arg) {
+  PVOK = false;
   const sh = $('sheet'), x = arg !== undefined ? D.kal[arg] : null;
   const sy = !!(x && x.tab === 'SYIFA');
   if (sy) { const pf = sh.querySelector('.pfs'); pf.style.display = 'none'; pf.previousElementSibling.style.display = 'none'; }
@@ -1783,7 +1798,7 @@ function siapCaption(arg) {
   const upd = () => { const on = [...sh.querySelectorAll('.pf.on')].map(b => b.dataset.p), auto = sh.querySelector('#md .on').dataset.m === 'auto', ta = $('cap'), lim = on.includes('Threads') ? 500 : 2200;
     if ($('cjenw')) $('cjenw').style.display = on.includes('Threads') || (x && x.tab === 'KALENDER THREADS & KATALOG') ? '' : 'none';
     if ($('cpilw')) $('cpilw').style.display = on.some(p => p !== 'Threads') || (x && x.tab !== 'KALENDER THREADS & KATALOG' && x.tab !== 'SYIFA') ? '' : 'none';
-    $('cnt').textContent = ta.value.length + ' / ' + lim.toLocaleString('id-ID'); $('cnt').style.color = ta.value.length > lim ? '#E2457E' : ''; $('kirim').textContent = auto ? '🚀 Jadwalkan auto post' : 'Simpan ke kalender';
+    $('cnt').textContent = ta.value.length + ' / ' + lim.toLocaleString('id-ID'); $('cnt').style.color = ta.value.length > lim ? '#E2457E' : ''; $('kirim').textContent = auto ? (PVOK || sy ? '🚀 Jadwalkan auto post' : '👀 Buka preview dulu') : 'Simpan ke kalender'; $('kirim').disabled = auto && !sy && !PVOK; if ($('cvw')) $('cvw').style.display = on.includes('Reels') && !sy ? '' : 'none'; if ($('pvb')) $('pvb').style.display = sy ? 'none' : ''; segarPreview();
     const cat = { TikTok: '🎵 TikTok: caption &amp; pengingat dikirim ke WA saat jam tayang (auto post menyusul setelah TikTok API aktif)', 'IG story': '⭕ Story: caption tidak tampil, cukup foto/video', 'YouTube Shorts': '▶️ YouTube Shorts: 1 video vertikal maks. 60 detik & 50 MB. Judul diambil dari baris pertama caption, hashtag jadi tag video.' };
     const ket = on.map(p => cat[p]).filter(Boolean);
     $('info').innerHTML = (on.length ? (auto ? 'Tayang otomatis di <b>' + on.map(esc).join(', ') + '</b> sesuai jadwal.' : 'Caption disimpan di kalender untuk <b>' + on.map(esc).join(', ') + '</b>.') : 'Pilih minimal 1 platform ya.') + (ket.length ? '<br>' + ket.join('<br>') : '') + (auto ? '<br>🔍 Syarat posting dicek otomatis saat kamu menjadwalkan.' : '');
@@ -1794,7 +1809,55 @@ function siapCaption(arg) {
     const ok = /drive\.google\.com\/(file\/d\/|drive\/(u\/\d+\/)?folders\/|open\?id=)/.test(v); i.style.color = ok ? '#2F7A55' : '#E2457E';
     i.textContent = ok ? (/folders/.test(v) ? '📁 Folder terbaca: isi folder dipakai sebagai carousel (maks. 10 file)' : '✅ Link file terbaca') : '⚠️ Ini bukan link Google Drive. Salin dari tombol Bagikan → Salin link.'; };
   if (x) { [['cprod', x.produk], ['cpil', x.tab !== 'KALENDER THREADS & KATALOG' ? x.pillar : ''], ['cjen', x.tab === 'KALENDER THREADS & KATALOG' ? x.pillar : '']].forEach(([id, v]) => { if (v && $(id)) $(id).value = v; }); }
-  $('gd').oninput = gdc; $('cap').oninput = upd; gdc(); upd();
+  $('gd').oninput = gdc; $('cap').oninput = upd; gdc();
+  $('cvl').oninput = () => { segarCover(); segarPreview(); }; if ($('cprod')) $('cprod').onchange = () => { segarCover(); segarPreview(); };
+  $('pvb').onclick = () => { const b = $('pvbox'), buka = b.style.display === 'none'; b.style.display = buka ? '' : 'none'; $('pvb').textContent = buka ? '🙈 Tutup preview' : '👀 Buka preview'; if (buka) { PVOK = true; segarPreview(); } upd(); };
+  sh.querySelectorAll('#pvt button').forEach(b => b.onclick = () => { const e = $('pvsl'); e.scrollTo({ left: e.clientWidth * Number(b.dataset.v), behavior: 'smooth' }); });
+  $('pvsl').onscroll = () => { const e = $('pvsl'), i = Math.round(e.scrollLeft / Math.max(e.clientWidth, 1)); sh.querySelectorAll('#pvt button').forEach(b => b.classList.toggle('on', Number(b.dataset.v) === i)); };
+  if (!PROD && !bacaLokal('tkbProd1')) muatProduk(() => { segarCover(); segarPreview(); });
+  segarCover(); upd();
+}
+// ---------- cover Reels & preview ----------
+const idDriveK = u => { u = String(u || ''); return (u.match(/\/folders\/([\w-]{20,})/) || u.match(/\/d\/([\w-]{20,})/) || u.match(/[?&]id=([\w-]{20,})/) || [])[1] || ''; };
+// cover yang dipakai: link Drive yang diketik menang; kalau kosong, cover produk yang dipilih (kolom "Foto cover" tab PRODUK, sudah ikut data produk)
+function coverIni() {
+  const l = ($('cvl') ? $('cvl').value : '').trim();
+  if (l) return { link: l, id: idDriveK(l), produk: false };
+  const nm = $('cprod') ? $('cprod').value : '', P = PROD || bacaLokal('tkbProd1') || [], p = nm ? P.find(y => y.nama === nm && y.coverId) : null;
+  return p ? { link: p.cover, id: p.coverId, produk: true } : { link: '', id: '', produk: false };
+}
+let CV_RASIO = 0, CV_ID = '';
+function segarCover() {
+  const c = coverIni(), th = $('cvth'), i = $('cvi'), n = $('cvn'); if (!th) return;
+  CV_RASIO = 0; CV_ID = c.id;
+  const l = ($('cvl').value || '').trim();
+  if (l && !c.id) { th.textContent = 'Link tidak terbaca'; i.style.color = '#E2457E'; i.textContent = '⚠️ Bukan link Google Drive. Salin dari Bagikan → Salin link.'; n.textContent = ''; return; }
+  if (!c.id) { th.textContent = 'Tanpa cover'; i.style.color = '#B7791F'; i.textContent = '⚠️ Cover kosong: Instagram akan mengambil frame dari video. Boleh lanjut tanpa cover.'; n.textContent = ''; return; }
+  n.textContent = c.produk ? '(dari produk)' : '(link Drive)';
+  i.style.color = ''; i.textContent = 'Memuat cover…';
+  th.innerHTML = '<img alt="Cover" src="' + esc(thumb(c.id, 900)) + '">';
+  const im = th.querySelector('img');
+  im.onerror = () => { th.textContent = 'Gagal dimuat'; i.style.color = '#E2457E'; i.textContent = '⚠️ Cover tidak bisa dimuat. Cek akses file Drive (siapa pun yang punya link).'; segarPreview(); };
+  im.onload = () => { CV_RASIO = im.naturalWidth / Math.max(im.naturalHeight, 1); const ok = Math.abs(CV_RASIO / 0.5625 - 1) <= 0.02;
+    i.style.color = ok ? '#2F7A55' : '#B7791F';
+    i.textContent = ok ? '✅ Rasio 9:16 (' + im.naturalWidth + '×' + im.naturalHeight + ')' : '⚠️ Gambar ' + im.naturalWidth + '×' + im.naturalHeight + ' bukan 9:16. Disarankan 1080×1920; IG akan menyesuaikan/memotong. Tidak dipotong otomatis.';
+    segarPreview(); };
+}
+function segarPreview() {
+  const r = $('pvr'); if (!r || !$('pvbox') || $('pvbox').style.display === 'none') return;
+  const c = coverIni(), src = c.id ? thumb(c.id, 900) : '', teks = $('cap').value.trim(), akun = D.akunIG || 'arabellescarf';
+  const htm = esc(teks).replace(/#[^\s#]+/g, m => '<b>' + m + '</b>');
+  r.innerHTML = '<div class="pvr">' + (src ? '<img alt="Cover" src="' + esc(src) + '">' : '<div class="kos">Tanpa cover: IG memakai frame video</div>') +
+    '<div class="bw"><div class="ak"><span class="av"></span>' + esc(akun) + '</div><div class="cp" id="pvcp">' + (htm || '<span style="opacity:.6">Caption masih kosong</span>') + '</div><button type="button" class="sl" id="pvsel" style="display:none">… selengkapnya</button></div></div>';
+  const cp = $('pvcp'), sel = $('pvsel'); if (cp && sel && cp.scrollHeight > cp.clientHeight + 1) { sel.style.display = ''; sel.onclick = () => { cp.classList.add('buka'); sel.style.display = 'none'; }; }
+  const g = $('pvg'); if (!g) return;
+  g.innerHTML = '<div class="pvg"><figure><div class="gk">' + (src ? '<img alt="Grid" src="' + esc(src) + '">' : '') + '<div class="am"></div></div>Grid profil 3:4 (potongan tengah)<br>Garis putus = area aman</figure>' +
+    '<figure><div class="pn" id="pvpn" style="aspect-ratio:' + (CV_RASIO || 0.5625) + '">' + (src ? '<img alt="Asli" src="' + esc(src) + '">' : '') + pitaPotong(CV_RASIO || 0.5625) + '</div>Cover utuh<br>Gelap = terpotong</figure></div>';
+}
+// pita gelap pada cover utuh = bagian yang hilang saat dipotong ke 3:4 di tengah
+function pitaPotong(r) {
+  if (r < 0.75) { const t = ((1 - r / 0.75) / 2 * 100).toFixed(2); return '<i style="left:0;right:0;top:0;height:' + t + '%"></i><i style="left:0;right:0;bottom:0;height:' + t + '%"></i><u style="left:0;right:0;top:' + t + '%;bottom:' + t + '%"></u>'; }
+  const t = ((1 - 0.75 / r) / 2 * 100).toFixed(2); return '<i style="top:0;bottom:0;left:0;width:' + t + '%"></i><i style="top:0;bottom:0;right:0;width:' + t + '%"></i><u style="top:0;bottom:0;left:' + t + '%;right:' + t + '%"></u>';
 }
 function cekCaption() {
   const sh = $('sheet'), on = [...sh.querySelectorAll('.pf.on')].map(b => b.dataset.p), cap = $('cap').value.trim(), gd = $('gd').value.trim(), okGD = /drive\.google\.com\/(file\/d\/|drive\/(u\/\d+\/)?folders\/|open\?id=)/.test(gd), folder = /folders/.test(gd);
@@ -1872,9 +1935,10 @@ function kirim(k, arg) {
   if (k === 'caption') {
     const x = arg !== undefined ? D.kal[arg] : null, auto = sh.querySelector('#md .on').dataset.m === 'auto', on = [...sh.querySelectorAll('.pf.on')].map(b => b.dataset.p);
     if (!on.length && !(x && x.tab === 'SYIFA')) return react('bingung', 'Pilih platformnya dulu ya 🤔');
+    if (auto && !PVOK && !(x && x.tab === 'SYIFA')) return react('bingung', 'Buka preview dulu ya 👀');
     if (auto) { const L = cekCaption(); tampilCek(L, 'Cek sebelum dijadwalkan'); if (L.some(y => !y[0])) return react('gagal', 'Ada yang perlu dibenerin dulu 👀'); }
     else if (!g('cap')) return react('bingung', 'Caption masih kosong');
-    const d = { platform: on, link: g('gd'), caption: $('cap').value, produk: g('cprod'), pillar: g('cpil'), jenis: g('cjen'), mode: auto ? 'auto' : 'manual', tanggal: g('tgl'), jam: g('jam'), ref: x ? { tab: x.tab, baris: x.baris } : null };
+    const d = { platform: on, link: g('gd'), caption: $('cap').value, produk: g('cprod'), pillar: g('cpil'), jenis: g('cjen'), mode: auto ? 'auto' : 'manual', cover: on.includes('Reels') ? ((c0 => c0.id || !c0.produk ? c0.link : '')(coverIni())) : '', tanggal: g('tgl'), jam: g('jam'), ref: x ? { tab: x.tab, baris: x.baris } : null };
     loading(true, auto ? 'Mengecek file & menjadwalkan…' : 'Menyimpan…');
     gsr('apiCaption', [TOKEN, d], r => { loading(false); if (!r.ok) { tampilCek(r.masalah.map(m => [false, m]), 'Belum bisa dijadwalkan'); return react('gagal', 'Cek ulang syaratnya ya 👀'); }
       tutup(); react(auto ? 'auto' : 'caption', r.pesan); muat(true); });
