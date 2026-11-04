@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="2">
-<script>window.__UIVERSI = 2;</script>
+<meta name="tkb-tampilan" content="3">
+<script>window.__UIVERSI = 3;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -457,6 +457,7 @@ function react(k, teks) {
 }
 function loading(on, t) { $('load').style.display = on ? 'flex' : 'none'; if (on && !$('loadimg').src.startsWith('data')) $('loadimg').src = STK.s11; if (t) $('loadt').textContent = t; }
 let LIHAT = '', SAYA = null;   // mode lihat akun tim (leader)
+let PDF_JALAN = false, PDF_URL = '', PDF_FILE = null;   // PDF RAB sedang disiapkan / hasil terakhir
 const BACA_SAJA = /^api(Muat|MuatSebagai|Tambahan|TambahanSebagai|Produk|Shoot|Versi|Stiker|Materi|Report|Rapor|Pratinjau|Perintahku|Kesehatan|NotifInfo|LaporError|DaftarNama|ShootRekap)$/;
 function gsr(fn, args, ok, fail) { if (LIHAT && (!BACA_SAJA.test(fn) || (fn === 'apiShootRekap' && args[2]))) { loading(false); tutup(); react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat. Kembali ke akunmu untuk mengubah.'); return; } google.script.run.withSuccessHandler(ok).withFailureHandler(e => { loading(false); if (/Sesi tidak berlaku/.test(e.message)) { keluar(); return; } (fail || (x => react('gagal', '⚠️ ' + x.message)))(e); })[fn].apply(null, args); }
 function hasil(teks, k) {
@@ -601,7 +602,7 @@ function buktikan(N, v) { const L = LIHAT_N; if (L.n !== N || L.jalan || L.tungg
     const m = JEDA_BUKTI[L.ke++]; if (m && Date.now() - L.t < 16 * 60000) { L.tunggu = true; setTimeout(() => { L.tunggu = false; buktikan(N, v); }, m * 60000); } else L.ke = JEDA_BUKTI.length + 1;
   });
 }
-function aman() { return !KOTOR && !(ANTRE && ANTRE.length) && $('load').style.display !== 'flex'; }
+function aman() { return !KOTOR && !PDF_JALAN && !(ANTRE && ANTRE.length) && $('load').style.display !== 'flex'; }
 function tungguAman(N, v) { clearTimeout(tungguAman.t);
   if (!aman()) { $('updimg').src = STK.s03; $('updj').textContent = 'Pembaruan siap'; $('updt').textContent = 'Menunggu data terkirim…'; $('updbtn').style.display = 'none'; $('upd').classList.add('show');
     tungguAman.t = setTimeout(() => tungguAman(N, v), 15000); return; }
@@ -915,6 +916,35 @@ function tur(i) {
   buka(`<div class="tur"><img src="${STK[t[0]]}" alt="" class="a-bounce"><h2>${esc(t[1])}</h2><p style="color:var(--mut);margin:0 0 6px">${esc(t[2])}</p><div class="dots">${TUR.map((_, j) => `<i class="${j === i ? 'on' : ''}"></i>`).join('')}</div>
     <button class="big" onclick="tur(${i + 1})">${i === TUR.length - 1 ? 'Mulai pakai ✨' : 'Lanjut'}</button>${i < TUR.length - 1 ? '<button class="big alt" onclick="tur(99)">Lewati</button>' : ''}</div>`);
 }
+// ---------- PDF RAB: dibuat server saat tombol ditekan, dikirim base64 → Blob → unduh / bagikan / buka di tab baru ----------
+function pesanPdf(m) { m = String(m || ''); if (/Failed to fetch|NetworkError|network|offline|Load failed|koneksi/i.test(m)) return 'Koneksi terputus. Coba lagi saat internet stabil ya.';
+  if (/timed? ?out|waktu|Exceeded maximum execution/i.test(m)) return 'Menyiapkan PDF terlalu lama. Coba lagi, atau pilih periode yang lebih pendek.';
+  if (/Sesi tidak berlaku/.test(m)) return m; return /[a-z]/i.test(m) && !/^(Error|Exception|TypeError)/.test(m) ? m : 'PDF belum bisa dibuat. Coba lagi sebentar ya.'; }
+function unduhRabPdf(opsi) {
+  if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': PDF RAB hanya bisa diunduh dari akunmu sendiri.');
+  if (PDF_JALAN) return react('sapa', 'PDF masih disiapkan, tunggu sebentar ya…');
+  PDF_JALAN = true; tutup(); loading(true, 'Menyiapkan PDF…');
+  gsr('apiRabPdf', [TOKEN, opsi], r => { PDF_JALAN = false; loading(false); if (!r || !r.data) return react('gagal', '⚠️ PDF belum bisa dibuat. Coba lagi sebentar ya.'); tampilPdf(r); },
+    e => { PDF_JALAN = false; loading(false); react('gagal', '⚠️ ' + pesanPdf(e && e.message)); });
+}
+function tampilPdf(r) {
+  try { if (PDF_URL) URL.revokeObjectURL(PDF_URL); } catch (e) {}
+  let blob; try { const b = atob(r.data), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); blob = new Blob([u], { type: 'application/pdf' }); }
+  catch (e) { return react('gagal', '⚠️ PDF rusak saat diterima. Coba lagi ya.'); }
+  PDF_URL = URL.createObjectURL(blob); PDF_FILE = null; try { PDF_FILE = new File([blob], r.nama, { type: 'application/pdf' }); } catch (e) {}
+  let bagi = false; try { bagi = !!(PDF_FILE && navigator.canShare && navigator.canShare({ files: [PDF_FILE] })); } catch (e) {}
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  buka(`<h2>📄 PDF siap</h2><p style="color:var(--mut);margin:0">${esc(r.nama)}<br>${r.halaman} halaman · ${r.kb} KB</p>
+    ${bagi && ios ? `<button class="big" onclick="bagiPdf()">Simpan ke File / bagikan</button>` : ''}
+    <button class="big ${bagi && ios ? 'alt' : ''}" onclick="simpanPdf()">Unduh PDF</button>
+    ${bagi && !ios ? `<button class="big alt" onclick="bagiPdf()">Bagikan</button>` : ''}
+    <button class="big alt" onclick="bukaPdfTab()">Buka di tab baru</button>
+    <small style="display:block;color:var(--mut);margin-top:10px">${ios ? 'Di iPhone: pilih "Simpan ke File" di lembar bagikan. Kalau tidak muncul, pakai Buka di tab baru lalu ketuk tombol bagikan.' : 'Kalau unduhan tidak mulai, pakai Buka di tab baru.'}</small>`);
+  simpanPdf.nama = r.nama;
+}
+function simpanPdf() { if (!PDF_URL) return; try { const a = document.createElement('a'); a.href = PDF_URL; a.download = simpanPdf.nama || 'RAB.pdf'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); setTimeout(() => a.remove(), 1000); } catch (e) { bukaPdfTab(); } }
+function bagiPdf() { if (!PDF_FILE) return simpanPdf(); navigator.share({ files: [PDF_FILE], title: PDF_FILE.name }).catch(e => { if (!e || e.name !== 'AbortError') simpanPdf(); }); }
+function bukaPdfTab() { if (!PDF_URL) return; const w = window.open(PDF_URL, '_blank'); if (!w) react('bingung', 'Tab baru diblokir browser. Izinkan pop-up, atau pakai Unduh PDF.'); }
 function vRab() {
   if (!D.rab) return kembali + kosong('s22', '🔒 RAB hanya bisa dibuka PIC RAB, Owner & Manager.');
   const r = D.rab, gs = r.grup; if (RG >= gs.length) RG = 0; const g = gs[RG];
@@ -924,6 +954,8 @@ function vRab() {
   h += '<div class="cols"><div class="col">';
   h += `<div class="saldo"><small>${g.sisa == null ? 'Terpakai' : 'Sisa dana'} · ${esc(g.nama)}</small><b>${rp(g.sisa == null ? g.pakai : g.sisa)}</b>
     ${g.total ? `<span class="sp">Total ${rp(g.total)}</span>` : '<span class="sp">⚪ Pagu belum diisi</span>'}<span class="sp">−${rp(g.pakai)}</span>${g.tambah ? `<span class="sp">+${rp(g.tambah)} tambahan</span>` : ''}</div>`;
+  if (!LIHAT) h += `<div class="card"><div class="sh"><h3>📄 Laporan PDF</h3></div><small style="color:var(--mut)">Kop, ringkasan dana, per kategori, dan daftar transaksi + link nota.</small>
+    <div class="acts"><button class="sbtn pri" onclick="unduhRabPdf({ kegiatan: D.rab.grup[${RG}].nama })">${ic('down', 14)} Unduh PDF kegiatan ini</button><button class="sbtn" onclick="bukaForm('rabpdf')">Per bulan / tanggal</button></div></div>`;
   if (g.total) { const p = Math.round(g.pakai / g.total * 100), cls = p > 100 ? 'r' : p >= 80 ? 'w' : '';
     h += `<div class="card"><div class="sh"><h3>📊 Pemakaian dana</h3><span class="chip ${cls === 'r' ? 'no' : cls === 'w' ? 'wr' : ''}">${p}%</span></div>
       <div class="big2">Rp ${rps(g.pakai)} <small>/ Rp ${rps(g.total)}</small></div><div class="bar ${cls}" style="height:10px"><i style="width:${Math.min(p, 100)}%"></i></div>
@@ -1720,6 +1752,12 @@ function bukaForm(k, arg) {
       <label>Kegiatan</label><select id="r1">${D.rab.grup.map((g, i) => `<option value="${esc(g.nama)}" ${i === RG ? 'selected' : ''}>${g.anggota.length > 1 ? '📦 ' : ''}${esc(g.nama)}${g.sisa != null ? ' · sisa ' + rp(g.sisa) : ''}</option>`).join('')}</select>
       <label>Nominal</label><input id="r2" inputmode="numeric" placeholder="350rb · 1,5jt"><label>Kategori</label><select id="r3"><option value="">✨ Tebak otomatis dari keterangan</option>${opt(D.rab.kategori)}</select>
       <label>Keterangan</label><input id="r4" placeholder="makan siang tim"></div><button class="big" id="kirim">Simpan pengeluaran</button>`,
+    rabpdf: () => { const bl = {}, kini = isoL().slice(0, 7); bl[kini] = 1; D.rab.grup.forEach(x => (x.riwayat || []).forEach(t => { const m = String(t.tgl || '').match(/^\d{4}-\d{2}/); if (m) bl[m[0]] = 1; }));
+      const nb = m => BLN3[Number(m.slice(5, 7)) - 1] + ' ' + m.slice(0, 4);
+      return `<h2>Laporan PDF RAB</h2><div class="fm"><label>Periode</label><select id="p0" onchange="$('pb').style.display=this.value==='bulan'?'':'none';$('pr').style.display=this.value==='bulan'?'none':''"><option value="bulan">Satu bulan</option><option value="rentang">Rentang tanggal</option></select>
+      <div id="pb"><label>Bulan</label><select id="p1">${Object.keys(bl).sort().reverse().map(m => `<option value="${m}">${nb(m)}</option>`).join('')}</select></div>
+      <div id="pr" style="display:none"><label>Dari tanggal</label><input type="date" id="p2" value="${kini}-01"><label>Sampai tanggal</label><input type="date" id="p3" value="${isoL()}"></div>
+      <div class="info">Berisi transaksi semua kegiatan yang tampil di RAB pada periode itu.</div></div><button class="big" id="kirim">Unduh PDF</button>`; },
     dana: () => `<h2>Tambah dana</h2><div class="fm"><label>Kegiatan</label><select id="d1">${D.rab.grup.map((g, i) => `<option value="${esc(g.nama)}" ${i === RG ? 'selected' : ''}>${esc(g.nama)}</option>`).join('')}</select>
       <label>Nominal</label><input id="d2" inputmode="numeric" placeholder="1jt"><label>Keterangan</label><input id="d3" placeholder="tambahan sewa lokasi"></div><button class="big" id="kirim">Catat tambahan dana</button>`,
     ide: () => `<h2>Tulis ide</h2><div class="fm"><label>Ide konten</label><textarea id="i1" placeholder="POV ngepasin family set buat lebaran"></textarea><label>Link referensi</label><input id="i2" inputmode="url" placeholder="https:&#47;&#47;"></div><button class="big" id="kirim">Simpan ke Bank ide</button>`,
@@ -1958,6 +1996,8 @@ function kirim(k, arg) {
   if (k === 'ide') { if (!g('i1')) return react('bingung', 'Tulis idenya dulu ya'); return run('apiIde', [g('i1'), g('i2')], 'ide'); }
   if (k === 'izin') { const f = d => d ? d.split('-').reverse().slice(0, 2).join('/') : ''; return run('apiIzin', [[f(g('z2')) + (g('z3') ? '-' + f(g('z3')) : ''), g('z1'), g('z4')].filter(Boolean).join(' | ')], 'izin'); }
   if (k === 'rab') { if (!/\d/.test(g('r2'))) return react('bingung', 'Nominalnya belum terbaca 🤔'); return run('apiRAB', ['#RAB ' + g('r1') + ' | ' + (g('r3') ? g('r3') + ' | ' : '') + g('r2') + (g('r4') ? ' | ' + g('r4') : ''), FOTO], 'nota', FOTO ? 'Mengunggah nota…' : 'Menyimpan…'); }
+  if (k === 'rabpdf') { if (g('p0') === 'bulan') { const m = g('p1'); if (!m) return react('bingung', 'Pilih bulannya dulu ya'); const akhir = new Date(Number(m.slice(0, 4)), Number(m.slice(5, 7)), 0).getDate(); return unduhRabPdf({ dari: m + '-01', sampai: m + '-' + String(akhir).padStart(2, '0') }); }
+    if (!g('p2') || !g('p3')) return react('bingung', 'Isi tanggal dari & sampai dulu ya'); if (g('p3') < g('p2')) return react('bingung', 'Tanggal "sampai" lebih awal dari "dari" 🤔'); return unduhRabPdf({ dari: g('p2'), sampai: g('p3') }); }
   if (k === 'dana') { if (!/\d/.test(g('d2'))) return react('bingung', 'Isi nominalnya dulu ya'); return run('apiRAB', ['#TAMBAHDANA ' + g('d1') + ' | ' + g('d2') + (g('d3') ? ' | ' + g('d3') : ''), null], 'nota'); }
   if (k === 'perintah') { if (!g('p1')) return react('bingung', 'Tulis isi perintahnya dulu ya'); const u = [...sh.querySelectorAll('#untuk .pf.on')].map(b => b.dataset.p).filter(x => x !== 'Semua');
     const fe = arg === undefined ? null : typeof arg === 'object' ? arg : D.feed[arg]; PER = null;
