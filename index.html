@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="5">
-<script>window.__UIVERSI = 5;</script>
+<meta name="tkb-tampilan" content="10">
+<script>window.__UIVERSI = 10;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -735,6 +735,8 @@ function vHome() {
   if ((D.shootHari || []).length) h += D.shootHari.map(x => `<button class="mscard" onclick="bukaShoot('${esc(x.id)}','home')"><span class="msc1"><span>${x.h === 1 ? 'BESOK' : 'HARI INI'}${x.mulai || x.jam ? ' · ' + esc(x.mulai || x.jam) : ''}</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
     <b>${esc(x.nama)}</b>${x.lokasi ? `<small>${esc(x.lokasi)}</small>` : ''}<span class="msc2"><span>${x.tot ? x.lengkap + '/' + x.tot + ' produk' : 'Ide & rundown'}</span><span>Moodboard</span><span>Props</span>${x.h === 1 && x.brief ? '<span>Brief ✓</span>' : ''}</span><span class="msc3">Buka Mode Shooting ${ic('arr', 18)}</span></button>`).join('');
   if (D.review && D.review.revisiku) h += `<button class="card psk" onclick="RVF='Revisi';go('review')" style="border-color:var(--deep)"><span class="chip no">✏️ Revisi foto</span><b>${D.review.revisiku} foto perlu direvisi</b><small>Catatan dari penyetuju · ketuk untuk lihat</small></button>`;
+  if (D.siapPost && D.siapPost.length) { const sp = D.siapPost, kls = sp.some(x => !x.n) ? 'no' : sp.some(x => x.n < x.t) ? 'wr' : 'ok';
+    h += `<button class="card psk" onclick="go('cal')"><span class="chip ${kls}">📱 Kesiapan posting</span><b>${sp.map(x => esc(x.h) + ' ' + (x.n >= x.t ? '✓' : x.n ? '⚠️' : '✗') + ' ' + x.n + '/' + x.t).join(' · ')}</b></button>`; }
   if (D.bolehReview && D.review && D.review.menunggu) h += `<button class="card psk" onclick="RVF='Menunggu';go('review')"><span class="chip wr">⏳ Preview &amp; approval</span><b>${D.review.menunggu} foto menunggu review</b><small>Ketuk untuk setujui atau minta revisi</small></button>`;
   h += '<div class="pills">' + [...Array(7)].map((_, i) => { const x = new Date(t); x.setDate(t.getDate() + i); return `<button class="pill ${i === SEL ? 'on' : ''}" data-i="${i}"><span>${i === 0 ? 'Hari ini' : H[x.getDay()]}</span><b>${x.getDate()}</b>${D.kal.some(k => k.h === i) || D.kalTim.some(k => k.h === i) ? '<i class="dot"></i>' : ''}</button>`; }).join('') + '</div>';
   const akhirHari = new Date(); akhirHari.setHours(23, 59, 59, 999);
@@ -945,6 +947,11 @@ function tampilPdf(r) {
 function simpanPdf() { if (!PDF_URL) return; try { const a = document.createElement('a'); a.href = PDF_URL; a.download = simpanPdf.nama || 'RAB.pdf'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); setTimeout(() => a.remove(), 1000); } catch (e) { bukaPdfTab(); } }
 function bagiPdf() { if (!PDF_FILE) return simpanPdf(); navigator.share({ files: [PDF_FILE], title: PDF_FILE.name }).catch(e => { if (!e || e.name !== 'AbortError') simpanPdf(); }); }
 function bukaPdfTab() { if (!PDF_URL) return; const w = window.open(PDF_URL, '_blank'); if (!w) react('bingung', 'Tab baru diblokir browser. Izinkan pop-up, atau pakai Unduh PDF.'); }
+// Uang masuk RAB: [label di app, awalan keterangan yang dikirim lewat #TAMBAHDANA]. Tambahan dana tanpa awalan (sama seperti form lama).
+const JENIS_MASUK = [['Tambahan dana', ''], ['Pengembalian / refund', 'Pengembalian/refund'], ['Sisa dana kembali', 'Sisa dana kembali']];
+function jenisMasukRab(ket) { ket = String(ket || '');
+  const j = JENIS_MASUK.find(x => x[1] && ket.toLowerCase().indexOf(x[1].toLowerCase()) === 0);
+  return j ? { label: j[0], ket: ket.slice(j[1].length).replace(/^\s*·\s*/, '') } : { label: 'Tambahan dana', ket: ket }; }
 function vRab() {
   if (!D.rab) return kembali + kosong('s22', '🔒 RAB hanya bisa dibuka PIC RAB, Owner & Manager.');
   const r = D.rab, gs = r.grup; if (RG >= gs.length) RG = 0; const g = gs[RG];
@@ -954,14 +961,15 @@ function vRab() {
   h += '<div class="cols"><div class="col">';
   h += `<div class="saldo"><small>${g.sisa == null ? 'Terpakai' : 'Sisa dana'} · ${esc(g.nama)}</small><b>${rp(g.sisa == null ? g.pakai : g.sisa)}</b>
     ${g.total ? `<span class="sp">Total ${rp(g.total)}</span>` : '<span class="sp">⚪ Pagu belum diisi</span>'}<span class="sp">−${rp(g.pakai)}</span>${g.tambah ? `<span class="sp">+${rp(g.tambah)} tambahan</span>` : ''}</div>`;
+  if (!LIHAT) h += `<button class="dash" onclick="bukaForm('rab','masuk')"><span class="ci" style="background:var(--okbg);color:var(--ok)">${ic('down', 20)}</span><span><b style="display:block">Catat uang masuk</b><small style="color:var(--mut)">Tambahan dana, refund, atau sisa dana kembali</small></span></button>`;
   if (!LIHAT) h += `<div class="card"><div class="sh"><h3>📄 Laporan PDF</h3></div><small style="color:var(--mut)">Kop, ringkasan dana, per kategori, dan daftar transaksi + link nota.</small>
     <div class="acts"><button class="sbtn pri" onclick="unduhRabPdf({ kegiatan: D.rab.grup[${RG}].nama })">${ic('down', 14)} Unduh PDF kegiatan ini</button><button class="sbtn" onclick="bukaForm('rabpdf')">Per bulan / tanggal</button></div></div>`;
   if (g.total) { const p = Math.round(g.pakai / g.total * 100), cls = p > 100 ? 'r' : p >= 80 ? 'w' : '';
     h += `<div class="card"><div class="sh"><h3>📊 Pemakaian dana</h3><span class="chip ${cls === 'r' ? 'no' : cls === 'w' ? 'wr' : ''}">${p}%</span></div>
       <div class="big2">Rp ${rps(g.pakai)} <small>/ Rp ${rps(g.total)}</small></div><div class="bar ${cls}" style="height:10px"><i style="width:${Math.min(p, 100)}%"></i></div>
       <small style="display:block;color:var(--mut);margin-top:6px">${esc(g.status)}${g.anggota.length > 1 ? ' · ' + g.anggota.length + ' kegiatan dalam 1 pagu' : ''}${g.tanggal ? ' · mulai ' + esc(g.tanggal) : ''}</small>
-      ${r.boleh ? `<div class="acts"><button class="sbtn" onclick="bukaForm('dana')">＋ Tambah dana</button></div>` : ''}</div>`; }
-  else if (r.boleh) h += `<div class="card"><small style="color:var(--mut)">Pagu anggaran kegiatan ini belum diisi di spreadsheet RAB.</small><div class="acts"><button class="sbtn" onclick="bukaForm('dana')">＋ Tambah dana</button></div></div>`;
+</div>`; }
+  else h += `<div class="card"><small style="color:var(--mut)">Pagu anggaran kegiatan ini belum diisi di spreadsheet RAB. Dana yang diterima bisa dicatat lewat Catat uang masuk.</small></div>`;
   const kat = Object.keys(g.kat || {}).sort((a, b) => g.kat[b] - g.kat[a]), dasar = g.total || g.pakai || 1;
   if (kat.length) h += `<div class="card"><h3>🧾 Per kategori</h3>${kat.map(k => { const p = Math.round(g.kat[k] / dasar * 100);
     return `<div class="kat"><div class="rw"><span>${esc(k)}</span><span><b>Rp ${rps(g.kat[k])}</b> · ${p}%</span></div><div class="bar"><i style="width:${Math.min(p, 100)}%"></i></div></div>`; }).join('')}
@@ -970,7 +978,8 @@ function vRab() {
   g.riwayat.forEach(t => (grup[t.tgl] = grup[t.tgl] || []).push(t));
   h += '</div><div class="col">';
   h += `<div class="card"><h3>Transaksi</h3>` + (g.riwayat.length ? Object.keys(grup).map(d => `<div class="grp">${d === hariIni ? 'Hari ini' : d === kmr ? 'Kemarin' : new Date(d + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}</div>` +
-    grup[d].map(t => `<div class="tx"><span class="ci ${t.jenis === 'tambah' ? 'in' : ''}">${ic(t.jenis === 'tambah' ? 'down' : 'up', 18)}</span><div class="x"><b>${t.jenis === 'tambah' ? 'Tambahan dana' : esc(t.kategori)}</b><small>${esc([t.ket.replace(/\s*\(via form nota\)/, ''), t.oleh, t.jam].filter(Boolean).join(' · '))}</small>${t.nota ? `<a href="${esc(t.nota.split('\n')[0])}" target="_blank">📎 Foto nota</a>` : ''}</div><span class="n ${t.jenis === 'tambah' ? 'in' : ''}">${t.jenis === 'tambah' ? '+' : '−'}${rp(t.nominal)}</span></div>`).join('')).join('')
+    grup[d].map(t => { const masuk = t.jenis === 'tambah', jm = masuk ? jenisMasukRab(t.ket) : null, ket = masuk ? jm.ket : String(t.ket || '');
+      return `<div class="tx"><span class="ci ${masuk ? 'in' : ''}">${ic(masuk ? 'down' : 'up', 18)}</span><div class="x"><b>${masuk ? esc(jm.label) : esc(t.kategori)}</b><small>${esc([ket.replace(/\s*\(via form nota\)/, ''), t.oleh, t.jam].filter(Boolean).join(' · '))}</small>${t.nota ? `<a href="${esc(t.nota.split('\n')[0])}" target="_blank">📎 ${masuk ? 'Bukti transfer' : 'Foto nota'}</a>` : ''}</div><span class="n ${masuk ? 'in' : ''}">${masuk ? '+' : '−'}${rp(t.nominal)}</span></div>`; }).join('')).join('')
     : '<small style="color:var(--mut)">Belum ada catatan.</small>') + '</div>';
   h += `<button class="dash" onclick="bukaForm('rab')"><span class="ci">${ic('cam', 20)}</span><span><b style="display:block">Foto nota langsung dari HP</b><small style="color:var(--mut)">Tersimpan rapi di Google Drive</small></span></button>`;
   return h + '</div></div>';
@@ -1202,7 +1211,7 @@ const tblLayar = (u, j, l) => `<button class="msbuka" data-u="${esc(u)}" data-j=
 // Moodboard / PDF / Slides: sampul selebar kartu (thumbnail Drive). Gagal dimuat → kartu ikon + nama file. Isi lengkap dibuka di layar penuh.
 function kartuDok(m, jenis, nama) {
   if (!m) return ''; const ikon = jenis === 'Moodboard' ? '🎨' : jenis === 'Call sheet' || jenis === 'File rundown' ? '🗓️' : '📄', lj = jenis.toLowerCase();
-  const sampul = m.id ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(m.id) + '&sz=w1000' : m.src || '';
+  const sampul = m.id ? 'https:\/\/drive.google.com/thumbnail?id=' + encodeURIComponent(m.id) + '&sz=w1000' : m.src || '';
   const lyr = m.embed ? tblLayar(m.embed, jenis + (nama ? ' · ' + nama : ''), 'Buka ' + lj) : `<a class="msbuka" href="${esc(m.url)}" target="_blank" rel="noopener">Buka ${esc(lj)}${m.situs ? ' (' + esc(m.situs) + ')' : ''}</a>`;
   const fb = `<div class="msfb"><i>${ikon}</i><span>${esc(nama || jenis)}</span></div>`;
   const gb = sampul ? (m.embed ? `<button class="msgb" data-u="${esc(m.embed)}" data-j="${esc(jenis)}" onclick="bukaLayar(this.dataset.u,this.dataset.j)" aria-label="Buka ${esc(lj)}">` : `<a class="msgb" href="${esc(m.url)}" target="_blank" rel="noopener">`)
@@ -1550,7 +1559,7 @@ const JL_RV = { gambar: ['image', 'Gambar'], folder: ['folder', 'Folder'], dokum
 const jlRv = x => JL_RV[x.jl] ? x.jl : x.fotoId ? 'gambar' : 'lainnya';
 const satuGbr = x => jlRv(x) === 'gambar' && !!x.fotoId && x.akses !== false && !x._gagal;   // _gagal: sudah dicoba di HP ini dan tidak bisa dimuat
 // alamat gambar Drive: lh3 (=wN) lalu cadangan thumbnail Drive (keduanya tidak terdokumentasi), terakhir tombol "Buka di Drive"
-const srcRv = (id, w, ke) => ke ? thumb(id, w) : 'https://lh3.googleusercontent.com/d/' + encodeURIComponent(id) + '=w' + w;
+const srcRv = (id, w, ke) => ke ? thumb(id, w) : 'https:\/\/lh3.googleusercontent.com/d/' + encodeURIComponent(id) + '=w' + w;
 function muatGbr(img, id, w, selesai) { let ke = 0;
   img.onload = () => { img.onload = img.onerror = null; selesai && selesai(true); };
   img.onerror = () => { if (++ke < 2) { img.src = srcRv(id, w, ke); return; } img.onload = img.onerror = null; selesai && selesai(false); };
@@ -1805,6 +1814,7 @@ function tutup() { KOTOR = false; $('nav').classList.remove('ngetik'); $('sheet'
 function quick() {
   const q = [['lapor', '📝', 'Lapor harian', D.sudah ? 'Tambah laporan' : 'Selesai & progres', 'var(--tile)'], ['caption', '✍️', 'Tulis caption', 'Kalender + auto post', 'var(--tile)']];
   q.push(D.rab ? ['rab', '🧾', 'Catat + foto nota', 'RAB kegiatan', 'var(--tile)'] : ['agenda', '🗓️', 'Agenda baru', 'Kalender tim', 'var(--tile)'], ['ide', '💡', 'Tulis ide', 'Simpan ke Bank ide', 'var(--tile)']);
+  if (D.rab) q.push(['dana', '💰', 'Catat uang masuk', 'Tambahan dana · refund', 'var(--tile)']);
   q.push(['produk', '👗', 'Produk & sampel', 'Lihat & tambah sampel', 'var(--tile)']);
   if (D.aspri) q.push(['agsyifa', '🗓️', 'Agenda Umi Syifa', 'Atur jadwal Syifa', 'var(--tile)']);
   if (D.bolehSyifa) q.push(['syifa', '🌸', 'Posting Syifa', 'Jadwal konten Umi Syifa', 'var(--tile)']);
@@ -1819,12 +1829,14 @@ document.addEventListener('focusout', () => setTimeout(() => { if (!isian(docume
 const PF = [['IG feed'], ['IG story'], ['Reels'], ['TikTok'], ['Threads'], ['YouTube Shorts'], ['Facebook', 1]];
 function platDariBaris(x) { const p = String(x.plat).toLowerCase(); return x.tab === 'SYIFA' ? [] : x.tab !== 'KALENDER IG & TIKTOK' ? ['Threads'] : /youtube|shorts/.test(p) ? ['YouTube Shorts'] : /reels & tiktok/.test(p) ? ['Reels', 'TikTok'] : /story/.test(p) ? ['IG story'] : /reels/.test(p) ? ['Reels'] : /tiktok/.test(p) ? ['TikTok'] : ['IG feed']; }
 function bukaForm(k, arg) {
+  if (k === 'dana') { k = 'rab'; arg = 'masuk'; }   // tombol & menu "Catat uang masuk" (form lama Tambah dana digabung ke Catat RAB)
   const bk = '<button class="back" onclick="quick()">‹ Kembali</button>', hari = isoL(), opt = a => a.map(x => `<option>${esc(x)}</option>`).join('');
   FOTO = null;
   const F = {
     lapor: () => `<h2>Laporan hari ini</h2>${D.lap ? '<span class="chip ok">✅ Sudah ada laporan · kirim lagi untuk menambah</span>' : ''}<div class="fm"><label>Yang selesai hari ini</label><textarea id="f1" placeholder="caption feed spill Lunaria, 3 story teaser"></textarea>
       <label>Yang masih dikerjakan</label><input id="f2" placeholder="kosongkan kalau semua beres"><label>Progres <span class="cnt" id="pv">100%</span></label><input id="f3" type="range" min="0" max="100" step="5" value="100" oninput="$('pv').textContent=this.value+'%'">
       <label>Link hasil</label><input id="f4" inputmode="url" placeholder="https:&#47;&#47;drive.google.com/…">
+      <label>Rencana besok</label><textarea id="f5" placeholder="edit video Soniya, update app">${esc((D.lap && D.lap.rencana) || (D.besok || []).map(x => x.judul).slice(0, 5).join(', '))}</textarea>
       <label>Foto hasil kerja (opsional)</label><label class="drop" id="drop"><input type="file" accept="image&#47;*" id="file" hidden><span>📷 Foto langsung atau pilih dari galeri</span></label></div><button class="big" id="kirim">Kirim laporan</button>`,
     caption: () => { const x = arg !== undefined ? D.kal[arg] : null, pl = x ? platDariBaris(x) : ['IG feed'];
       return `<h2>${x ? 'Edit caption' : 'Tulis caption'}</h2>${x ? `<div class="info" style="margin:0 0 4px">✏️ ${esc(x.topik)} · ${esc(x.plat)} · ${esc(x.tgl)}</div>` : ''}<div class="fm">
@@ -1842,21 +1854,26 @@ function bukaForm(k, arg) {
       <button type="button" class="sbtn" id="pvb" style="margin-top:14px">👀 Buka preview</button>
       <div id="pvbox" style="display:none"><div class="pvtab" id="pvt"><button class="on" data-v="0">Reels 9:16</button><button data-v="1">Grid profil 3:4</button></div><div class="pvsl" id="pvsl"><div class="pvp" id="pvr"></div><div class="pvp" id="pvg"></div></div></div>
       <div class="info" id="info"></div></div><button class="big" id="kirim">Simpan ke kalender</button>`; },
-    rab: () => `<h2>Catat pengeluaran</h2><div class="fm"><label class="drop" id="drop"><input type="file" accept="image&#47;*" capture="environment" id="file" hidden><span>📷 Foto nota atau pilih dari galeri</span></label>
+    rab: () => { const m = arg === 'masuk', sb = x => x ? ' style="display:none"' : '';
+      return `<h2>Catat RAB</h2><div class="fm"><div class="seg" id="rbm" style="margin-top:0"><button class="${m ? '' : 'on'}" data-m="keluar">💸 Uang keluar</button><button class="${m ? 'on' : ''}" data-m="masuk">💰 Uang masuk</button></div>
+      <div id="rbk"${sb(m)}><label class="drop" id="drop"><input type="file" accept="image&#47;*" capture="environment" id="file" hidden><span>📷 Foto nota atau pilih dari galeri</span></label></div>
+      <div id="rbj"${sb(!m)}><label>Jenis uang masuk</label><div class="chips wrap" id="rbjn">${JENIS_MASUK.map((j, i) => `<button class="${i ? '' : 'on'}" data-v="${i}">${j[0]}</button>`).join('')}</div>
+        <small style="display:block;font-size:12px;color:var(--mut);margin-top:6px">📎 Foto bukti transfer belum bisa dilampirkan di sini. Simpan buktinya dulu, fiturnya menyusul.</small></div>
       <label>Kegiatan</label><select id="r1">${D.rab.grup.map((g, i) => `<option value="${esc(g.nama)}" ${i === RG ? 'selected' : ''}>${g.anggota.length > 1 ? '📦 ' : ''}${esc(g.nama)}${g.sisa != null ? ' · sisa ' + rp(g.sisa) : ''}</option>`).join('')}</select>
-      <label>Nominal</label><input id="r2" inputmode="numeric" placeholder="350rb · 1,5jt"><label>Kategori</label><select id="r3"><option value="">✨ Tebak otomatis dari keterangan</option>${opt(D.rab.kategori)}</select>
-      <label>Keterangan</label><input id="r4" placeholder="makan siang tim"></div><button class="big" id="kirim">Simpan pengeluaran</button>`,
+      <label>Nominal</label><input id="r2" inputmode="numeric" placeholder="350rb · 1,5jt"><div id="rbkat"${sb(m)}><label>Kategori</label><select id="r3"><option value="">✨ Tebak otomatis dari keterangan</option>${opt(D.rab.kategori)}</select></div>
+      <label>Keterangan</label><input id="r4" placeholder="${m ? 'transfer dari Umi Syifa' : 'makan siang tim'}"></div><button class="big" id="kirim">${m ? 'Catat uang masuk' : 'Simpan pengeluaran'}</button>`; },
     rabpdf: () => { const bl = {}, kini = isoL().slice(0, 7); bl[kini] = 1; D.rab.grup.forEach(x => (x.riwayat || []).forEach(t => { const m = String(t.tgl || '').match(/^\d{4}-\d{2}/); if (m) bl[m[0]] = 1; }));
       const nb = m => BLN3[Number(m.slice(5, 7)) - 1] + ' ' + m.slice(0, 4);
       return `<h2>Laporan PDF RAB</h2><div class="fm"><label>Periode</label><select id="p0" onchange="$('pb').style.display=this.value==='bulan'?'':'none';$('pr').style.display=this.value==='bulan'?'none':''"><option value="bulan">Satu bulan</option><option value="rentang">Rentang tanggal</option></select>
       <div id="pb"><label>Bulan</label><select id="p1">${Object.keys(bl).sort().reverse().map(m => `<option value="${m}">${nb(m)}</option>`).join('')}</select></div>
       <div id="pr" style="display:none"><label>Dari tanggal</label><input type="date" id="p2" value="${kini}-01"><label>Sampai tanggal</label><input type="date" id="p3" value="${isoL()}"></div>
       <div class="info">Berisi transaksi semua kegiatan yang tampil di RAB pada periode itu.</div></div><button class="big" id="kirim">Unduh PDF</button>`; },
-    dana: () => `<h2>Tambah dana</h2><div class="fm"><label>Kegiatan</label><select id="d1">${D.rab.grup.map((g, i) => `<option value="${esc(g.nama)}" ${i === RG ? 'selected' : ''}>${esc(g.nama)}</option>`).join('')}</select>
-      <label>Nominal</label><input id="d2" inputmode="numeric" placeholder="1jt"><label>Keterangan</label><input id="d3" placeholder="tambahan sewa lokasi"></div><button class="big" id="kirim">Catat tambahan dana</button>`,
     ide: () => `<h2>Tulis ide</h2><div class="fm"><label>Ide konten</label><textarea id="i1" placeholder="POV ngepasin family set buat lebaran"></textarea><label>Link referensi</label><input id="i2" inputmode="url" placeholder="https:&#47;&#47;"></div><button class="big" id="kirim">Simpan ke Bank ide</button>`,
-    izin: () => `<h2>Izin, sakit, atau cuti</h2><div class="fm"><label>Jenis</label><select id="z1"><option>izin</option><option>sakit</option><option>cuti</option></select>
-      <div class="two"><div><label>Mulai</label><input type="date" id="z2" value="${hari}"></div><div><label>Sampai</label><input type="date" id="z3"></div></div><label>Keterangan</label><input id="z4" placeholder="acara keluarga"></div><button class="big" id="kirim">Kirim izin</button>`,
+    izin: () => `<h2>Izin, sakit, atau cuti</h2><div class="fm"><label>Jenis</label><select id="z1" onchange="$('ztelat').style.display=this.value==='datang terlambat'?'':'none';$('zbagi').style.display=this.value==='sakit'?'':'none'"><option>izin</option><option>sakit</option><option>cuti</option><option>datang terlambat</option></select>
+      <div class="two"><div><label>Mulai</label><input type="date" id="z2" value="${hari}"></div><div><label>Sampai</label><input type="date" id="z3"></div></div>
+      <div id="ztelat" style="display:none"><label>Perkiraan sampai kantor</label><input id="z5" type="time" value="09:00"><small style="color:var(--mut)">Hari itu tetap wajib lapor. Alasan hanya terlihat oleh atasan.</small></div>
+      <label>Keterangan</label><input id="z4" placeholder="acara keluarga">
+      <label id="zbagi" style="display:none"><input type="checkbox" id="z6"> Boleh dibagikan ke tim (supaya didoakan)</label></div><button class="big" id="kirim">Kirim izin</button>`,
     perintah: () => { const f = arg === undefined ? null : typeof arg === 'object' ? arg : D.feed[arg], ul = f ? (f.untukList || []) : [];
       return `<h2>${f ? 'Edit perintah' : 'Kirim perintah'}</h2><div class="fm"><label>Untuk</label><div class="pfs" id="untuk"><button class="pf ${!ul.length ? 'on' : ''}" data-p="Semua">Semua</button>${D.timNama.filter(n => n !== D.nama).map(n => `<button class="pf ${ul.includes(n) ? 'on' : ''}" data-p="${esc(n)}">${esc(n)}</button>`).join('')}</div>
       <label>Isi perintah</label><textarea id="p1" placeholder="Tolong siapkan 2 opsi lokasi photoshoot Bandung">${esc(f ? f.isi : '')}</textarea><label>Tanggal tenggat (opsional)</label><input id="p2" type="date" value="${esc(f ? f.tIso : '')}"></div>`
@@ -1996,6 +2013,11 @@ function bukaForm(k, arg) {
         .withFailureHandler(() => { li.textContent = ''; }).apiReviewInfoLink(TOKEN, v); };
     s5.oninput = () => { RVL.link = s5.value.trim(); clearTimeout(cekL.t); cekL.t = setTimeout(cekL, 700); }; s5.onchange = cekL;
     ss.oninput = () => { ss.dataset.auto = ''; RVL.series = ss.value; }; $('rvn').oninput = () => { RVL.catatan = $('rvn').value; }; if (s5.value) cekL(); }
+  if (k === 'rab' && $('rbm')) { const ubahRb = m => { sh.querySelectorAll('#rbm button').forEach(b => b.classList.toggle('on', b.dataset.m === m)); const masuk = m === 'masuk';
+      $('rbk').style.display = $('rbkat').style.display = masuk ? 'none' : ''; $('rbj').style.display = masuk ? '' : 'none';
+      $('kirim').textContent = masuk ? 'Catat uang masuk' : 'Simpan pengeluaran'; $('r4').placeholder = masuk ? 'transfer dari Umi Syifa' : 'makan siang tim'; };
+    sh.querySelectorAll('#rbm button').forEach(b => b.onclick = () => ubahRb(b.dataset.m));
+    sh.querySelectorAll('#rbjn button').forEach(b => b.onclick = () => { sh.querySelectorAll('#rbjn button').forEach(y => y.classList.remove('on')); b.classList.add('on'); }); }
   if (k === 'produk') sh.querySelectorAll('#prs button').forEach(b => b.onclick = () => { sh.querySelectorAll('#prs button').forEach(y => y.classList.remove('on')); b.classList.add('on'); });
   if (k === 'agsyifa') { sh.querySelectorAll('#yk button').forEach(b => b.onclick = () => { sh.querySelectorAll('#yk button').forEach(y => y.classList.remove('on')); b.classList.add('on'); });
     sh.querySelectorAll('#yt button').forEach(b => b.onclick = () => { const on = !b.classList.contains('on');
@@ -2092,13 +2114,19 @@ function cekCaption() {
 function tampilCek(L, judul) { $('info').innerHTML = '<b>' + judul + '</b><br>' + L.map(x => (x[0] ? '✅ ' : '❌ ') + esc(x[1])).join('<br>'); $('info').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 function kirim(k, arg) {
   const g = id => ($(id) ? $(id).value.trim() : ''), sh = $('sheet');
-  if (k === 'lapor') { if (!g('f1')) return react('bingung', '✍️ Isi dulu yang selesai hari ini ya'); return run('apiLapor', [{ selesai: g('f1'), sedang: g('f2'), progres: g('f3'), link: g('f4'), foto: FOTO }], 'lapor', FOTO ? 'Mengunggah foto…' : 'Menyimpan…'); }
+  if (k === 'lapor') { if (!g('f1')) return react('bingung', '✍️ Isi dulu yang selesai hari ini ya'); return run('apiLapor', [{ selesai: g('f1'), sedang: g('f2'), progres: g('f3'), link: g('f4'), rencana: g('f5'), foto: FOTO }], 'lapor', FOTO ? 'Mengunggah foto…' : 'Menyimpan…'); }
   if (k === 'ide') { if (!g('i1')) return react('bingung', 'Tulis idenya dulu ya'); return run('apiIde', [g('i1'), g('i2')], 'ide'); }
-  if (k === 'izin') { const f = d => d ? d.split('-').reverse().slice(0, 2).join('/') : ''; return run('apiIzin', [[f(g('z2')) + (g('z3') ? '-' + f(g('z3')) : ''), g('z1'), g('z4')].filter(Boolean).join(' | ')], 'izin'); }
-  if (k === 'rab') { if (!/\d/.test(g('r2'))) return react('bingung', 'Nominalnya belum terbaca 🤔'); return run('apiRAB', ['#RAB ' + g('r1') + ' | ' + (g('r3') ? g('r3') + ' | ' : '') + g('r2') + (g('r4') ? ' | ' + g('r4') : ''), FOTO], 'nota', FOTO ? 'Mengunggah nota…' : 'Menyimpan…'); }
+  if (k === 'izin') { const f = d => d ? d.split('-').reverse().slice(0, 2).join('/') : '';
+    if (g('z1') === 'datang terlambat') return run('apiTelat', [[f(g('z2')), (g('z5') || '').replace(':', '.'), g('z4')].filter(Boolean).join(' | ')], 'izin');
+    return run('apiIzin', [[f(g('z2')) + (g('z3') ? '-' + f(g('z3')) : ''), g('z1'), g('z4'), g('z1') === 'sakit' && $('z6') && $('z6').checked ? 'bagikan' : ''].filter(Boolean).join(' | ')], 'izin'); }
+  if (k === 'rab') { if (!/\d/.test(g('r2'))) return react('bingung', 'Nominalnya belum terbaca 🤔');
+    // uang masuk tetap lewat #TAMBAHDANA (server RAB belum diubah): jenis ditulis di awal keterangan, tanda | diganti / supaya kolom tidak bergeser
+    const on = sh.querySelector('#rbm .on'); if (on && on.dataset.m === 'masuk') { const j = JENIS_MASUK[Number((sh.querySelector('#rbjn .on') || { dataset: { v: 0 } }).dataset.v)] || JENIS_MASUK[0];
+      const ket = [j[1], g('r4').replace(/\|/g, '/')].filter(Boolean).join(' · ');
+      return run('apiRAB', ['#TAMBAHDANA ' + g('r1') + ' | ' + g('r2') + (ket ? ' | ' + ket : ''), null], 'nota'); }
+    return run('apiRAB', ['#RAB ' + g('r1') + ' | ' + (g('r3') ? g('r3') + ' | ' : '') + g('r2') + (g('r4') ? ' | ' + g('r4') : ''), FOTO], 'nota', FOTO ? 'Mengunggah nota…' : 'Menyimpan…'); }
   if (k === 'rabpdf') { if (g('p0') === 'bulan') { const m = g('p1'); if (!m) return react('bingung', 'Pilih bulannya dulu ya'); const akhir = new Date(Number(m.slice(0, 4)), Number(m.slice(5, 7)), 0).getDate(); return unduhRabPdf({ dari: m + '-01', sampai: m + '-' + String(akhir).padStart(2, '0') }); }
     if (!g('p2') || !g('p3')) return react('bingung', 'Isi tanggal dari & sampai dulu ya'); if (g('p3') < g('p2')) return react('bingung', 'Tanggal "sampai" lebih awal dari "dari" 🤔'); return unduhRabPdf({ dari: g('p2'), sampai: g('p3') }); }
-  if (k === 'dana') { if (!/\d/.test(g('d2'))) return react('bingung', 'Isi nominalnya dulu ya'); return run('apiRAB', ['#TAMBAHDANA ' + g('d1') + ' | ' + g('d2') + (g('d3') ? ' | ' + g('d3') : ''), null], 'nota'); }
   if (k === 'perintah') { if (!g('p1')) return react('bingung', 'Tulis isi perintahnya dulu ya'); const u = [...sh.querySelectorAll('#untuk .pf.on')].map(b => b.dataset.p).filter(x => x !== 'Semua');
     const fe = arg === undefined ? null : typeof arg === 'object' ? arg : D.feed[arg]; PER = null;
     if (fe) return run('apiPerintahUbah', [fe.id, { isi: g('p1'), tenggat: g('p2'), untuk: u }], 'perintah', 'Menyimpan…');
