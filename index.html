@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="16">
-<script>window.__UIVERSI = 16;</script>
+<meta name="tkb-tampilan" content="19">
+<script>window.__UIVERSI = 19;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -304,6 +304,12 @@ body{font:400 15px/1.5 'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;ba
 .mswarn{padding:8px 10px;border-radius:12px;background:#FFF0E0;color:#7A3F0E;font-size:12px}.mssaran{padding:8px 10px;border-radius:12px;background:var(--okbg);color:#1F5A3D;font-size:12px}.msok{color:var(--ok);font-size:12px}
 .alstat{display:block;font-size:12px;color:var(--mut);min-height:16px;margin:4px 0}.alstat.gagal{color:#B3261E;font-weight:600}   /* Rilis 4: form alasan posting */
 .msmore{min-height:44px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--deep);font-weight:600}
+/* RevisiIde 1.0: tombol ubah/review ide, komentar review, catatan, ringkasan review */
+.msrvbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}.msrvbar button{min-height:44px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--deep);font-weight:600;font-size:13px}.msrvbar button.on{background:var(--deep);border-color:var(--deep);color:#fff}
+.msrv{padding:8px 10px;border-radius:12px;background:#FCE1EC;color:#7A1240;font-size:13px;border-left:4px solid #BE2B66;overflow-wrap:anywhere}.mscat{font-size:12px;color:var(--mut);display:flex;flex-direction:column;gap:3px;overflow-wrap:anywhere}.mscat b{color:var(--ink);font-weight:600}
+.mschip span.rv{background:#EDE3F7;color:#5B3A86}.mschip span.ok2{background:var(--okbg);color:var(--ok)}.mschip span.pr{background:#FCE1EC;color:#7A1240}
+.msrvsum{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.msrvsum button{min-height:44px;padding:0 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:13px}.msrvsum button.on{border-color:var(--deep);color:var(--deep);font-weight:700}
+.msstat{display:block;font-size:12px;color:var(--mut);min-height:16px}.msstat.gagal{color:#B3261E;font-weight:600}
 .msempty{margin-top:14px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;padding:24px 20px;border-radius:22px}.msempty b{font-size:17px}.msempty small{font-size:14px;color:var(--mut)}.msempty .big{margin-top:4px;width:auto;padding:0 20px;min-height:44px}
 .msseg2{display:flex;gap:6px;background:var(--chip);border-radius:999px;padding:4px;margin-top:14px}.msseg2 button{flex:1;min-height:36px;border-radius:999px;border:0;background:transparent;color:var(--mut);font-weight:600;font-size:14px}.msseg2 button.on{background:#fff;color:var(--deep);box-shadow:0 2px 8px rgba(190,43,102,.15)}
 .msurut{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut);margin-top:10px;flex-wrap:wrap}.msurut button:not(.lk){min-height:32px;padding:0 12px;border-radius:999px;border:0;background:var(--chip);color:var(--mut);font-weight:600;font-size:13px}.msurut button.on{background:#4A1D33;color:#fff}.msurut small{margin-left:auto}
@@ -521,7 +527,7 @@ function muat(diam, then) {
   if (!diam && !DIBUNGKUS) loading(true, 'Memuat ThinKerBelle…');
   gsr(LIHAT ? 'apiMuatSebagai' : 'apiMuat', LIHAT ? [TOKEN, LIHAT, true] : [TOKEN, VERSI, true, segar], d => { loading(false); if (!d || !d.nama) return gagalMuat('Server tidak mengirim data (apiMuat kosong). Cek tab Eksekusi di Apps Script.');
     const lama = D; D = Object.assign({}, d, lama && lama.nama === d.nama ? { rab: lama.rab, approval: lama.approval, dash: lama.dash } : {});
-    if (!$('sheet').classList.contains('show')) render(); siapTampil(); cacheSimpan(); if (then) then(); bukaAlasanDariLink(); muatTambahan(); setTimeout(notifSiapkan, 2500); if (!muat.pre) { muat.pre = 1; setTimeout(() => { if (!PROD) muatProduk(() => {}); }, 4000); }
+    if (!$('sheet').classList.contains('show')) render(); siapTampil(); cacheSimpan(); if (then) then(); bukaAlasanDariLink(); bukaDariLink(); bukaPerintahDariLink(); bukaColekDariLink(); muatTambahan(); setTimeout(notifSiapkan, 2500); if (!muat.pre) { muat.pre = 1; setTimeout(() => { if (!PROD) muatProduk(() => {}); }, 4000); }
     if (d.dariCache && d.umur > 90 && !muat.segar) { muat.segar = true; setTimeout(() => muat(true), 400); } },
     e => { loading(false); if (D) react('gagal', '⚠️ ' + e.message); else gagalMuat(e.message); });
 }
@@ -819,12 +825,15 @@ function feedItem(f) {
   if (f.jenis !== 'perintah') return `<div class="fd"><span class="av" style="background:${f.jenis === 'launch' ? '#DE6E95' : '#C26489'}">${f.jenis === 'launch' ? '🚀' : '🗓️'}</span><div style="flex:1;min-width:0"><small>${esc(f.dari)} · ${esc(f.kap)}</small><p>${esc(f.isi)}</p></div></div>`;
   const aku = D.nama, selesai = f.selesai.includes(aku);
   const tombol = f.milikku ? `<span class="chip">👀 ${f.jmlDibaca} dibaca</span><span class="chip ok">✅ ${f.selesai.length} selesai</span><button class="sbtn" onclick="bukaForm('perintah',${D.feed.indexOf(f)})">✏️ Edit</button><button class="sbtn" onclick="hapusPerintah('${esc(f.id)}')">🗑️ Hapus</button>` :
-    selesai ? '<span class="chip ok">✅ Selesai</span>' : `${f.dibaca ? '<span class="chip">✓ Dibaca</span>' : `<button class="sbtn pri" onclick="perintahStatus('${esc(f.id)}','baca')">Tandai dibaca</button>`}<button class="sbtn okb" onclick="perintahStatus('${esc(f.id)}','selesai')">✅ Selesai</button>`;
-  const bl = (f.balasan || []).slice(-2).map(b => `<div class="bls"><b>${esc(b.dari)}</b> ${esc(b.isi)}<small style="display:block;color:var(--mut);font-size:11.5px">${esc(b.waktu)}</small></div>`).join('');
+    selesai ? '<span class="chip ok">✅ Selesai</span>' : `${f.dibaca ? '<span class="chip">✓ Dibaca</span>' : `<button class="sbtn pri" onclick="perintahStatus('${esc(f.id)}','baca')">Tandai dibaca</button>`}<button class="sbtn okb" onclick="bukaForm('selesaiP','${esc(f.id)}')">✅ Selesai</button>`;
+  const bl = (f.balasan || []).slice(-2).map(b => `<div class="bls"><b>${esc(b.dari)}</b> ${esc(b.isi)}<small style="display:block;color:var(--mut);font-size:11.5px">${esc(b.waktu)}</small></div>`).join('') + barisHasilP(f.hasil);
   return `<div class="fd"><span class="av" style="background:${warnaNama(f.dari)}">${esc(f.dari[0] || '?')}</span><div style="flex:1;min-width:0"><small>${esc(f.dari)} · ${esc(f.kap)}${f.milikku ? ' · untuk ' + esc(f.untuk) : ''}${f.diubah ? ' · diubah' : ''}</small><p>${esc(f.isi)}</p>${f.tenggat ? `<small style="margin-top:4px">⏰ Tenggat: ${esc(f.tenggat)}</small>` : ''}${bl}<div class="acts">${tombol}<button class="sbtn" onclick="balasPerintah('${esc(f.id)}')">💬 Balas${(f.balasan || []).length ? ' (' + f.balasan.length + ')' : ''}</button></div></div></div>`;
 }
 function balasPerintah(id) { const t = prompt('Tulis balasan / pertanyaan untuk perintah ini:'); if (!t || !t.trim()) return; PER = null; run('apiPerintahBalas', [id, t.trim()], 'perintah', 'Mengirim balasan…'); }
 function hapusPerintah(id) { if (!confirm('Hapus perintah ini? Penerima akan diberi tahu kalau perintah dibatalkan.')) return; D.feed = D.feed.filter(x => x.id !== id); if (PER) PER = PER.filter(x => x.id !== id); render(); run('apiPerintahHapus', [id], 'kerja', 'Menghapus…'); PER = null; }
+// 5.13: hasil tugas (link + catatan) dari pelaksana, tampil di kartu perintah
+function barisHasilP(L) { return (L || []).map(x => `<div class="bls"><b>✅ ${esc(x.dari)}</b> ${x.link ? `<a href="${esc(x.link)}" target="_blank" rel="noopener">🔗 Buka hasil</a>` : ''}${x.catatan ? ' ' + esc(x.catatan) : ''}<small style="display:block;color:var(--mut);font-size:11.5px">${esc(x.waktu)}</small></div>`).join(''); }
+function bukaPerintahDariLink() { if (bukaPerintahDariLink.sudah) return; bukaPerintahDariLink.sudah = 1; if (QU.get('perintah') && !LIHAT) { PER = null; go('perintah'); } }
 function perintahStatus(id, s) { run('apiPerintahStatus', [id, s], s === 'selesai' ? 'selesai' : 'baca', 'Menyimpan…'); }
 function ikonPlat(p) { return /youtube|shorts/i.test(p) ? '▶️' : /threads/i.test(p) ? '🧵' : /story/i.test(p) ? '⭕' : /reels|tiktok|video/i.test(p) ? '🎬' : '📸'; }
 function vCal() {
@@ -1074,7 +1083,7 @@ function vPerintah() {
   return h + PER.map((p, i) => `<div class="card"><small style="color:var(--mut)">${esc(p.waktu)} · untuk ${esc(p.untuk)}${p.tenggat ? ' · ⏰ ' + esc(p.tenggat) : ''}${p.diubah ? ' · ✏️ diubah' : ''}</small>
     <p style="margin:6px 0;white-space:pre-line">${esc(p.isi)}</p>
     <div class="acts"><span class="chip">👀 ${p.dibaca.length} dibaca</span><span class="chip ok">✅ ${p.selesai.length} selesai</span>${p.belum.length ? `<span class="chip wr">belum: ${esc(p.belum.join(', '))}</span>` : '<span class="chip ok">semua beres</span>'}</div>
-    ${(p.balasan || []).map(b => `<div class="bls"><b>${esc(b.dari)}</b> ${esc(b.isi)}<small style="display:block;color:var(--mut);font-size:11.5px">${esc(b.waktu)}</small></div>`).join('')}
+    ${(p.balasan || []).map(b => `<div class="bls"><b>${esc(b.dari)}</b> ${esc(b.isi)}<small style="display:block;color:var(--mut);font-size:11.5px">${esc(b.waktu)}</small></div>`).join('')}${barisHasilP(p.hasil)}
     <div class="acts"><button class="sbtn pri" onclick="editPerintah(${i})">✏️ Edit</button><button class="sbtn" onclick="balasPerintah('${esc(p.id)}')">💬 Balas</button><button class="sbtn" onclick="hapusPerintah('${esc(p.id)}')">🗑️ Hapus</button></div></div>`).join('');
 }
 function muatPerintah() { gsr('apiPerintahku', [TOKEN], d => { PER = d || []; if (TAB === 'perintah') render(); }); }
@@ -1138,9 +1147,9 @@ function cariPrd(q) { q = String(q || '').trim().toLowerCase(); document.querySe
 function jadikanCover(i, j) { const p = PROD[i]; if (!p) return; loading(true, 'Mengganti cover…');
   gsr('apiCoverProduk', [TOKEN, p.id, p.foto[j]], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); p.cover = p.foto[j]; p.coverId = p.fotoId[j]; react('selesai', r.pesan); bukaProduk(i); if (TAB === 'produk') render(); }); }
 // =========================== PAKET SHOOTING & MODE SHOOTING (prototipe Mode Shooting HP) ===========================
-let SH = null, SHID = '', SHT = 'produk', SH_DARI = 'agenda', SHSERI = '', SHURUT = '', SHMODEL = '', SHCEK = false, SHBUKA = {}, SHDRAFT = null;
+let SH = null, SHID = '', SHT = 'produk', SH_DARI = 'agenda', SHSERI = '', SHURUT = '', SHMODEL = '', SHCEK = false, SHBUKA = {}, SHDRAFT = null, SHRV = '';   // SHRV: saring status review (RevisiIde 1.0)
 const JS3 = [['C', 'Candid'], ['K', 'Katalog'], ['D', 'Detail']];
-function bukaShoot(id, dari) { SHID = id || ''; SH = null; SHT = ''; SHURUT = ''; SHDRAFT = null; SHSERI = ''; SHMODEL = ''; SHCEK = false; SHBUKA = {}; SH_DARI = dari || TAB; tutup(); go('shoot'); }
+function bukaShoot(id, dari) { SHID = id || ''; SH = null; SHT = ''; SHURUT = ''; SHRV = ''; SHDRAFT = null; SHSERI = ''; SHMODEL = ''; SHCEK = false; SHBUKA = {}; SH_DARI = dari || TAB; tutup(); go('shoot'); }
 function muatShoot(segar) {
   gsr('apiShoot', [TOKEN, SHID, !!segar], r => { if (!r || !r.ok) { if (!SH || SH.gagal) SH = { gagal: (r && r.pesan) || 'Gagal memuat' }; } else { SH = r.data; SHID = SH.id; terapkanAntre(); simpanLokal('tkbShoot1_' + SH.id, SH); kirimAntre(); } if (TAB === 'shoot' && !$('sheet').classList.contains('show')) render(); },
     e => { if (!SH || SH.gagal) SH = { gagal: putus(e) ? '📶 Belum ada sinyal dan data shooting ini belum tersimpan di HP. Coba lagi saat ada sinyal.' : e.message }; if (TAB === 'shoot') render(); });
@@ -1201,7 +1210,8 @@ const kecil = s => String(s || '').toLowerCase().trim();
 const pisahNama = s => String(s || '').split(/\s*(?:,|\+|&|\/|\n|;|\bdan\b)\s*/i).map(x => x.trim()).filter(Boolean);
 // ide masuk blok kalau kolom Blok sama, atau warna baju ide = warna/blok di rundown
 // ide di blok rundown: dari kolom "Ide (no)" call sheet kalau ada, selain itu cocokkan Blok / warna baju
-const ideDiBlok = (S, b) => b.ideKeys ? S.ide.filter(x => b.ideKeys.includes(x.key)) : S.ide.filter(x => cocokBlok(x, b));
+const ideDiBlok = (S, b) => { const a = b.ideKeys ? S.ide.filter(x => b.ideKeys.includes(x.key)) : S.ide.filter(x => !x.baru && cocokBlok(x, b));
+  return a.concat(S.ide.filter(x => x.baru && x.setup && x.setup === b.blok && !a.includes(x))); };   // RevisiIde 1.0: ide baru dari app ditaruh di setup (blok) yang dipilih
 const cocokBlok = (ide, b) => { const nb = [kecil(b.blok), kecil(b.warna)].filter(Boolean), ia = [kecil(ide.blok), kecil(ide.warna)].filter(x => x && x !== 'bebas');
   return ia.some(a => nb.some(x => x === a || x.split(/\s*(?:,|×|x|\+|&|\/)\s*/).includes(a))); };
 // "Imel, Icha" + "Dusk, Indigo" → "Imel – Dusk · Icha – Indigo"
@@ -1221,12 +1231,157 @@ const ikonCek = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" str
 function barisIde(x, b, kat) {
   const i = SH.ide.indexOf(x), c = !!x.take, warn = b ? cekModel(x, b) : '', saran = !b && SH.rundown.some(r => r.blok) ? saranBlok(SH, x) : '';
   return `<div class="msi ${c ? 'on' : ''} ${warn ? 'wr' : ''}"><button class="mscb" onclick="takeIde(${i})" aria-label="${c ? 'Batalkan tanda sudah take' : 'Tandai sudah take'}">${c ? ikonCek : ''}</button>
-    <div class="msix">${kat && (x.kategori || x.format) ? `<small class="msk">${esc(String(x.kategori || x.format).toUpperCase())}</small>` : ''}<b>${x.no ? esc(x.no) + '. ' : ''}${esc(x.ide || 'Deskripsi belum diisi di sheet')}</b>${x.desk ? `<small class="msd">${esc(x.desk)}</small>` : ''}
-    <div class="mschip">${x.talentWarna ? `<span>${esc(x.talentWarna)}</span>` : x.model ? `<span>${esc(pisahNama(x.model).join(' + '))}</span>` : ''}${(x.luar || []).length ? '<span class="w">di luar skema</span>' : ''}${!kat && x.warna && kecil(x.warna) !== 'bebas' && SHURUT !== 'warna' ? `<span class="w">${esc(x.warna)}</span>` : ''}${x.opsi ? '<span class="g">Opsi</span>' : ''}${x.pic ? `<span class="g">PIC ${esc(x.pic)}</span>` : ''}${x.ref ? `<a href="${esc(x.ref)}" target="_blank" rel="noopener">▶ ${esc(x.platform || 'Referensi')}</a>` : ''}</div>
-    ${(x.absen || []).length ? `<div class="mswarn">🚫 ${esc(x.absen.join(', '))} tidak hadir · ide ini perlu disesuaikan</div>` : ''}${(x.cek || []).length ? `<div class="mswarn">⚠️ ${esc(x.cek.join(' · '))}</div>` : ''}
+    <div class="msix">${kat && (x.kategori || x.format) ? `<small class="msk">${esc(String(x.kategori || x.format).toUpperCase())}</small>` : ''}<b>${x.no && x.no !== '+' ? esc(x.no) + '. ' : ''}${esc(x.ide || 'Deskripsi belum diisi di sheet')}</b>${x.desk ? `<small class="msd">${esc(x.desk)}</small>` : ''}
+    <div class="mschip">${x.talentWarna ? `<span>${esc(x.talentWarna)}</span>` : x.model ? `<span>${esc(pisahNama(x.model).join(' + '))}</span>` : ''}${(x.luar || []).length ? '<span class="w">di luar skema</span>' : ''}${!kat && x.warna && kecil(x.warna) !== 'bebas' && SHURUT !== 'warna' ? `<span class="w">${esc(x.warna)}</span>` : ''}${x.opsi ? '<span class="g">Opsi</span>' : ''}${x.pic ? `<span class="g">PIC ${esc(x.pic)}</span>` : ''}${/^https?:\/\//i.test(x.ref || '') ? `<a href="${esc(x.ref)}" target="_blank" rel="noopener">▶ ${esc(x.platform || 'Referensi')}</a>` : x.platform && x.bisaRevisi ? `<span class="g">${esc(x.platform)}</span>` : ''}${x.baru ? '<span class="rv">Ide baru</span>' : ''}${x.direvisi ? '<span class="rv">direvisi</span>' : ''}${chipRv(x)}</div>
+    ${blokRv(x)}${(x.absen || []).length ? `<div class="mswarn">🚫 ${esc(x.absen.join(', '))} tidak hadir · ide ini perlu disesuaikan</div>` : ''}${(x.cek || []).length ? `<div class="mswarn">⚠️ ${esc(x.cek.join(' · '))}</div>` : ''}
     ${warn && !x.talentWarna ? `<div class="mswarn">⚠️ ${esc(warn)}${saranBlok(SH, x) ? ' · ' + esc(saranBlok(SH, x)) : ''}</div>` : ''}${saran ? `<div class="mssaran">${esc(saran)}</div>` : ''}
-    ${x.take && !/baru saja|offline/.test(x.take) ? `<small class="msok">${esc(x.take)}</small>` : ''}${SH.boleh && !SH.arsip && x.sumber !== 'sheet' ? `<button class="lk" onclick="bukaForm('idesh',${i})">✏️ Ubah ide</button>` : ''}</div></div>`;
+    ${blokCatatan(x, i)}${x.take && !/baru saja|offline/.test(x.take) ? `<small class="msok">${esc(x.take)}</small>` : ''}${SH.boleh && !SH.arsip && x.sumber !== 'sheet' && !x.bisaRevisi ? `<button class="lk" onclick="bukaForm('idesh',${i})">✏️ Ubah ide</button>` : ''}${tombolIde(x, i)}</div></div>`;
 }
+// ---------- RevisiIde 1.0: ubah ide, catatan, ide baru, sembunyikan, review Owner/Leader (server: RevisiIde.gs) ----------
+const ST_IDE = { oke: 'Oke', revisi: 'Perlu revisi', cek: 'Sudah direvisi, cek lagi', belum: 'Belum direview' };
+let SIMPAN_IDE = {}, FORM_IDE = null, GRUP_IDE = [];   // GRUP_IDE: grup Per warna/kategori yang sedang tampil (tombol ＋ per grup)
+const cocokRv = x => !SHRV || (x.bisaRevisi && x.rv && x.rv.status === SHRV);
+const jamRv = w => { const [d, j] = String(w || '').split(' '), t = new Date(), hr = ('0' + t.getDate()).slice(-2) + '/' + ('0' + (t.getMonth() + 1)).slice(-2); return j && d === hr ? j : String(w || ''); };
+function chipRv(x) { const s = x.bisaRevisi && x.rv ? x.rv.status : ''; return s === ST_IDE.oke ? '<span class="ok2">✓ Oke</span>' : s === ST_IDE.revisi ? '<span class="pr">✏️ Perlu revisi</span>' : s === ST_IDE.cek ? '<span class="rv">🔁 Sudah direvisi, cek lagi</span>' : ''; }
+function blokRv(x) { const r = x.rv; if (!x.bisaRevisi || !r || !r.komentar || ![ST_IDE.revisi, ST_IDE.cek].includes(r.status)) return ''; return `<div class="msrv">✏️ <b>${esc(r.oleh)} ${esc(jamRv(r.w))}</b> · ${esc(r.komentar)}</div>`; }
+function blokCatatan(x, i) {
+  const c = (x.catatan || []).filter(n => n.jenis === 'Catatan'); if (!c.length) return ''; const bk = SHBUKA['c' + i], lihat = bk ? c : c.slice(-3);
+  return `<div class="mscat">${lihat.map(n => `<span><b>${esc(n.oleh)} ${esc(jamRv(n.w))}</b> · ${esc(n.isi)}</span>`).join('')}${c.length > 3 ? `<button class="lk" onclick="SHBUKA['c${i}']=!SHBUKA['c${i}'];render()">${bk ? 'Ringkas catatan' : 'Lihat semua catatan (' + c.length + ')'}</button>` : ''}</div>`;
+}
+function tombolIde(x, i) {
+  if (!x.bisaRevisi || SH.arsip) return ''; const a = [], s = x.rv ? x.rv.status : '', st = SIMPAN_IDE[x.key];
+  if (SH.boleh) a.push(`<button onclick="formIde(${i})">✏️ Ubah</button>`, `<button onclick="formCatatan(${i})">💬 Catatan</button>`);
+  if (SH.bolehReview) a.push(`<button class="${s === ST_IDE.oke ? 'on' : ''}" onclick="reviewIde(${i})">👍 Oke</button>`, `<button class="${s === ST_IDE.revisi ? 'on' : ''}" onclick="formReview(${i})">✏️ Perlu revisi</button>`);
+  return (a.length ? `<div class="msrvbar">${a.join('')}</div>` : '') + (st ? `<small class="msstat ${st.gagal ? 'gagal' : ''}">${esc(st.t)}</small>` : '');
+}
+function ringkasRvHtml(S) {
+  let h = ''; const n = S.rvRingkas;
+  if (n && S.ide.some(x => x.bisaRevisi)) {
+    const o = [[ST_IDE.oke, '✓ ' + n.oke + ' Oke'], [ST_IDE.revisi, '✏️ ' + n.revisi + ' Perlu revisi'], [ST_IDE.cek, '🔁 ' + n.cek + ' Cek lagi'], [ST_IDE.belum, '○ ' + n.belum + ' Belum direview']].filter(x => x[0] !== ST_IDE.cek || n.cek);
+    h += `<div class="msrvsum">${o.map(([s, t]) => `<button class="${SHRV === s ? 'on' : ''}" onclick="saringRv('${s}')" aria-pressed="${SHRV === s}">${t}</button>`).join('')}</div>`;
+    if (S.bolehReview && !S.arsip) h += `<div class="acts"><button class="sbtn" ${n.revisi ? '' : 'disabled'} onclick="kirimHasilReview()">📨 Kirim hasil review ke tim${n.revisi ? ' (' + n.revisi + ')' : ''}</button></div>`;
+  }
+  if (S.boleh && !S.arsip && (S.skema || S.paket.sheetIde)) h += `<div class="acts"><button class="sbtn" onclick="formIdeBaru(-1)">＋ Ide baru</button></div>`;
+  return h;
+}
+function saringRv(s) { SHRV = SHRV === s ? '' : s; render(); }   // berlaku di Per jam, Per warna, Per kategori
+function tambahDiBlok(S, b) { return S.boleh && !S.arsip && (S.skema || S.paket.sheetIde) ? `<button class="msmore" onclick="formIdeBaru(${S.rundown.indexOf(b)})">＋ Ide di setup ini</button>` : ''; }
+function ideLainHtml(S) {
+  let h = ''; const sb = S.ideSembunyi || [], yt = S.ideYatim || [], bisa = S.boleh && !S.arsip;
+  if (sb.length) h += `<details class="card" style="margin-top:12px"><summary style="min-height:44px;display:flex;align-items:center">🙈 Ide disembunyikan (${sb.length})</summary>${sb.map((x, j) => `<div class="msi"><div class="msix"><b>${x.no && x.no !== '+' ? esc(x.no) + '. ' : ''}${esc(x.ide)}</b><small class="msd">${esc(x.seri || '')}</small>${bisa ? `<div class="msrvbar"><button onclick="sembunyiIde(${j},false)">👁️ Tampilkan lagi</button></div>` : ''}</div></div>`).join('')}</details>`;
+  if (yt.length) h += `<div class="card" style="margin-top:12px"><b>⚠️ Revisi tanpa ide asli (${yt.length})</b><small class="msd">Baris ide di file IDE KONTEN sudah diubah, jadi revisi ini kehilangan pasangannya. Jadikan ide baru supaya tetap terpakai.</small>${yt.map((x, j) => `<div class="msi"><div class="msix"><b>${esc(x.ide)}</b><small class="msd">${esc([x.seri, x.no ? '#' + x.no : ''].filter(Boolean).join(' · '))}</small>${bisa ? `<div class="msrvbar"><button onclick="yatimBaru(${j})">➕ Jadikan ide baru</button></div>` : ''}</div></div>`).join('')}</div>`;
+  return h;
+}
+// simpan dengan sinyal lemah: "menyimpan…", lambat → diberi tahu, gagal → pesan jelas, isian form tetap di HP. Tidak masuk antrean offline (supaya tidak menimpa revisi orang lain).
+function simpanIde(fn, args, o) {
+  if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat.');
+  if (!navigator.onLine) return tandaSimpan(o, '📶 Tidak ada sinyal. ' + (o.tombol ? 'Isian aman di HP, simpan lagi saat ada sinyal.' : 'Coba lagi saat ada sinyal.'), true);
+  tandaSimpan(o, 'menyimpan…');
+  const lambat = setTimeout(() => tandaSimpan(o, 'Sinyal lemah, masih menyimpan… jangan tutup aplikasi'), 15000);
+  gsr(fn, [TOKEN, SH.id].concat(args), r => { clearTimeout(lambat);
+    if (!r || !r.ok) { tandaSimpan(o, '⚠️ ' + ((r && r.pesan) || 'Gagal tersimpan'), true); if (r && r.bentrok) muatShoot(true); return; }
+    tandaSimpan(o, ''); react('selesai', o.pesan || '✅ Tersimpan'); if (o.sukses) o.sukses(r); muatShoot(); },
+    e => { clearTimeout(lambat); tandaSimpan(o, (putus(e) ? '📶 Sinyal putus. ' : '⚠️ ' + e.message + ' · ') + 'Gagal tersimpan' + (o.tombol ? ', isian aman di HP. Coba lagi.' : '. Coba lagi.'), true); });
+}
+function tandaSimpan(o, t, gagal) {
+  if (o.tombol) { const b = $(o.tombol), s = $(o.tombol + 's'); if (b) { if (!b.dataset.l) b.dataset.l = b.textContent; b.disabled = !!t && !gagal; b.textContent = t && !gagal ? 'Menyimpan…' : b.dataset.l; } if (s) { s.textContent = t; s.className = 'msstat' + (gagal ? ' gagal' : ''); } return; }
+  if (t) SIMPAN_IDE[o.key] = { t, gagal: !!gagal }; else delete SIMPAN_IDE[o.key];
+  if (gagal) react('gagal', t); if (TAB === 'shoot' && !$('sheet').classList.contains('show')) render();
+}
+const bacaDraf = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+const hapusDraf = k => { try { localStorage.removeItem(k); } catch (e) {} };
+const ISIAN_IDE = [['ri1', 'ide'], ['ri2', 'platform'], ['ri3', 'ref'], ['ri4', 'catatan'], ['ri5', 'seri'], ['ri6', 'setup'], ['ri7', 'warna'], ['ri8', 'kategori']];
+function nilaiFormIde() { const o = {}; ISIAN_IDE.forEach(([id, k]) => { const e = $(id); if (e) o[k] = e.value.trim(); }); return o; }
+function drafIde() { if (!FORM_IDE) return; try { localStorage.setItem(FORM_IDE.dk, JSON.stringify(nilaiFormIde())); } catch (e) {} }
+const asliIde = x => ({ no: x.no || '', seri: x.seri || '', ide: (x.asli || {}).ide || '', platform: (x.asli || {}).platform || '', ref: (x.asli || {}).ref || '' });
+function pilihPlatform(sek) { const pl = [...new Set((SH.platformIde || []).concat(sek ? [sek] : []))]; return `<option value="">(pilih)</option>${pl.map(p => `<option ${sek === p ? 'selected' : ''}>${esc(p)}</option>`).join('')}`; }
+function tempelLink(id) {
+  const isi = t => { $(id).value = String(t || '').trim(); drafIde(); };
+  if (navigator.clipboard && navigator.clipboard.readText) navigator.clipboard.readText().then(isi).catch(() => { $(id).focus(); react('bingung', 'Tekan lama kotak link, lalu pilih Tempel'); });
+  else { $(id).focus(); react('bingung', 'Tekan lama kotak link, lalu pilih Tempel'); }
+}
+const isianLink = v => `<label>Link ide (referensi video/foto)</label><div style="display:flex;gap:8px"><input id="ri3" inputmode="url" style="flex:1" placeholder="https://www.tiktok.com/…" value="${esc(v)}" oninput="drafIde()"><button class="sbtn" style="min-height:44px" onclick="tempelLink('ri3')">📋 Tempel</button></div>`;
+function formIde(i) {
+  const x = SH && SH.ide[i]; if (!x) return; FORM_IDE = { i, key: x.key, dk: 'tkbIdeDraf_' + SH.id + '_' + x.key }; const d = bacaDraf(FORM_IDE.dk) || {}, v = (k, def) => d[k] !== undefined ? d[k] : def || '';
+  buka(`<h2>✏️ Ubah ide${x.no && x.no !== '+' ? ' #' + esc(x.no) : ''}</h2>${!x.baru ? `<div class="info" style="margin-top:0"><small>Asli dari file: ${esc(x.asli.ide || '-')}${x.asli.platform ? ' · ' + esc(x.asli.platform) : ''}</small></div>` : ''}${d.ide !== undefined ? '<small class="msstat">Isian yang belum tersimpan dipulihkan dari HP.</small>' : ''}
+    <div class="fm"><label>Deskripsi / judul ide</label><textarea id="ri1" style="min-height:76px" oninput="drafIde()">${esc(v('ide', x.ide))}</textarea>
+    <label>Platform</label><select id="ri2" onchange="drafIde()">${pilihPlatform(v('platform', x.platform))}</select>${isianLink(v('ref', x.ref))}
+    <label>Catatan revisi (opsional)</label><textarea id="ri4" placeholder="mis. ganti lagu, durasi 15 detik" oninput="drafIde()">${esc(v('catatan'))}</textarea></div>
+    <small class="msstat" id="riks"></small><button class="big" id="rik" onclick="kirimIde()">Simpan</button>
+    ${x.direvisi && !x.baru ? `<button class="big alt" onclick="kembalikanIde(${i})">↩️ Kembalikan ke asli</button>` : ''}<button class="big alt" onclick="sembunyiIde(${i},true)">🙈 Sembunyikan (batal dipakai)</button>`);
+}
+function kirimIde() {
+  const f = FORM_IDE, x = f && SH.ide.find(y => y.key === f.key); if (!x) return; const d = nilaiFormIde(); drafIde();
+  if (!d.ide) return tandaSimpan({ tombol: 'rik' }, 'Deskripsi ide tidak boleh kosong', true);
+  simpanIde('apiIdeSimpan', [x.key, d, (x.rv || {}).versi || 0, asliIde(x)], { tombol: 'rik', label: 'Simpan', sukses: () => { hapusDraf(f.dk); FORM_IDE = null; tutup(); } });
+}
+// bi = blok rundown (Per jam), -1 = umum · grup = { warna } / { kategori } dari tombol ＋ di Per warna / Per kategori
+function formIdeGrup(j) { const gr = GRUP_IDE[j]; if (gr) formIdeBaru(-1, gr); }
+function formIdeBaru(bi, grup) {
+  grup = grup || {}; const b = bi >= 0 ? SH.rundown[bi] : null, seris = [...new Set(SH.ide.map(x => x.seri).concat(SH.skema ? SH.skema.seri.map(s => s.seri) : []).filter(Boolean))], blok = [...new Set(SH.rundown.map(r => r.blok).filter(Boolean))];
+  FORM_IDE = { baru: true, dk: 'tkbIdeDraf_' + SH.id + '_baru_' + (b ? 'b' + b.blok : grup.warna ? 'w' + grup.warna : grup.kategori ? 'k' + grup.kategori : 'umum') }; const d = bacaDraf(FORM_IDE.dk) || {}, v = (k, def) => d[k] !== undefined && d[k] !== '' ? d[k] : def || '';
+  const seri0 = v('seri', (b && b.seri && seris.find(s => kecil(s) === kecil(b.seri))) || SHSERI || seris[0] || '');
+  buka(`<h2>＋ Ide konten baru</h2>${b ? `<div class="info" style="margin-top:0">Masuk ke setup <b>${esc(b.blok)}</b>${b.talent ? '<br><small>👥 ' + esc(talentWarna(b.talent, b.warna)) + '</small>' : ''}</div>` : grup.warna ? `<div class="info" style="margin-top:0">Masuk ke warna <b>${esc(grup.warna)}</b></div>` : grup.kategori ? `<div class="info" style="margin-top:0">Masuk ke kategori <b>${esc(grup.kategori)}</b></div>` : ''}
+    <div class="fm"><label>Deskripsi / judul ide</label><textarea id="ri1" style="min-height:76px" placeholder="mis. velocity 3 talent jalan ke kamera" oninput="drafIde()">${esc(v('ide'))}</textarea>
+    <label>Platform</label><select id="ri2" onchange="drafIde()">${pilihPlatform(v('platform'))}</select>${isianLink(v('ref'))}
+    <div class="two"><div><label>Seri</label><select id="ri5" onchange="drafIde()">${seris.map(s => `<option ${s === seri0 ? 'selected' : ''}>${esc(s)}</option>`).join('') || '<option value=""></option>'}</select></div>
+    <div><label>Setup</label><input id="ri6" list="ri6l" value="${esc(v('setup', b ? b.blok : ''))}" oninput="drafIde()"><datalist id="ri6l">${blok.map(x => `<option>${esc(x)}</option>`).join('')}</datalist></div></div>
+    <label>Talent & warna (opsional)</label><input id="ri7" placeholder="delia 5 elite + mella 5 royal" value="${esc(v('warna', grup.warna ? (SHMODEL ? SHMODEL + ' ' : '') + grup.warna : ''))}" oninput="drafIde()">
+    <label>Kategori</label><input id="ri8" list="ri8l" placeholder="kosong = Ide baru" value="${esc(v('kategori', grup.kategori || ''))}" oninput="drafIde()"><datalist id="ri8l">${[...new Set(SH.ide.map(x => x.kategori).filter(Boolean))].map(x => `<option>${esc(x)}</option>`).join('')}</datalist>
+    <label>Catatan (opsional)</label><textarea id="ri4" oninput="drafIde()">${esc(v('catatan'))}</textarea></div>
+    <small class="msstat" id="riks"></small><button class="big" id="rik" onclick="kirimIdeBaru()">Tambah ide</button>`);
+}
+function kirimIdeBaru() {
+  const f = FORM_IDE, d = nilaiFormIde(); drafIde(); if (!d.ide) return tandaSimpan({ tombol: 'rik' }, 'Tulis dulu ide/deskripsinya', true);
+  simpanIde('apiIdeBaru', [d], { tombol: 'rik', label: 'Tambah ide', pesan: '✅ Ide baru ditambahkan', sukses: () => { hapusDraf(f.dk); FORM_IDE = null; tutup(); } });
+}
+function formCatatan(i) {
+  const x = SH && SH.ide[i]; if (!x) return; FORM_IDE = { i, key: x.key, dk: 'tkbIdeDraf_' + SH.id + '_c_' + x.key }; const d = bacaDraf(FORM_IDE.dk) || {};
+  buka(`<h2>💬 Catatan revisi</h2><div class="info" style="margin-top:0"><small>${esc(x.ide)}</small></div><div class="fm"><textarea id="ri4" style="min-height:96px" placeholder="mis. lagu diganti, Atin yang ambil" oninput="drafIde()">${esc(d.catatan || '')}</textarea></div>
+    <small class="msstat" id="riks"></small><button class="big" id="rik" onclick="kirimCatatan()">Simpan catatan</button>`);
+}
+function kirimCatatan() {
+  const f = FORM_IDE, t = ($('ri4') || {}).value || ''; drafIde(); if (!t.trim()) return tandaSimpan({ tombol: 'rik' }, 'Catatan masih kosong', true);
+  simpanIde('apiIdeCatat', [f.key, t.trim()], { tombol: 'rik', label: 'Simpan catatan', pesan: '💬 Catatan tersimpan', sukses: () => { hapusDraf(f.dk); FORM_IDE = null; tutup(); } });
+}
+function kembalikanIde(i) {
+  const x = SH.ide[i]; if (!x || !confirm('Kembalikan ide ini ke isi file? Revisinya tetap tercatat di riwayat.')) return;
+  simpanIde('apiIdeKembalikan', [x.key, (x.rv || {}).versi || 0], { tombol: 'rik', label: 'Simpan', pesan: '↩️ Kembali ke isi file', sukses: () => { if (FORM_IDE) hapusDraf(FORM_IDE.dk); FORM_IDE = null; tutup(); } });
+}
+// on = true: dari kartu/form (SH.ide[i]) · on = false: dari daftar disembunyikan (SH.ideSembunyi[i])
+function sembunyiIde(i, on) {
+  const x = on ? SH.ide[i] : (SH.ideSembunyi || [])[i]; if (!x) return; if (on && !confirm('Sembunyikan ide ini? Tidak dihapus, bisa ditampilkan lagi dari daftar "Ide disembunyikan".')) return;
+  if (FORM_IDE) { hapusDraf(FORM_IDE.dk); FORM_IDE = null; } tutup();
+  simpanIde('apiIdeSembunyi', [x.key, on, asliIde(x)], { key: x.key, pesan: on ? '🙈 Ide disembunyikan' : '👁️ Ide tampil lagi' });
+}
+function yatimBaru(j) { const x = (SH.ideYatim || [])[j]; if (x) simpanIde('apiIdeYatimBaru', [x.key], { key: x.key, pesan: '✅ Jadi ide baru' }); }
+function reviewIde(i) {
+  const x = SH.ide[i]; if (!x) return; if (x.rv && x.rv.status === ST_IDE.oke) return react('bingung', 'Ide ini sudah Oke');
+  simpanIde('apiIdeReview', [x.key, ST_IDE.oke, '', asliIde(x)], { key: x.key, pesan: '👍 Oke' });
+}
+function formReview(i) {
+  const x = SH.ide[i]; if (!x) return; FORM_IDE = { i, key: x.key, dk: 'tkbIdeDraf_' + SH.id + '_r_' + x.key }; const d = bacaDraf(FORM_IDE.dk) || {};
+  buka(`<h2>✏️ Perlu revisi</h2><div class="info" style="margin-top:0"><small>${x.no && x.no !== '+' ? '#' + esc(x.no) + ' · ' : ''}${esc(x.ide)}</small></div>
+    <div class="fm"><label>Apa yang perlu direvisi? (wajib)</label><textarea id="ri4" style="min-height:96px" placeholder="mis. referensi terlalu mirip konten minggu lalu, cari yang lebih ceria" oninput="drafIde()">${esc(d.catatan !== undefined ? d.catatan : (x.rv && x.rv.komentar) || '')}</textarea></div>
+    <small class="msstat" id="riks"></small><button class="big" id="rik" onclick="kirimReview('${ST_IDE.revisi}')">Simpan: Perlu revisi</button>
+    ${x.rv && x.rv.status !== ST_IDE.belum ? `<button class="big alt" onclick="kirimReview('${ST_IDE.belum}')">Hapus status review</button>` : ''}`);
+}
+function kirimReview(status) {
+  const f = FORM_IDE, x = f && SH.ide.find(y => y.key === f.key), t = (($('ri4') || {}).value || '').trim(); if (!x) return; drafIde();
+  if (status === ST_IDE.revisi && !t) return tandaSimpan({ tombol: 'rik' }, 'Tulis dulu apa yang perlu direvisi', true);
+  simpanIde('apiIdeReview', [x.key, status, t, asliIde(x)], { tombol: 'rik', label: 'Simpan: Perlu revisi', pesan: status === ST_IDE.revisi ? '✏️ Ditandai perlu revisi' : 'Status review dihapus', sukses: () => { hapusDraf(f.dk); FORM_IDE = null; tutup(); } });
+}
+function kirimHasilReview() {
+  const n = (SH && SH.rvRingkas) || {}; if (!n.revisi) return react('bingung', 'Belum ada ide yang ditandai Perlu revisi');
+  buka(`<h2>📨 Kirim hasil review</h2><div class="info" style="margin-top:0"><b>${n.revisi}</b> ide <b>Perlu revisi</b> dikirim lewat WA ke PIC ide konten (kalau tidak ada: leader shooting), lengkap dengan komentarnya.${n.belum ? '<br><small>' + n.belum + ' ide belum direview, tidak ikut dikirim.</small>' : ''}</div>
+    <small class="msstat" id="rkks"></small><button class="big" id="rkk" onclick="kirimHasilReviewYa()">Kirim sekarang</button><button class="big alt" onclick="tutup()">Batal</button>`);
+}
+function kirimHasilReviewYa() {
+  simpanIde('apiIdeKirimReview', [], { tombol: 'rkk', label: 'Kirim sekarang', pesan: '📨 Hasil review terkirim', sukses: r => { tutup(); if (r.uji) react('selesai', '🧪 Mode uji: pesan untuk ' + (r.ke || []).join(', ') + ' hanya dikirim ke admin uji'); } });
+}
+// link WA "Mode shooting … sudah siap": ?shoot=<ID agenda> → langsung ke tab Ide shoot itu (sekali per buka app)
+function bukaDariLink() { if (bukaDariLink.sudah) return; bukaDariLink.sudah = 1; const id = QU.get('shoot'); if (!id || LIHAT) return; bukaShoot(id, 'home'); SHT = 'ide'; render(); }
+
 function mediaShoot(m, judul) {
   if (!m) return ''; const t = judul ? `<b class="msmt">${esc(judul)}</b>` : '', buka = l => `<a class="msbuka" href="${esc(m.url)}" target="_blank" rel="noopener">${l}</a>`;
   if (m.jenis === 'gambar') return `<div class="msm">${t}<a href="${esc(m.url)}" target="_blank" rel="noopener"><img src="${esc(m.id ? thumb(m.id, 1200) : m.src)}" alt="${esc(judul || 'Gambar moodboard')}" loading="lazy" referrerpolicy="no-referrer"></a></div>`;
@@ -1383,6 +1538,7 @@ function vShoot() {
     if (S.skema && S.skema.talent.length) { const ab = t => S.skema.absen.some(a => kecil(a) === kecil(t));
       h += `<div class="mstalr"><small>Talent hadir</small><div class="mstal">${S.skema.talent.map(t => `<button class="${ab(t) ? '' : 'on'}" ${S.boleh && !S.arsip ? '' : 'disabled'} onclick="tapAbsen(this.dataset.t)" data-t="${esc(t)}" aria-label="${esc(t)} ${ab(t) ? 'tidak hadir' : 'hadir'}">${ab(t) ? '🚫' : '✓'} ${esc(t)}</button>`).join('')}</div></div>`; }
     const tk = S.ide.filter(x => x.take).length;
+    h += ringkasRvHtml(S);   // RevisiIde 1.0
     h += `<div class="msurut" data-gulir="urut">${[['jam', 'Per jam'], ['warna', 'Per warna'], ['kat', 'Per kategori']].map(o => `<button class="${SHURUT === o[0] ? 'on' : ''}" onclick="SHURUT='${o[0]}';render()">${o[1]}</button>`).join('')}<small>${tk}/${S.ide.length} take</small>${S.paket.sheetIde || S.skema ? `<button class="lk" onclick="SH=null;muatShoot(true);render()" aria-label="Muat ulang dari file">🔄</button>` : ''}</div>`;
     if (SHURUT === 'jam') h += perJam(S, now);
     else if (!S.ide.length) {
@@ -1393,15 +1549,19 @@ function vShoot() {
       const seris = [...new Set(S.ide.map(x => x.seri).filter(Boolean))]; if (seris.length && !seris.includes(SHSERI)) SHSERI = seris[0];
       const pool0 = seris.length ? S.ide.filter(x => x.seri === SHSERI) : S.ide, models = [...new Set([].concat(...pool0.map(x => pisahNama(x.model))).filter(m => !/^semua/i.test(m)))];
       if (SHMODEL && !models.includes(SHMODEL)) SHMODEL = '';
-      const pool = pool0.filter(x => !SHMODEL || pisahNama(x.model).includes(SHMODEL) || /semua model/i.test(x.model));
+      const pool = pool0.filter(x => !SHMODEL || pisahNama(x.model).includes(SHMODEL) || /semua model/i.test(x.model)).filter(cocokRv);
       if (seris.length > 1) h += `<div class="msseg2" data-gulir="seri">${seris.map(o => `<button class="${SHSERI === o ? 'on' : ''}" onclick="SHSERI=this.dataset.v;SHMODEL='';render()" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;
       if (models.length) h += `<div class="chips" data-gulir="model" style="margin-top:8px">${[''].concat(models).map(m => `<button class="${SHMODEL === m ? 'on' : ''}" onclick="SHMODEL=this.dataset.v;render()" data-v="${esc(m)}">${esc(m || 'Semua')}</button>`).join('')}</div>`;
       if (S.boleh && !S.arsip && !S.paket.sheetIde && !S.skema) h += `<div class="acts"><button class="sbtn" onclick="bukaForm('idesh')">＋ Ide konten</button><button class="sbtn" onclick="bukaForm('tempel','ide')">📋 Tempel ide dari Excel</button><button class="sbtn" onclick="bukaForm('paket')">🔗 Pakai link sheet</button></div>`;
       const perW = SHURUT === 'warna', kunciG = x => perW ? (x.warna && kecil(x.warna) !== 'bebas' ? x.warna : 'Bebas') : (x.kategori || x.format || 'Lainnya'), grup = [...new Set(pool.map(kunciG))];
       if (perW) grup.sort((a, b) => (a === 'Bebas') - (b === 'Bebas'));
-      h += grup.map(g => { const xs = pool.filter(x => kunciG(x) === g);
-        return `<div class="msgg"><i style="background:${perW ? (g === 'Bebas' ? 'var(--acc)' : hexWarna(g.split(',')[0])) : 'var(--deep)'}"></i><b>${esc(perW ? (g === 'Bebas' ? 'Warna bebas' : g) : g)}</b><small>${xs.filter(x => x.take).length} / ${xs.length}</small></div>` + xs.map(x => barisIde(x, null, perW)).join(''); }).join('');
+      GRUP_IDE = []; const bisaTambah = S.boleh && !S.arsip && (S.skema || S.paket.sheetIde), lain = SHRV && seris.length > 1 ? S.ide.filter(x => x.seri !== SHSERI && cocokRv(x)).length : 0;
+      if (SHRV && !pool.length) h += `<div class="info">Tidak ada ide "${esc(SHRV)}"${seris.length > 1 ? ' di seri ' + esc(SHSERI) : ''}.</div>`;
+      if (lain) h += `<small class="msd">+${lain} ide "${esc(SHRV)}" di seri lain</small>`;
+      h += grup.map(g => { const xs = pool.filter(x => kunciG(x) === g), gj = GRUP_IDE.push(perW ? { warna: g === 'Bebas' ? '' : g } : { kategori: g }) - 1;
+        return `<div class="msgg"><i style="background:${perW ? (g === 'Bebas' ? 'var(--acc)' : hexWarna(g.split(',')[0])) : 'var(--deep)'}"></i><b>${esc(perW ? (g === 'Bebas' ? 'Warna bebas' : g) : g)}</b><small>${xs.filter(x => x.take).length} / ${xs.length}</small></div>` + xs.map(x => barisIde(x, null, perW)).join('') + (bisaTambah ? `<button class="msmore" onclick="formIdeGrup(${gj})">＋ Ide di ${perW ? 'warna' : 'kategori'} ini</button>` : ''); }).join('');
     }
+    h += ideLainHtml(S);   // RevisiIde 1.0: disembunyikan & revisi tanpa ide asli
   }
   if (SHT === 'progres') h += progresShoot(S, n, now);
   h += `<div class="msfin"><button onclick="lihatRekap()">${S.arsip ? '📸 Lihat rekap' : 'Selesai shooting · lihat rekap'}</button></div>`;
@@ -1422,15 +1582,17 @@ function perJam(S, now) {
   if (!blok.length) h += `<div class="info">Rundown belum ada.${S.skema && S.boleh ? ' Ketuk <b>✨ Buat draf rundown</b> di atas, lalu <b>Pakai rundown ini</b>.' : S.boleh ? ' Tambah lewat <b>＋ Blok</b> atau tempel dari Excel.' : ''} File rundown (PDF/gambar) ada di tab Mood.</div>`;
   if (S.boleh && !S.arsip && !S.skema && !dariCs) h += `<div class="acts" style="margin-top:10px"><button class="sbtn" onclick="bukaForm('blok')">＋ Blok</button><button class="sbtn" onclick="bukaForm('tempel','rundown')">📋 Tempel rundown dari Excel</button></div>`;
   h += S.rundown.map((b, i) => { const ub = S.boleh && !S.arsip && !dariCs ? `<button class="shed" onclick="bukaForm('blok',${i})" aria-label="Ubah blok">✏️</button>` : '';
-    if (!b.blok) return SHCEK ? '' : `<div class="shev"><b>${esc(b.jam)}</b><span>${esc([b.catatan, b.setup].filter(Boolean).join(' · ') || b.seri)}</span>${ub}</div>`;
+    if (!b.blok) return SHCEK || SHRV ? '' : `<div class="shev"><b>${esc(b.jam)}</b><span>${esc([b.catatan, b.setup].filter(Boolean).join(' · ') || b.seri)}</span>${ub}</div>`;
     let ide = ideDiBlok(S, b); if (SHCEK) ide = ide.filter(x => cekModel(x, b)); if (SHCEK && !ide.length) return '';
+    if (SHRV) { ide = ide.filter(cocokRv); if (!ide.length) return ''; }   // RevisiIde: saringan review juga di Per jam
     const tk = ide.filter(x => x.take).length, lim = SHBUKA[i] ? 999 : 3, ws = pisahNama(b.warna || b.blok).slice(0, 4);
     return `<div class="msblok ${i === now ? 'now' : ''}" id="blok${i}"><div class="msbh"><div class="msdots">${ws.map(w => `<i style="background:${hexWarna(w)}"></i>`).join('')}</div><div class="msbt"><small>${esc([b.jam, b.seri].filter(Boolean).join(' · '))}</small><b>${esc(b.warna ? pisahNama(b.warna).join(' × ') : b.blok)}</b></div>${i === now ? '<span class="msnow">SEDANG JALAN</span>' : ''}${ub}</div>
       ${b.talent ? `<small class="msd">👥 ${esc(talentWarna(b.talent, b.warna))}</small>` : ''}${b.scene && !ide.length ? `<div class="msscene">🎬 <span><b>Video:</b> ${esc(b.scene)}</span></div>` : ''}
       ${b.setup ? `<div class="msset"><small>FOTO KATALOG</small>${b.setup.split(/\n|;/).map(x => x.trim()).filter(Boolean).map(x => `<span>• ${esc(x)}</span>`).join('')}</div>` : ''}${b.pose ? `<small class="msd">🖼️ Pose: ${esc(b.pose)}</small>` : ''}${b.catatan ? `<small class="msd">📝 ${esc(b.catatan)}</small>` : ''}
       ${ide.length ? `<div class="msih"><small>IDE KONTEN DI BLOK INI</small><small>${tk} / ${ide.length} sudah take</small></div>` + ide.slice(0, lim).map(x => barisIde(x, b, true)).join('') : ''}
-      ${ide.length > 3 ? `<button class="msmore" onclick="SHBUKA[${i}]=!SHBUKA[${i}];render()">${SHBUKA[i] ? 'Ringkas' : 'Tampilkan semua (' + ide.length + ')'}</button>` : ''}</div>`; }).join('');
-  const lepas = S.ide.filter(x => !masuk.includes(x) && x.kategori !== 'Cadangan');
+      ${ide.length > 3 ? `<button class="msmore" onclick="SHBUKA[${i}]=!SHBUKA[${i}];render()">${SHBUKA[i] ? 'Ringkas' : 'Tampilkan semua (' + ide.length + ')'}</button>` : ''}${tambahDiBlok(S, b)}</div>`; }).join('');
+  const lepas = S.ide.filter(x => !masuk.includes(x) && x.kategori !== 'Cadangan' && cocokRv(x));
+  if (SHRV && !S.ide.some(cocokRv)) h += `<div class="info">Tidak ada ide "${esc(SHRV)}".</div>`;
   if (lepas.length && blok.length && !SHCEK) h += `<div class="msblok"><div class="msbt"><small>BELUM ADA DI RUNDOWN</small><b>Ide di luar jadwal · ${lepas.length}</b></div>${lepas.slice(0, SHBUKA.lepas ? 999 : 5).map(x => barisIde(x, null, true)).join('')}${lepas.length > 5 ? `<button class="msmore" onclick="SHBUKA.lepas=!SHBUKA.lepas;render()">${SHBUKA.lepas ? 'Ringkas' : 'Tampilkan semua (' + lepas.length + ')'}</button>` : ''}</div>`;
   return h;
 }
@@ -1550,7 +1712,7 @@ async function uploadShoot(jenis, f) {
 function tapProp(i) { const x = SH && SH.paket.props[i]; if (x) centangShot('prop|' + x.n); }
 function takeIde(i) {
   const x = SH && SH.ide[i]; if (!x || SH.arsip) return; if (SH.h > 0) return react('bingung', 'Ide bisa ditandai mulai hari H ya');
-  if (x.sumber === 'sheet') return centangShot('ide|' + x.key, !x.take);
+  if (x.sumber === 'sheet' || x.baru) return centangShot('ide|' + x.key, !x.take);
   if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat.');
   const on = !x.take, lama = x.take; x.take = on ? '✓ ' + D.nama + ' baru saja' : ''; simpanLokal('tkbShoot1_' + SH.id, SH); render();
   kirimShoot('apiIdeTake', [SH.id, x.baris, x.ide, on], r => { if (r && r.ok) x.take = r.take; else if (r) { x.take = lama; react('gagal', r.pesan || 'Gagal'); } if (TAB === 'shoot' && !$('sheet').classList.contains('show')) render(); },
@@ -2242,6 +2404,8 @@ const PF = [['IG feed'], ['IG story'], ['Reels'], ['TikTok'], ['Threads'], ['You
 function platDariBaris(x) { const p = String(x.plat).toLowerCase(); return x.tab === 'SYIFA' ? [] : x.tab !== 'KALENDER IG & TIKTOK' ? ['Threads'] : /youtube|shorts/.test(p) ? ['YouTube Shorts'] : /reels & tiktok/.test(p) ? ['Reels', 'TikTok'] : /story/.test(p) ? ['IG story'] : /reels/.test(p) ? ['Reels'] : /tiktok/.test(p) ? ['TikTok'] : ['IG feed']; }
 // ---------- Rilis 4: alasan posting belum memenuhi target (link ?alasan=YYYY-MM-DD dari pesan WA, atau Lainnya → Alasan posting) ----------
 let ALASAN = null;
+// Colek approval Syifa (5.14): ?review=<ID> → Preview & approval (seri itu kalau ada), ?approval=1 → Approval konten
+function bukaColekDariLink() { if (bukaColekDariLink.sudah || LIHAT) return; bukaColekDariLink.sudah = 1; const r = QU.get('review'); if (r) { RVF = 'Menunggu'; RVS = r; go('review'); } else if (QU.get('approval')) go('appr'); }
 function bukaAlasanDariLink() { if (bukaAlasanDariLink.sudah) return; bukaAlasanDariLink.sudah = 1; const t = QU.get('alasan'); if (t && !LIHAT) bukaAlasan(t); }
 function stAlasan(i, t, gagal) { const s = $('alb' + i + 's'); if (s) { s.textContent = t; s.className = 'alstat' + (gagal ? ' gagal' : ''); } }
 function bukaAlasan(tgl) {
@@ -2310,6 +2474,11 @@ function bukaForm(k, arg) {
       <div id="ztelat" style="display:none"><label>Perkiraan sampai kantor</label><input id="z5" type="time" value="09:00"><small style="color:var(--mut)">Hari itu tetap wajib lapor. Alasan hanya terlihat oleh atasan.</small></div>
       <label>Keterangan</label><input id="z4" placeholder="acara keluarga">
       <label id="zbagi" style="display:none"><input type="checkbox" id="z6"> Boleh dibagikan ke tim (supaya didoakan)</label></div><button class="big" id="kirim">Kirim izin</button>`,
+    selesaiP: () => { const f = (D.feed || []).find(x => x.id === arg) || {};
+      return `<h2>✅ Tandai selesai</h2><div class="info" style="margin-top:0">${esc(String(f.isi || '').slice(0, 160))}</div><div class="fm">
+      <label>Link hasil <span style="font-weight:500;color:var(--mut)">(opsional)</span></label><input id="sp1" type="url" inputmode="url" placeholder="https://drive.google.com/…">
+      <label>Catatan <span style="font-weight:500;color:var(--mut)">(opsional)</span></label><textarea id="sp2" style="min-height:76px" placeholder="Contoh: sudah 3 versi, pilih yang paling cocok"></textarea></div>
+      <div class="info">${esc(f.dari || 'Pemberi tugas')} langsung dikabari lewat WA, beserta link hasilnya (kalau tidak ada link: link ke tugas ini di app).</div><button class="big" id="kirim">✅ Selesai</button>`; },
     perintah: () => { const f = arg === undefined ? null : typeof arg === 'object' ? arg : D.feed[arg], ul = f ? (f.untukList || []) : [];
       return `<h2>${f ? 'Edit perintah' : 'Kirim perintah'}</h2><div class="fm"><label>Untuk</label><div class="pfs" id="untuk"><button class="pf ${!ul.length ? 'on' : ''}" data-p="Semua">Semua</button>${D.timNama.filter(n => n !== D.nama).map(n => `<button class="pf ${ul.includes(n) ? 'on' : ''}" data-p="${esc(n)}">${esc(n)}</button>`).join('')}</div>
       <label>Isi perintah</label><textarea id="p1" placeholder="Tolong siapkan 2 opsi lokasi photoshoot Bandung">${esc(f ? f.isi : '')}</textarea><label>Tanggal tenggat (opsional)</label><input id="p2" type="date" value="${esc(f ? f.tIso : '')}"></div>`
@@ -2558,6 +2727,8 @@ function tampilCek(L, judul) { $('info').innerHTML = '<b>' + judul + '</b><br>' 
 function kirim(k, arg) {
   const g = id => ($(id) ? $(id).value.trim() : ''), sh = $('sheet');
   if (k === 'lapor') { if (!g('f1')) return react('bingung', '✍️ Isi dulu yang selesai hari ini ya'); return run('apiLapor', [{ selesai: g('f1'), sedang: g('f2'), progres: g('f3'), link: g('f4'), rencana: g('f5'), foto: FOTO }], 'lapor', FOTO ? 'Mengunggah foto…' : 'Menyimpan…'); }
+  if (k === 'selesaiP') { const link = g('sp1'); if (link && !/^https?:\/\/\S+$/i.test(link)) return react('bingung', 'Link hasil harus diawali https:// ya');
+    return run('apiPerintahStatus', [arg, 'selesai', { link, catatan: g('sp2') }], 'selesai', 'Menyimpan…'); }
   if (k === 'ide') { if (!g('i1')) return react('bingung', 'Tulis idenya dulu ya'); return run('apiIde', [g('i1'), g('i2')], 'ide'); }
   if (k === 'izin') { const f = d => d ? d.split('-').reverse().slice(0, 2).join('/') : '';
     if (g('z1') === 'datang terlambat') return run('apiTelat', [[f(g('z2')), (g('z5') || '').replace(':', '.'), g('z4')].filter(Boolean).join(' | ')], 'izin');
