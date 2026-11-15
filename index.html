@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="19">
-<script>window.__UIVERSI = 19;</script>
+<meta name="tkb-tampilan" content="20">
+<script>window.__UIVERSI = 20;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -169,7 +169,8 @@ button{font:inherit;color:inherit;cursor:pointer}a{color:var(--acct)}
 .fm label{display:block;font-size:13px;font-weight:600;color:var(--mut);margin:12px 0 6px}
 .fm input,.fm textarea,.fm select{width:100%;border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;font:15px 'Outfit',sans-serif;background:var(--bg);color:var(--ink)}
 .fm textarea{min-height:84px;resize:vertical}.fm input[type=range]{padding:0;border:0;background:none;accent-color:var(--acct)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cnt{float:right;font-weight:500}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.two>div{min-width:0}
+.fm input[type=date],.fm input[type=time]{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%;display:block;min-height:48px;text-align:left}.fm input::-webkit-date-and-time-value{text-align:left}.agch{flex-wrap:wrap}.cnt{float:right;font-weight:500}
 .drop{display:block;border:2px dashed #E77FA6;border-radius:18px;padding:14px;text-align:center;color:var(--mut);cursor:pointer}.drop img{max-width:100%;max-height:170px;border-radius:12px;display:block;margin:0 auto 6px}
 .pfs{display:flex;flex-wrap:wrap;gap:8px}.pf{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;color:var(--mut)}
 .pf.on{background:var(--deep);border-color:var(--acct);color:#fff}.pf:disabled{opacity:.45}
@@ -780,13 +781,13 @@ function vHome() {
   if (D.siapPost && D.siapPost.length) { const sp = D.siapPost, kls = sp.some(x => !x.n) ? 'no' : sp.some(x => x.n < x.t) ? 'wr' : 'ok';
     h += `<button class="card psk" onclick="go('cal')"><span class="chip ${kls}">📱 Kesiapan posting</span><b>${sp.map(x => esc(x.h) + ' ' + (x.n >= x.t ? '✓' : x.n ? '⚠️' : '✗') + ' ' + x.n + '/' + x.t).join(' · ')}</b></button>`; }
   if (D.bolehReview && D.review && D.review.menunggu) h += `<button class="card psk" onclick="RVF='Menunggu';RVS=null;go('review')"><span class="chip wr">⏳ Preview &amp; approval</span><b>${D.review.menunggu} ${D.reviewV2 ? 'seri' : 'foto'} menunggu review</b><small>Ketuk untuk setujui atau minta revisi</small></button>`;
-  h += '<div class="pills">' + [...Array(7)].map((_, i) => { const x = new Date(t); x.setDate(t.getDate() + i); return `<button class="pill ${i === SEL ? 'on' : ''}" data-i="${i}"><span>${i === 0 ? 'Hari ini' : H[x.getDay()]}</span><b>${x.getDate()}</b>${D.kal.some(k => k.h === i) || D.kalTim.some(k => k.h === i) ? '<i class="dot"></i>' : ''}</button>`; }).join('') + '</div>';
+  h += '<div class="pills">' + [...Array(7)].map((_, i) => { const x = new Date(t); x.setDate(t.getDate() + i); return `<button class="pill ${i === SEL ? 'on' : ''}" data-i="${i}"><span>${i === 0 ? 'Hari ini' : H[x.getDay()]}</span><b>${x.getDate()}</b>${D.kal.some(k => k.h === i) || D.kalTim.some(k => agPada(k, i)) ? '<i class="dot"></i>' : ''}</button>`; }).join('') + '</div>';
   const akhirHari = new Date(); akhirHari.setHours(23, 59, 59, 999);
   const pengingat = (D.catatan || []).filter(c => !c.selesai && c.ingat && new Date(c.ingat) <= akhirHari && baru7(c));
   if (pengingat.length && SEL === 0) h += `<div class="card"><h3>⏰ Pengingat</h3>${pengingat.map(c => { const lewat = new Date(c.ingat) <= new Date();
     return `<div class="lc"><span class="chip ${lewat ? 'no' : ''}">${lewat ? 'Sekarang' : esc(c.ingat.slice(11, 16).replace(':', '.'))}</span><div class="x"><b>${esc(c.isi)}</b><small>${c.lihat === 'Tim' ? '👥 dari ' + esc(c.milik ? 'kamu' : c.dari) : '🔒 catatan pribadi'}</small></div>${c.luar ? '' : `<button class="sbtn okb" onclick="run('apiCatatanAksi',['${esc(c.id)}','selesai'],'selesai')">✅</button>`}</div>`; }).join('')}</div>`;
   if (D.ingat.length && SEL === 0) h += `<div class="card"><h3>🔍 Perlu dibereskan${HP() && D.ingat.length > 3 ? ' · ' + D.ingat.length : ''}</h3>${(HP() && !RC_PENUH ? D.ingat.slice(0, 3) : D.ingat).map(x => `<div class="lc"><span class="chip no">!</span><div class="x"><small style="color:var(--ink);font-size:14px">${esc(x)}</small></div></div>`).join('')}</div>`;
-  const rc = rencana(SEL), ag = D.kalTim.filter(k => k.h === SEL);
+  const rc = rencana(SEL), ag = D.kalTim.filter(k => agPada(k, SEL));
   h += `<div class="sh"><h3>Rencana ${SEL === 0 ? 'hari ini' : 'hari itu'}</h3><button onclick="go('cal')">Kalender</button></div>`;
   const semuaR = ag.map(k => ({ jam: k.jam || '', t: k.nama, s: [k.jamSelesai ? k.jam + '–' + k.jamSelesai : '', k.lokasi, k.tim.length ? '👥 ' + k.tim.join(', ') : ''].filter(Boolean).join(' · ') || k.jenis, c: k.jenis || 'Agenda', n: k.catatan, done: k.status === 'Selesai', ag: true, ki: D.kalTim.indexOf(k) })).concat(rc);
   if (semuaR.length) { let on = false; const sel = semuaR.filter(x => x.done).length, batasR = HP() ? 3 : 5, tampil = RC_PENUH ? semuaR : semuaR.slice(0, batasR);
@@ -884,6 +885,10 @@ function bukaAgenda(i) {
     ${k.jenis === 'Photoshoot' && k.id ? `<button class="big" onclick="bukaShoot('${esc(k.id)}','agenda')">🎬 Paket shooting &amp; Mode Shooting</button>` : ''}
     ${bolehUbahAg(k) ? `<button class="big alt" onclick="bukaForm('agenda',${i})">✏️ Ubah agenda</button><button class="big alt" onclick="hapusAgenda(${i})">🗑️ Hapus agenda</button>` : k.dariSyifa && k.bisaUbah ? `<button class="big alt" onclick="bukaForm('agsyifa',${i})">✏️ Ubah agenda</button>` : ''}`);
 }
+// Form agenda 5.12: penjelasan bebas laporan per jenis (Meeting tetap wajib laporan; target posting selalu berlaku)
+function infoAgenda(j) { return !j ? 'Pilih jenis agenda.' : j === 'Meeting' ? 'Meeting tetap wajib laporan harian. Target posting tetap berlaku.' : 'Tim yang ikut bebas laporan harian selama agenda berlangsung. Target posting tetap berlaku.'; }
+// agenda beberapa hari tampil di setiap harinya (h = hari mulai, hs = hari selesai)
+const agPada = (k, i) => k.h <= i && (k.hs !== undefined ? k.hs : k.h) >= i;
 function hapusAgenda(i) { const k = D.kalTim[i]; if (!k || !confirm('Hapus agenda "' + k.nama + '"?')) return; D.kalTim.splice(i, 1); render(); run('apiAgendaHapus', [k.id], 'agenda', 'Menghapus…'); }
 function timList() {
   const kt = (D.kalTim || []).filter(k => (k.hs !== undefined ? k.hs : k.h) >= 0);
@@ -1637,7 +1642,7 @@ function vPsList() {
   let h = kembali + judul('🎬 Photoshoot', 'Mode Shooting', `<button class="round" onclick="bukaForm('agenda')" aria-label="Agenda photoshoot baru">${ic('plus', 24)}</button>`);
   const kartu = k => { const d = new Date(k.mulai + 'T00:00:00');
     return `<button class="mspl" onclick="bukaShoot('${esc(k.id)}','pslist')"><span class="mstg"><small>${esc(String(k.hari || '').slice(0, 3).toUpperCase())}</small><b>${d.getDate()}</b></span><span class="x"><b>${esc(k.nama)}</b><small>${esc([k.h === 0 ? 'Hari ini' : '', k.jam, k.lokasi, k.produk].filter(Boolean).join(' · ') || 'Belum ada lokasi / produk')}</small></span>${ic('arr', 18)}</button>`; };
-  if (!ps.length) h += kosong('s21', 'Belum ada agenda photoshoot. Buat agenda dengan nama berisi kata <b>photoshoot</b>, pilih produknya, lalu buka di sini.');
+  if (!ps.length) h += kosong('s21', 'Belum ada agenda photoshoot. Buat agenda dengan jenis <b>Photoshoot</b>, pilih produknya, lalu buka di sini.');
   if (depan.length) h += `<div class="sh"><h3>Akan datang</h3></div>` + depan.map(kartu).join('');
   if (lalu.length) h += `<div class="sh"><h3>Sebelumnya</h3></div>` + lalu.map(kartu).join('');
   return h + `<div class="mscara"><b>Cara menyiapkan</b>Buat agenda photoshoot dan pilih produknya. Di Mode Shooting → Moodboard, tempel link moodboard (PDF/Drive/Canva) dan link sheet ide konten. App membacanya otomatis.</div>`;
@@ -2555,14 +2560,21 @@ function bukaForm(k, arg) {
       <label>Catatan</label><textarea id="k7" style="min-height:64px">${v('catatan')}</textarea></div>
       <div class="info">Link sheet ide: bagikan sheet-nya ke akun pemilik Arabelle Hub. Judul kolom yang dikenali: Seri, Kategori, Ide/Deskripsi, Model, Warna/Baju, Blok, Referensi, Platform, Opsi. Kosong = ide dari tab IDE SHOOTING. File Drive dibagikan "siapa pun yang punya link" supaya tampil di HP tim.</div><button class="big" id="kirim">Simpan paket</button>`; },
     agenda: () => { const k = arg !== undefined ? D.kalTim[arg] : null, jm = x => String(x || '').replace('.', ':');
-      return `<h2>${k ? 'Ubah agenda' : 'Agenda baru'}</h2><div class="fm"><label>Nama kegiatan</label><input id="a2" placeholder="Contoh: Meeting evaluasi konten Oktober" value="${esc(k ? k.nama : '')}">
+      // Form agenda 5.12: jenis wajib (chip), Sehari/Beberapa hari, produk hanya untuk Photoshoot
+      const PJ = { 'Photoshoot': 'Photoshoot', 'Meeting': 'Meeting', 'Dinas luar kota': 'Dinas', 'Event': 'Event', 'Perjalanan': 'Event' }, jn = k ? (PJ[k.jenis] || 'Lainnya') : '', jl = k && jn === 'Lainnya' ? k.jenis : '';
+      const banyak = !!(k && k.selesai && k.selesai !== k.mulai), prdOn = jn === 'Photoshoot';
+      return `<h2>${k ? 'Ubah agenda' : 'Agenda baru'}</h2><div class="fm"><label>Jenis agenda</label><div class="chips agch" id="aj">${['Photoshoot', 'Dinas', 'Event', 'Meeting', 'Lainnya'].map(x => `<button type="button" class="${jn === x ? 'on' : ''}" data-v="${x}">${x}</button>`).join('')}</div>
+      <input id="ajl" placeholder="Tulis jenisnya, contoh: Konser, Operasional" value="${esc(jl)}" style="margin-top:8px;${jn === 'Lainnya' ? '' : 'display:none'}">
+      <label>Nama kegiatan</label><input id="a2" placeholder="Contoh: Meeting evaluasi konten Oktober" value="${esc(k ? k.nama : '')}">
       <label>Catatan (opsional)</label><textarea id="a9" style="min-height:76px" placeholder="Contoh:&#10;1. Bahas konsep photoshoot&#10;2. Bawa 5 warna Lunaria">${esc(k ? k.catatan : '')}</textarea>
-      <label>Tanggal</label><input type="date" id="a3" value="${k ? k.mulai : hari}">
-      <div class="two"><div><label>Jam mulai</label><input type="time" id="a5" value="${esc(k ? jm(k.jam) : '')}"></div><div><label>Jam selesai <span style="font-weight:500;color:var(--mut)">(opsional)</span></label><input type="time" id="a4" value="${esc(k ? jm(k.jamSelesai) : '')}"></div></div>
+      <label>Lama agenda</label><div class="chips agch" id="adur"><button type="button" class="${banyak ? '' : 'on'}" data-v="1">Sehari</button><button type="button" class="${banyak ? 'on' : ''}" data-v="n">Beberapa hari</button></div>
+      <div id="a1hari" style="${banyak ? 'display:none' : ''}"><label>Tanggal</label><input type="date" id="a3" value="${k ? k.mulai : hari}">
+      <div class="two"><div><label>Jam mulai</label><input type="time" id="a5" value="${esc(k ? jm(k.jam) : '')}"></div><div><label>Jam selesai <span style="font-weight:500;color:var(--mut)">(opsional)</span></label><input type="time" id="a4" value="${esc(k ? jm(k.jamSelesai) : '')}"></div></div></div>
+      <div id="anhari" class="two" style="${banyak ? '' : 'display:none'}"><div><label>Tanggal mulai</label><input type="date" id="a3b" value="${k ? k.mulai : hari}"></div><div><label>Tanggal selesai</label><input type="date" id="a3c" value="${k && banyak ? k.selesai : ''}"></div></div>
       <label>Lokasi</label><input id="a6" placeholder="Contoh: Studio Kudus" value="${esc(k ? k.lokasi : '')}">
       <label>Tim yang ikut</label><div class="pfs" id="ikut">${D.timNama.map(n => `<button class="pf ${k && k.tim.includes(n) ? 'on' : ''}" data-p="${esc(n)}">${esc(n)}</button>`).join('')}</div>
-      ${(D.produkList || []).length || (k && k.produk) ? `<label>Produk <span style="font-weight:500;color:var(--mut)">(belum launching · opsional)</span></label><input id="prdq" placeholder="🔍 Cari produk…" oninput="cariPrd(this.value)" style="margin-bottom:8px"><div class="pfs prdbox" id="prd">${[...new Set((k && k.produk ? String(k.produk).split(/\s*,\s*/).filter(Boolean) : []).concat(D.produkList || []))].map(n => `<button class="pf ${k && String(k.produk || '').split(/\s*,\s*/).includes(n) ? 'on' : ''}" data-p="${esc(n)}">${esc(n)}</button>`).join('')}</div>` : ''}</div>`
-      + `<div class="info">${k ? 'Perubahan langsung tampil di beranda &amp; kalender tim.' : (D.pimpinan ? 'Agenda langsung berstatus Fix.' : 'Agenda masuk sebagai Rencana, menunggu konfirmasi leader.') + ' Tampil di beranda &amp; kalender tim (tidak dikirim ke grup WA). Tim yang ikut bebas laporan di hari itu.'}</div><button class="big" id="kirim">${k ? 'Simpan perubahan' : 'Simpan agenda'}</button>`; },
+      ${(D.produkList || []).length || (k && k.produk) ? `<div id="aprd" style="${prdOn ? '' : 'display:none'}"><label>Produk <span style="font-weight:500;color:var(--mut)">(untuk photoshoot · belum launching)</span></label><input id="prdq" placeholder="🔍 Cari produk…" oninput="cariPrd(this.value)" style="margin-bottom:8px"><div class="pfs prdbox" id="prd">${[...new Set((k && k.produk ? String(k.produk).split(/\s*,\s*/).filter(Boolean) : []).concat(D.produkList || []))].map(n => `<button class="pf ${k && String(k.produk || '').split(/\s*,\s*/).includes(n) ? 'on' : ''}" data-p="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>` : ''}</div>`
+      + `<div class="info" id="ainfo">${infoAgenda(jn)}${k ? '' : '<br>' + (D.pimpinan ? 'Agenda langsung berstatus Fix.' : 'Agenda masuk sebagai Rencana, menunggu konfirmasi leader.')} Tampil di beranda &amp; kalender tim (tidak dikirim ke grup WA).</div><button class="big" id="kirim">${k ? 'Simpan perubahan' : 'Simpan agenda'}</button>`; },
     agsyifa: () => { const k = arg !== undefined ? D.kalTim[arg] : null, r = k ? k.syRaw : null, raw = r ? String(r.note || '') : '';
       const low = x => String(x).toLowerCase().replace(/\s+/g, ''), tag = (raw.match(/@([^\s@,]+)/g) || []).map(x => low(x.slice(1))), semua = tag.includes('semua') || tag.includes('tim');
       const bersih = raw.replace(/@[^\s@,]+|#pribadi|#tim/ig, '').replace(/\s{2,}/g, ' ').trim();
@@ -2631,6 +2643,9 @@ function bukaForm(k, arg) {
     sh.querySelectorAll('#rbjn button').forEach(b => b.onclick = () => { sh.querySelectorAll('#rbjn button').forEach(y => y.classList.remove('on')); b.classList.add('on'); }); }
   if (k === 'seri') siapSeriRv(k, arg);
   if (k === 'produk') sh.querySelectorAll('#prs button').forEach(b => b.onclick = () => { sh.querySelectorAll('#prs button').forEach(y => y.classList.remove('on')); b.classList.add('on'); });
+  if (k === 'agenda') { const pilih = (id, f) => sh.querySelectorAll(id + ' button').forEach(b => b.onclick = () => { sh.querySelectorAll(id + ' button').forEach(y => y.classList.toggle('on', y === b)); f(b.dataset.v); });
+    pilih('#aj', v => { $('ajl').style.display = v === 'Lainnya' ? '' : 'none'; if ($('aprd')) $('aprd').style.display = v === 'Photoshoot' ? '' : 'none'; $('ainfo').firstChild.textContent = infoAgenda(v); if (v === 'Lainnya') $('ajl').focus(); });
+    pilih('#adur', v => { $('a1hari').style.display = v === 'n' ? 'none' : ''; $('anhari').style.display = v === 'n' ? '' : 'none'; if (v === 'n' && !$('a3c').value) $('a3b').value = $('a3').value; if (v !== 'n') $('a3').value = $('a3b').value || $('a3').value; }); }
   if (k === 'agsyifa') { sh.querySelectorAll('#yk button').forEach(b => b.onclick = () => { sh.querySelectorAll('#yk button').forEach(y => y.classList.remove('on')); b.classList.add('on'); });
     sh.querySelectorAll('#yt button').forEach(b => b.onclick = () => { const on = !b.classList.contains('on');
       if (b.dataset.n === 'Semua tim') sh.querySelectorAll('#yt button').forEach(y => y.classList.toggle('on', on)); else { b.classList.toggle('on', on); if (!on) sh.querySelector('#yt [data-n="Semua tim"]').classList.remove('on'); } }); }
@@ -2779,11 +2794,16 @@ function kirim(k, arg) {
     tutup(); loading(true, FOTO || COVER ? 'Mengunggah foto…' : 'Menyimpan produk…');
     return gsr('apiSimpanProduk', [TOKEN, d], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal menyimpan'); react('selesai', r.pesan);
       muatProduk(() => { if (TAB !== 'produk') go('produk'); else render(); const j = PROD.findIndex(x => x.id === r.id); if (j >= 0 && p) bukaProduk(j); }); muat(true); }); }
-  if (k === 'agenda') { if (!g('a2')) return react('bingung', 'Isi nama kegiatannya dulu ya');
-    if (g('a4') && g('a5') && g('a4') < g('a5')) return react('bingung', 'Jam selesai tidak boleh sebelum jam mulai');
+  if (k === 'agenda') { const jn = (sh.querySelector('#aj .on') || {}).dataset, banyak = ((sh.querySelector('#adur .on') || {}).dataset || {}).v === 'n';
+    if (!jn) return react('bingung', 'Pilih jenis agendanya dulu ya');
+    if (jn.v === 'Lainnya' && !g('ajl')) return react('bingung', 'Tulis jenis agendanya dulu ya (Lainnya)');
+    if (!g('a2')) return react('bingung', 'Isi nama kegiatannya dulu ya');
+    if (!banyak && g('a4') && g('a5') && g('a4') < g('a5')) return react('bingung', 'Jam selesai tidak boleh sebelum jam mulai');
+    if (banyak && (!g('a3b') || !g('a3c'))) return react('bingung', 'Isi tanggal mulai dan tanggal selesai ya');
+    if (banyak && g('a3c') < g('a3b')) return react('bingung', 'Tanggal selesai tidak boleh sebelum tanggal mulai');
     const kk = arg !== undefined ? D.kalTim[arg] : null;
-    const d = { id: kk ? kk.id : '', nama: g('a2'), mulai: g('a3'), jam: g('a5'), jamSelesai: g('a4'), lokasi: g('a6'), catatan: $('a9').value.trim(), tim: [...sh.querySelectorAll('#ikut .pf.on')].map(b => b.dataset.p) };
-    if ($('prd')) d.produk = [...sh.querySelectorAll('#prd .pf.on')].map(b => b.dataset.p);
+    const d = { id: kk ? kk.id : '', jenis: jn.v, jenisLain: jn.v === 'Lainnya' ? g('ajl') : '', nama: g('a2'), mulai: banyak ? g('a3b') : g('a3'), selesai: banyak ? g('a3c') : '', jam: banyak ? '' : g('a5'), jamSelesai: banyak ? '' : g('a4'), lokasi: g('a6'), catatan: $('a9').value.trim(), tim: [...sh.querySelectorAll('#ikut .pf.on')].map(b => b.dataset.p) };
+    if ($('prd')) d.produk = jn.v === 'Photoshoot' ? [...sh.querySelectorAll('#prd .pf.on')].map(b => b.dataset.p) : [];
     tutup(); loading(true, 'Menyimpan agenda…'); return gsr('apiAgenda', [TOKEN, d], r => { loading(false); if (!r.ok) return react('gagal', r.pesan); react('agenda', r.pesan); muat(true); }); }
   if (k === 'agsyifa') { if (!g('y1')) return react('bingung', 'Judul agendanya diisi dulu ya'); const kk = arg !== undefined ? D.kalTim[arg] : null;
     const pil = [...sh.querySelectorAll('#yt .on')].map(b => b.dataset.n), semua = pil.includes('Semua tim');
