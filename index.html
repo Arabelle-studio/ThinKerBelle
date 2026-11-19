@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="21">
-<script>window.__UIVERSI = 21;</script>
+<meta name="tkb-tampilan" content="22">
+<script>window.__UIVERSI = 22;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -800,7 +800,7 @@ function vHome() {
       (semuaR.length > batasR ? `<button class="rmore" onclick="RC_PENUH=!RC_PENUH;render()">${RC_PENUH ? 'Ringkas' : 'Lihat semua (' + semuaR.length + ')'}</button>` : '') + '</div>'; }
   else h += kosong('s21', 'Belum ada rencana di hari ini.');
   h += '</div><div class="col">';
-  const syAg = (D.kalTim || []).filter(k => k.dariSyifa && k.hs >= 0 && k.h <= 7), syCt = (D.catatan || []).filter(c => c.luar && !c.selesai && baru7(c)), syPos = (D.kal || []).filter(x => x.syifa && x.h === SEL);
+  const syAg = (D.kalTim || []).filter(k => k.dariSyifa && k.hs >= 0 && k.h <= 7 && !sudahLewatAg(k)), syCt = (D.catatan || []).filter(c => c.luar && !c.selesai && baru7(c)), syPos = (D.kal || []).filter(x => x.syifa && x.h === SEL);
   const syTombol = D.aspri ? `<button onclick="bukaForm('agsyifa')">＋ Agenda Syifa</button>` : D.bolehSyifa ? `<button onclick="bukaForm('syifa')">＋ Posting Syifa</button>` : '';
   const syIsi = (syAg.length || syCt.length || syPos.length ? syPos.map(x => `<div class="lc" onclick="bukaForm('caption',${D.kal.indexOf(x)})"><span class="chip">${esc(x.jam || '–')}</span><div class="x"><b>${esc(x.topik)}</b><small>${esc(x.plat)} · ${esc(x.post)}</small></div></div>`).join('') +
       syAg.map(k => `<div class="lc"${k.bisaUbah ? ` onclick="bukaForm('agsyifa',${D.kalTim.indexOf(k)})"` : ''}><div class="d"><small>${esc(k.hari)}</small><b>${esc(k.tgl)}</b></div><div class="x"><b>${esc(k.ikon)} ${esc(String(k.nama).replace(' · Umi Syifa', ''))}</b><small>${esc([k.jenis, k.jam, k.lokasi].filter(Boolean).join(' · '))}</small><small>${k.ikut ? '✅ Kamu diajak' + (k.tim.length > 1 ? ' bersama ' + esc(k.tim.filter(x => x !== D.nama).join(', ')) : '') : k.tim.length ? '👥 Bersama ' + esc(k.tim.join(', ')) : 'ℹ️ Info saja, Umi Syifa sendiri'}</small></div></div>`).join('') +
@@ -913,8 +913,11 @@ function infoAgenda(j) { return !j ? 'Pilih jenis agenda.' : j === 'Meeting' ? '
 // agenda beberapa hari tampil di setiap harinya (h = hari mulai, hs = hari selesai)
 const agPada = (k, i) => k.h <= i && (k.hs !== undefined ? k.hs : k.h) >= i;
 function hapusAgenda(i) { const k = D.kalTim[i]; if (!k || !confirm('Hapus agenda "' + k.nama + '"?')) return; D.kalTim.splice(i, 1); render(); run('apiAgendaHapus', [k.id], 'agenda', 'Menghapus…'); }
+// 5.17.1: agenda HARI INI (satu hari) yang jam selesai/jam mulainya sudah lewat tidak lagi dianggap "akan datang" (masih ada di Kalender hari itu)
+const menitJamAg = j => { const m = String(j || '').match(/(\d{1,2})[.:](\d{2})/); return m ? +m[1] * 60 + +m[2] : null; };
+function sudahLewatAg(k, kini) { kini = kini || new Date(); if (k.h !== 0 || (k.hs !== undefined && k.hs !== 0)) return false; const m = menitJamAg(k.jamSelesai || k.jam); return m !== null && m < kini.getHours() * 60 + kini.getMinutes(); }
 function timList() {
-  const kt = (D.kalTim || []).filter(k => (k.hs !== undefined ? k.hs : k.h) >= 0);
+  const kt = (D.kalTim || []).filter(k => (k.hs !== undefined ? k.hs : k.h) >= 0 && !sudahLewatAg(k));
   if (!kt.length) return kosong('s21', 'Belum ada agenda tim yang akan datang.') + timLewat();
   return kartuAgenda(kt) + timLewat();
 }
@@ -1267,7 +1270,7 @@ function barisIde(x, b, kat) {
     <div class="mschip">${x.talentWarna ? `<span>${esc(x.talentWarna)}</span>` : x.model ? `<span>${esc(pisahNama(x.model).join(' + '))}</span>` : ''}${(x.luar || []).length ? '<span class="w">di luar skema</span>' : ''}${!kat && x.warna && kecil(x.warna) !== 'bebas' && SHURUT !== 'warna' ? `<span class="w">${esc(x.warna)}</span>` : ''}${x.opsi ? '<span class="g">Opsi</span>' : ''}${x.pic ? `<span class="g">PIC ${esc(x.pic)}</span>` : ''}${/^https?:\/\//i.test(x.ref || '') ? `<a href="${esc(x.ref)}" target="_blank" rel="noopener">▶ ${esc(x.platform || 'Referensi')}</a>` : x.platform && x.bisaRevisi ? `<span class="g">${esc(x.platform)}</span>` : ''}${x.baru ? '<span class="rv">Ide baru</span>' : ''}${x.direvisi ? '<span class="rv">direvisi</span>' : ''}${chipRv(x)}</div>
     ${blokRv(x)}${(x.absen || []).length ? `<div class="mswarn">🚫 ${esc(x.absen.join(', '))} tidak hadir · ide ini perlu disesuaikan</div>` : ''}${(x.cek || []).length ? `<div class="mswarn">⚠️ ${esc(x.cek.join(' · '))}</div>` : ''}
     ${warn && !x.talentWarna ? `<div class="mswarn">⚠️ ${esc(warn)}${saranBlok(SH, x) ? ' · ' + esc(saranBlok(SH, x)) : ''}</div>` : ''}${saran ? `<div class="mssaran">${esc(saran)}</div>` : ''}
-    ${blokCatatan(x, i)}${x.take && !/baru saja|offline/.test(x.take) ? `<small class="msok">${esc(x.take)}</small>` : ''}${SH.boleh && !SH.arsip && x.sumber !== 'sheet' && !x.bisaRevisi ? `<button class="lk" onclick="bukaForm('idesh',${i})">✏️ Ubah ide</button>` : ''}${tombolIde(x, i)}</div></div>`;
+    ${blokCatatan(x, i)}${x.take && !/baru saja|offline/.test(x.take) ? `<small class="msok">${esc(x.take)}</small>` : ''}${SH.boleh && !SH.arsip && x.sumber !== 'sheet' && !x.bisaRevisi ? (x.baris ? `<div class="msrvbar"><button onclick="bukaForm('idesh',${i})">✏️ Revisi</button><button onclick="formCatatan(${i})">📝 Catatan</button></div>` : `<button class="lk" onclick="bukaForm('idesh',${i})">✏️ Ubah ide</button>`) : ''}${tombolIde(x, i)}</div></div>`;
 }
 // ---------- RevisiIde 1.0: ubah ide, catatan, ide baru, sembunyikan, review Owner/Leader (server: RevisiIde.gs) ----------
 const ST_IDE = { oke: 'Oke', revisi: 'Perlu revisi', cek: 'Sudah direvisi, cek lagi', belum: 'Belum direview' };
@@ -1282,7 +1285,7 @@ function blokCatatan(x, i) {
 }
 function tombolIde(x, i) {
   if (!x.bisaRevisi || SH.arsip) return ''; const a = [], s = x.rv ? x.rv.status : '', st = SIMPAN_IDE[x.key];
-  if (SH.boleh) a.push(`<button onclick="formIde(${i})">✏️ Ubah</button>`, `<button onclick="formCatatan(${i})">💬 Catatan</button>`);
+  if (SH.boleh) a.push(`<button onclick="formIde(${i})">✏️ Revisi</button>`, `<button onclick="formCatatan(${i})">📝 Catatan</button>`);
   if (SH.bolehReview) a.push(`<button class="${s === ST_IDE.oke ? 'on' : ''}" onclick="reviewIde(${i})">👍 Oke</button>`, `<button class="${s === ST_IDE.revisi ? 'on' : ''}" onclick="formReview(${i})">✏️ Perlu revisi</button>`);
   return (a.length ? `<div class="msrvbar">${a.join('')}</div>` : '') + (st ? `<small class="msstat ${st.gagal ? 'gagal' : ''}">${esc(st.t)}</small>` : '');
 }
@@ -1297,7 +1300,11 @@ function ringkasRvHtml(S) {
   return h;
 }
 function saringRv(s) { SHRV = SHRV === s ? '' : s; render(); }   // berlaku di Per jam, Per warna, Per kategori
-function tambahDiBlok(S, b) { return S.boleh && !S.arsip && (S.skema || S.paket.sheetIde) ? `<button class="msmore" onclick="formIdeBaru(${S.rundown.indexOf(b)})">＋ Ide di setup ini</button>` : ''; }
+// 20 Nov: sumber tab IDE SHOOTING (tanpa file ide/skema) → ＋ membuka form ide tab dengan Blok/Format terisi
+function tambahIdeTab(isi) { bukaForm('idesh'); setTimeout(() => { Object.keys(isi || {}).forEach(id => { const f = $(id); if (f && !f.value) f.value = isi[id]; }); }, 60); }
+const modeTabIde = S => S.boleh && !S.arsip && !S.skema && !S.paket.sheetIde;
+function tambahDiBlok(S, b) { if (modeTabIde(S) && b && b.blok) return `<button class="msmore" onclick="tambahIdeTab({ d3: this.dataset.b })" data-b="${esc(b.blok)}">＋ Ide di setup ini</button>`;
+  return S.boleh && !S.arsip && (S.skema || S.paket.sheetIde) ? `<button class="msmore" onclick="formIdeBaru(${S.rundown.indexOf(b)})">＋ Ide di setup ini</button>` : ''; }
 function ideLainHtml(S) {
   let h = ''; const sb = S.ideSembunyi || [], yt = S.ideYatim || [], bisa = S.boleh && !S.arsip;
   if (sb.length) h += `<details class="card" style="margin-top:12px"><summary style="min-height:44px;display:flex;align-items:center">🙈 Ide disembunyikan (${sb.length})</summary>${sb.map((x, j) => `<div class="msi"><div class="msix"><b>${x.no && x.no !== '+' ? esc(x.no) + '. ' : ''}${esc(x.ide)}</b><small class="msd">${esc(x.seri || '')}</small>${bisa ? `<div class="msrvbar"><button onclick="sembunyiIde(${j},false)">👁️ Tampilkan lagi</button></div>` : ''}</div></div>`).join('')}</details>`;
@@ -1368,7 +1375,7 @@ function kirimIdeBaru() {
   simpanIde('apiIdeBaru', [d], { tombol: 'rik', label: 'Tambah ide', pesan: '✅ Ide baru ditambahkan', sukses: () => { hapusDraf(f.dk); FORM_IDE = null; tutup(); } });
 }
 function formCatatan(i) {
-  const x = SH && SH.ide[i]; if (!x) return; FORM_IDE = { i, key: x.key, dk: 'tkbIdeDraf_' + SH.id + '_c_' + x.key }; const d = bacaDraf(FORM_IDE.dk) || {};
+  const x = SH && SH.ide[i]; if (!x) return; FORM_IDE = { i, key: x.kunciCatatan || x.key, dk: 'tkbIdeDraf_' + SH.id + '_c_' + (x.kunciCatatan || x.key) };   /* 20 Nov: ide tab IDE SHOOTING memakai kunci b<baris> */ const d = bacaDraf(FORM_IDE.dk) || {};
   buka(`<h2>💬 Catatan revisi</h2><div class="info" style="margin-top:0"><small>${esc(x.ide)}</small></div><div class="fm"><textarea id="ri4" style="min-height:96px" placeholder="mis. lagu diganti, Atin yang ambil" oninput="drafIde()">${esc(d.catatan || '')}</textarea></div>
     <small class="msstat" id="riks"></small><button class="big" id="rik" onclick="kirimCatatan()">Simpan catatan</button>`);
 }
@@ -1591,7 +1598,7 @@ function vShoot() {
       if (SHRV && !pool.length) h += `<div class="info">Tidak ada ide "${esc(SHRV)}"${seris.length > 1 ? ' di seri ' + esc(SHSERI) : ''}.</div>`;
       if (lain) h += `<small class="msd">+${lain} ide "${esc(SHRV)}" di seri lain</small>`;
       h += grup.map(g => { const xs = pool.filter(x => kunciG(x) === g), gj = GRUP_IDE.push(perW ? { warna: g === 'Bebas' ? '' : g } : { kategori: g }) - 1;
-        return `<div class="msgg"><i style="background:${perW ? (g === 'Bebas' ? 'var(--acc)' : hexWarna(g.split(',')[0])) : 'var(--deep)'}"></i><b>${esc(perW ? (g === 'Bebas' ? 'Warna bebas' : g) : g)}</b><small>${xs.filter(x => x.take).length} / ${xs.length}</small></div>` + xs.map(x => barisIde(x, null, perW)).join('') + (bisaTambah ? `<button class="msmore" onclick="formIdeGrup(${gj})">＋ Ide di ${perW ? 'warna' : 'kategori'} ini</button>` : ''); }).join('');
+        return `<div class="msgg"><i style="background:${perW ? (g === 'Bebas' ? 'var(--acc)' : hexWarna(g.split(',')[0])) : 'var(--deep)'}"></i><b>${esc(perW ? (g === 'Bebas' ? 'Warna bebas' : g) : g)}</b><small>${xs.filter(x => x.take).length} / ${xs.length}</small></div>` + xs.map(x => barisIde(x, null, perW)).join('') + (bisaTambah ? `<button class="msmore" onclick="formIdeGrup(${gj})">＋ Ide di ${perW ? 'warna' : 'kategori'} ini</button>` : modeTabIde(S) ? `<button class="msmore" onclick="tambahIdeTab(${perW ? '{}' : `{ d4: this.dataset.g }`})" data-g="${esc(g)}">＋ Ide di ${perW ? 'warna' : 'kategori'} ini</button>` : ''); }).join('');
     }
     h += ideLainHtml(S);   // RevisiIde 1.0: disembunyikan & revisi tanpa ide asli
   }
@@ -2472,7 +2479,7 @@ const WARNA_CT = { pink: '#FCE4EC', kuning: '#FBEDE8', hijau: '#F8E6EC', ungu: '
 let CF = 'semua', RC_PENUH = false;
 function kartuCatatan(c) {
   const i = D.catatan.indexOf(c);
-  return `<div class="note ${c.selesai ? 'done' : ''}" style="background:var(--n-${WARNA_CT[c.warna] ? c.warna : 'pink'})"><div class="acts" style="margin:0 0 6px"><span class="chip nc">${c.atin ? '👭 Atin &amp; Syifa' : c.luar ? '🌸 Syifa Studio' : c.lihat === 'Tim' ? '👥 Tim' : '🔒 Pribadi'}</span>${c.ingatTeks ? `<span class="chip nc">⏰ ${esc(c.ingatTeks)}</span>` : ''}</div>
+  return `<div class="note ${c.selesai ? 'done' : ''}" style="background:var(--n-${WARNA_CT[c.warna] ? c.warna : 'pink'})"><div class="acts" style="margin:0 0 6px"><span class="chip nc">${c.atin ? '👭 Atin &amp; Syifa' : c.luar ? '🌸 Syifa Studio' : c.lihat === 'Tim' ? '👥 Tim' : c.lihat === 'Orang' ? '🎯 ' + esc((c.milik ? 'Untuk ' : 'Untukmu · ') + (c.untuk || []).join(', ')) : '🔒 Pribadi'}</span>${c.ingatTeks ? `<span class="chip nc">⏰ ${esc(c.ingatTeks)}</span>` : ''}</div>
     <p class="uc">${esc(c.isi)}</p><small>${c.milik ? 'Kamu' : esc(c.dari)} · ${esc(c.waktu)}</small>
     ${c.atin ? `<div class="acts"><button class="sbtn nc" onclick="bukaForm('catatan',${i})">✏️ Ubah</button><button class="sbtn nc" onclick="if(confirm('Hapus catatan ini dari Syifa Studio juga?'))run('apiCatatanSyifaHapus',['${esc(c.sid)}'],'kerja')">🗑️</button></div>` : c.luar ? '' : `<div class="acts"><button class="sbtn nc" onclick="run('apiCatatanAksi',['${esc(c.id)}','selesai'],'${c.selesai ? 'catatan' : 'selesai'}')">${c.selesai ? '↩️ Buka lagi' : '✅ Selesai'}</button>${c.milik || (D.pimpinan && c.lihat === 'Tim') ? `<button class="sbtn nc" onclick="bukaForm('catatan',${i})">✏️ Ubah</button><button class="sbtn nc" onclick="if(confirm('Hapus catatan ini?'))run('apiCatatanAksi',['${esc(c.id)}','hapus'],'kerja')">🗑️</button>` : ''}</div>`}</div>`;
 }
@@ -2481,6 +2488,7 @@ function aksiCatatan(c) {
   const i = D.catatan.indexOf(c);
   if (c.atin) return `<button onclick="bukaForm('catatan',${i})">Ubah</button><button onclick="if(confirm('Hapus catatan ini dari Syifa Studio juga?'))run('apiCatatanSyifaHapus',['${esc(c.sid)}'],'kerja')">Hapus</button>`;
   if (c.luar) return '';
+  if (c.lihat === 'Orang' && !c.milik) return '';   // 5.17.1: penerima hanya membaca
   return `<button onclick="run('apiCatatanAksi',['${esc(c.id)}','selesai'],'${c.selesai ? 'catatan' : 'selesai'}')">${c.selesai ? 'Buka lagi' : 'Selesai'}</button>` +
     (c.milik || (D.pimpinan && c.lihat === 'Tim') ? `<button onclick="bukaForm('catatan',${i})">Ubah</button><button onclick="if(confirm('Hapus catatan ini?'))run('apiCatatanAksi',['${esc(c.id)}','hapus'],'kerja')">Hapus</button>` : '');
 }
@@ -2488,7 +2496,7 @@ function timelineCatatan(list) {
   if (!list.length) return '';
   return `<div class="card ntl">${list.map(c => {
     const m = String(c.waktu || '').match(/(\d{2})\/(\d{2})/), baris = String(c.isi || '').split('\n'), judul = baris.shift(), isi = baris.join('\n').trim();
-    const label = c.atin ? 'Atin & Ibu Owner' : c.luar ? 'Ibu Owner' : c.lihat === 'Tim' ? 'Tim' : 'Pribadi';
+    const label = c.atin ? 'Atin & Ibu Owner' : c.luar ? 'Ibu Owner' : c.lihat === 'Tim' ? 'Tim' : c.lihat === 'Orang' ? 'Untuk ' + (c.untuk || []).join(', ') : 'Pribadi';
     return `<div class="ntr ${c.selesai ? 'done' : ''}"><div class="ntd">${m ? `<span>${BLN3[+m[2] - 1]}</span><b>${+m[1]}</b>` : ''}</div><div class="ntn"><i style="--nc:var(--n-${WARNA_CT[c.warna] ? c.warna : 'pink'})"></i></div>
       <div class="ntb"><div class="nth"><b class="ntt uc">${esc(judul)}</b><span class="ntp">${aksiCatatan(c)}</span></div>
       <small>${c.milik ? 'Kamu' : esc(c.dari)} · ${label}${c.ingatTeks ? ' · Pengingat ' + esc(c.ingatTeks) : ''}</small>${isi ? `<p class="uc">${esc(isi)}</p>` : ''}</div></div>`; }).join('')}<div class="ntend"></div></div>`;
@@ -2500,7 +2508,7 @@ function vCatatan() {
   if (!list.length) return h + kosong('s21', CF === 'tim' ? 'Belum ada catatan tim.' : 'Belum ada catatan. Tulis pengingat untuk dirimu sendiri atau untuk tim.');
   const aktif = list.filter(c => !c.selesai), beres = list.filter(c => c.selesai);
   return h + (aktif.length ? `<div class="sh"><h3>Catatan aktif</h3></div>` + timelineCatatan(aktif) : '') + (beres.length ? `<div class="sh"><h3>Sudah selesai</h3></div>` + timelineCatatan(beres) : '') +
-    '<small style="color:var(--mut)">Pribadi hanya tampil di akunmu. Tim tampil untuk semua anggota. Catatan selesai disembunyikan setelah 14 hari.</small>';
+    '<small style="color:var(--mut)">Pribadi hanya tampil di akunmu. Tim tampil untuk semua anggota. Orang tertentu hanya untukmu dan nama yang dipilih. Catatan selesai disembunyikan setelah 14 hari.</small>';
 }
 // =========================== NOTIFIKASI HP (OneSignal) ===========================
 // Hanya jalan di tampilan GitHub. Server memberi App ID + ID notifikasi milik orang yang masuk (apiNotifInfo).
@@ -2810,7 +2818,8 @@ function bukaForm(k, arg) {
       <button class="big" id="kirim">Jadwalkan di Syifa Studio</button>`,
     catatan: () => { const c = arg !== undefined ? D.catatan[arg] : null, w = c ? c.warna : 'pink';
       return `<h2>${c ? 'Ubah catatan' : 'Tulis catatan'}</h2><div class="fm"><label>Catatan</label><textarea id="c1" placeholder="Jangan lupa follow up model untuk photoshoot Bandung">${esc(c ? c.isi : '')}</textarea>
-      <label>Siapa yang bisa lihat?</label><div class="seg" id="lh"><button class="${!c || (c.lihat !== 'Tim' && !c.atin) ? 'on' : ''}" data-l="Pribadi">🔒 Hanya saya</button><button class="${c && c.lihat === 'Tim' ? 'on' : ''}" data-l="Tim">👥 Semua tim</button>${D.aspri ? `<button class="${c && c.atin ? 'on' : ''}" data-l="Syifa">👭 Atin &amp; Syifa</button>` : ''}</div>
+      <label>Siapa yang bisa lihat?</label><div class="seg" id="lh"><button class="${!c || (c.lihat !== 'Tim' && c.lihat !== 'Orang' && !c.atin) ? 'on' : ''}" data-l="Pribadi">🔒 Hanya saya</button><button class="${c && c.lihat === 'Tim' ? 'on' : ''}" data-l="Tim">👥 Semua tim</button>${c && c.atin ? '' : `<button class="${c && c.lihat === 'Orang' ? 'on' : ''}" data-l="Orang">🎯 Orang tertentu</button>`}${D.aspri ? `<button class="${c && c.atin ? 'on' : ''}" data-l="Syifa">👭 Atin &amp; Syifa</button>` : ''}</div>
+      <div class="pfs" id="lhOrang" style="margin-top:8px"${c && c.lihat === 'Orang' ? '' : ' hidden'}>${(D.timNama || []).filter(n => n !== D.nama).map(n => `<button type="button" class="pf ${c && (c.untuk || []).includes(n) ? 'on' : ''}" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>
       <label>Warna</label><div class="warna" id="wr">${Object.keys(WARNA_CT).map(k => `<button class="${k === w ? 'on' : ''}" data-w="${k}" style="background:var(--n-${k});border-color:var(--line)" aria-label="${k}"></button>`).join('')}</div>
       <label>Pengingat di beranda (opsional)</label><input type="datetime-local" id="c2" value="${esc(c ? c.ingat : '')}">
 </div>
@@ -2856,7 +2865,8 @@ function bukaForm(k, arg) {
     sh.querySelectorAll('#yt button').forEach(b => b.onclick = () => { const on = !b.classList.contains('on');
       if (b.dataset.n === 'Semua tim') sh.querySelectorAll('#yt button').forEach(y => y.classList.toggle('on', on)); else { b.classList.toggle('on', on); if (!on) sh.querySelector('#yt [data-n="Semua tim"]').classList.remove('on'); } }); }
   if (k === 'syifa') ['#sp', '#sf', '#ss'].forEach(g0 => sh.querySelectorAll(g0 + ' button').forEach(b => b.onclick = () => { sh.querySelectorAll(g0 + ' button').forEach(y => y.classList.remove('on')); b.classList.add('on'); }));
-  if (k === 'catatan') { sh.querySelectorAll('#lh button').forEach(b => b.onclick = () => { sh.querySelectorAll('#lh button').forEach(y => y.classList.remove('on')); b.classList.add('on'); });
+  if (k === 'catatan') { sh.querySelectorAll('#lh button').forEach(b => b.onclick = () => { sh.querySelectorAll('#lh button').forEach(y => y.classList.remove('on')); b.classList.add('on'); if ($('lhOrang')) $('lhOrang').hidden = b.dataset.l !== 'Orang'; });
+    sh.querySelectorAll('#lhOrang .pf').forEach(b => b.onclick = () => b.classList.toggle('on'));   // 5.17.1: Orang tertentu
     sh.querySelectorAll('#wr button').forEach(b => b.onclick = () => { sh.querySelectorAll('#wr button').forEach(y => y.classList.remove('on')); b.classList.add('on'); }); }
   $('kirim').onclick = () => kirim(k, arg);
 }
@@ -3023,7 +3033,8 @@ function kirim(k, arg) {
   if (k === 'catatan') { if (!g('c1')) return react('bingung', 'Tulis catatannya dulu ya'); const c = arg !== undefined ? D.catatan[arg] : null;
     const lh = sh.querySelector('#lh .on').dataset.l;
     if (lh === 'Syifa' || (c && c.atin)) return run('apiCatatanSyifa', [{ id: c && c.atin ? c.sid : '', isi: $('c1').value, warna: sh.querySelector('#wr .on').dataset.w }], 'catatan');
-    return run('apiCatatan', [{ id: c ? c.id : '', isi: $('c1').value, lihat: sh.querySelector('#lh .on').dataset.l, warna: sh.querySelector('#wr .on').dataset.w, ingat: g('c2') }], 'catatan'); }
+    const untukC = [...sh.querySelectorAll('#lhOrang .pf.on')].map(b => b.dataset.n); if (lh === 'Orang' && !untukC.length) return react('bingung', 'Pilih minimal satu nama dulu ya');
+    return run('apiCatatan', [{ id: c ? c.id : '', isi: $('c1').value, lihat: lh, untuk: untukC, warna: sh.querySelector('#wr .on').dataset.w, ingat: g('c2') }], 'catatan'); }
   if (k === 'materi') { const d = { produk: g('m0') }; ['judul', 'item', 'filosofi', 'detail', 'ukuran', 'harga', 'warna', 'linkpo', 'status'].forEach(x => { const el = $('m' + x); if (el && !el.disabled) d[x] = el.value; });
     tutup(); loading(true, 'Menyimpan materi…'); return gsr('apiSimpanMateri', [TOKEN, d], r => { loading(false); if (!r.ok) return react('gagal', r.pesan); MAT = r; if (TAB !== 'materi') TAB = 'materi'; render(); react('materi', r.pesan); }); }
   if (k === 'caption') {
