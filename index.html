@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="22">
-<script>window.__UIVERSI = 22;</script>
+<meta name="tkb-tampilan" content="23">
+<script>window.__UIVERSI = 23;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -2480,7 +2480,7 @@ let CF = 'semua', RC_PENUH = false;
 function kartuCatatan(c) {
   const i = D.catatan.indexOf(c);
   return `<div class="note ${c.selesai ? 'done' : ''}" style="background:var(--n-${WARNA_CT[c.warna] ? c.warna : 'pink'})"><div class="acts" style="margin:0 0 6px"><span class="chip nc">${c.atin ? '👭 Atin &amp; Syifa' : c.luar ? '🌸 Syifa Studio' : c.lihat === 'Tim' ? '👥 Tim' : c.lihat === 'Orang' ? '🎯 ' + esc((c.milik ? 'Untuk ' : 'Untukmu · ') + (c.untuk || []).join(', ')) : '🔒 Pribadi'}</span>${c.ingatTeks ? `<span class="chip nc">⏰ ${esc(c.ingatTeks)}</span>` : ''}</div>
-    <p class="uc">${esc(c.isi)}</p><small>${c.milik ? 'Kamu' : esc(c.dari)} · ${esc(c.waktu)}</small>
+    <p class="uc">${esc(c.isi)}</p><small>${c.milik ? 'Kamu' : esc(c.dari)} · ${esc(c.waktu)}</small>${tanggapCt(c)}
     ${c.atin ? `<div class="acts"><button class="sbtn nc" onclick="bukaForm('catatan',${i})">✏️ Ubah</button><button class="sbtn nc" onclick="if(confirm('Hapus catatan ini dari Syifa Studio juga?'))run('apiCatatanSyifaHapus',['${esc(c.sid)}'],'kerja')">🗑️</button></div>` : c.luar ? '' : `<div class="acts"><button class="sbtn nc" onclick="run('apiCatatanAksi',['${esc(c.id)}','selesai'],'${c.selesai ? 'catatan' : 'selesai'}')">${c.selesai ? '↩️ Buka lagi' : '✅ Selesai'}</button>${c.milik || (D.pimpinan && c.lihat === 'Tim') ? `<button class="sbtn nc" onclick="bukaForm('catatan',${i})">✏️ Ubah</button><button class="sbtn nc" onclick="if(confirm('Hapus catatan ini?'))run('apiCatatanAksi',['${esc(c.id)}','hapus'],'kerja')">🗑️</button>` : ''}</div>`}</div>`;
 }
 const BLN3 = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -2492,6 +2492,12 @@ function aksiCatatan(c) {
   return `<button onclick="run('apiCatatanAksi',['${esc(c.id)}','selesai'],'${c.selesai ? 'catatan' : 'selesai'}')">${c.selesai ? 'Buka lagi' : 'Selesai'}</button>` +
     (c.milik || (D.pimpinan && c.lihat === 'Tim') ? `<button onclick="bukaForm('catatan',${i})">Ubah</button><button onclick="if(confirm('Hapus catatan ini?'))run('apiCatatanAksi',['${esc(c.id)}','hapus'],'kerja')">Hapus</button>` : '');
 }
+// 5.17.2 (21 Nov): tanggapan penerima catatan "🎯 Orang tertentu" (✓ Dibaca / 💬 Balas dari app Syifa) tampil di bawah catatan
+function tanggapCt(c) {
+  if (c.lihat !== 'Orang') return ''; const d = c.dibacaOleh || [];
+  return (d.length ? `<small style="display:block;color:var(--mut);margin-top:4px">👀 Dibaca: ${esc(d.join(', '))}</small>` : '') +
+    (c.balasan || []).slice(-3).map(b => `<div class="bls"><b>${esc(b.dari)}</b> ${esc(b.isi)}<small style="display:block;color:var(--mut);font-size:11.5px">${esc(b.waktu)}</small></div>`).join('');
+}
 function timelineCatatan(list) {
   if (!list.length) return '';
   return `<div class="card ntl">${list.map(c => {
@@ -2499,7 +2505,7 @@ function timelineCatatan(list) {
     const label = c.atin ? 'Atin & Ibu Owner' : c.luar ? 'Ibu Owner' : c.lihat === 'Tim' ? 'Tim' : c.lihat === 'Orang' ? 'Untuk ' + (c.untuk || []).join(', ') : 'Pribadi';
     return `<div class="ntr ${c.selesai ? 'done' : ''}"><div class="ntd">${m ? `<span>${BLN3[+m[2] - 1]}</span><b>${+m[1]}</b>` : ''}</div><div class="ntn"><i style="--nc:var(--n-${WARNA_CT[c.warna] ? c.warna : 'pink'})"></i></div>
       <div class="ntb"><div class="nth"><b class="ntt uc">${esc(judul)}</b><span class="ntp">${aksiCatatan(c)}</span></div>
-      <small>${c.milik ? 'Kamu' : esc(c.dari)} · ${label}${c.ingatTeks ? ' · Pengingat ' + esc(c.ingatTeks) : ''}</small>${isi ? `<p class="uc">${esc(isi)}</p>` : ''}</div></div>`; }).join('')}<div class="ntend"></div></div>`;
+      <small>${c.milik ? 'Kamu' : esc(c.dari)} · ${label}${c.ingatTeks ? ' · Pengingat ' + esc(c.ingatTeks) : ''}</small>${isi ? `<p class="uc">${esc(isi)}</p>` : ''}${tanggapCt(c)}</div></div>`; }).join('')}<div class="ntend"></div></div>`;
 }
 function vCatatan() {
   const semua = D.catatan || [], list = semua.filter(c => CF === 'semua' || (CF === 'tim' ? c.lihat === 'Tim' : c.lihat !== 'Tim'));
