@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="23">
-<script>window.__UIVERSI = 23;</script>
+<meta name="tkb-tampilan" content="24">
+<script>window.__UIVERSI = 24;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -1305,6 +1305,12 @@ function tambahIdeTab(isi) { bukaForm('idesh'); setTimeout(() => { Object.keys(i
 const modeTabIde = S => S.boleh && !S.arsip && !S.skema && !S.paket.sheetIde;
 function tambahDiBlok(S, b) { if (modeTabIde(S) && b && b.blok) return `<button class="msmore" onclick="tambahIdeTab({ d3: this.dataset.b })" data-b="${esc(b.blok)}">＋ Ide di setup ini</button>`;
   return S.boleh && !S.arsip && (S.skema || S.paket.sheetIde) ? `<button class="msmore" onclick="formIdeBaru(${S.rundown.indexOf(b)})">＋ Ide di setup ini</button>` : ''; }
+// 5.17.3 (21 Nov, laporan Mode Shooting): tombol ide disembunyikan tanpa penjelasan. Arsip = dikunci (RevisiIde 1.0, keputusan pemilik 21 Nov: tetap dikunci).
+function infoKunciIde(S) {
+  if (S.arsip) return `<div class="info">🔒 Photoshoot ini sudah direkap &amp; diarsipkan, jadi ide tidak bisa direvisi, diberi catatan, atau ditambah. Daftar di bawah adalah salinan saat rekap.</div>`;
+  if (!S.boleh && (S.ide || []).length) return `<div class="info">🔒 Mengubah ide, memberi catatan, dan menambah ide khusus pimpinan dan nama di AKSES_SHOOTING.</div>`;
+  return '';
+}
 function ideLainHtml(S) {
   let h = ''; const sb = S.ideSembunyi || [], yt = S.ideYatim || [], bisa = S.boleh && !S.arsip;
   if (sb.length) h += `<details class="card" style="margin-top:12px"><summary style="min-height:44px;display:flex;align-items:center">🙈 Ide disembunyikan (${sb.length})</summary>${sb.map((x, j) => `<div class="msi"><div class="msix"><b>${x.no && x.no !== '+' ? esc(x.no) + '. ' : ''}${esc(x.ide)}</b><small class="msd">${esc(x.seri || '')}</small>${bisa ? `<div class="msrvbar"><button onclick="sembunyiIde(${j},false)">👁️ Tampilkan lagi</button></div>` : ''}</div></div>`).join('')}</details>`;
@@ -1574,6 +1580,7 @@ function vShoot() {
   }
   if (SHT === 'ide') {
     if (S.ideErr) h += `<div class="info">⚠️ ${esc(S.ideErr)}</div>`;
+    h += infoKunciIde(S);   // 5.17.3 (21 Nov): jelaskan kenapa ✏️ Revisi / 📝 Catatan / ＋ Ide tidak ada
     if (S.skema && S.skema.talent.length) { const ab = t => S.skema.absen.some(a => kecil(a) === kecil(t));
       h += `<div class="mstalr"><small>Talent hadir</small><div class="mstal">${S.skema.talent.map(t => `<button class="${ab(t) ? '' : 'on'}" ${S.boleh && !S.arsip ? '' : 'disabled'} onclick="tapAbsen(this.dataset.t)" data-t="${esc(t)}" aria-label="${esc(t)} ${ab(t) ? 'tidak hadir' : 'hadir'}">${ab(t) ? '🚫' : '✓'} ${esc(t)}</button>`).join('')}</div></div>`; }
     const tk = S.ide.filter(x => x.take).length;
