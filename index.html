@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="25">
-<script>window.__UIVERSI = 25;</script>
+<meta name="tkb-tampilan" content="26">
+<script>window.__UIVERSI = 26;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -347,6 +347,16 @@ body{font:400 15px/1.5 'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;ba
 .msg,.msblok,.mssiap{box-shadow:none}.msg{border:0}.msblok{border:1px solid var(--line)}.mstip{font-size:13px;color:var(--mut);margin:12px 2px 0}
 .msbar{height:8px;border-radius:999px;background:var(--chip);overflow:hidden}.msbar i{display:block;height:100%;border-radius:999px;background:var(--ok)}.mssiap details summary{font-size:13px;color:var(--deep);font-weight:600;cursor:pointer;margin-top:4px}.mssiap .mssi i{border-color:var(--line)}
 .msempty .msbuka{width:100%}.msm img{border-radius:16px}.msarah{font-size:14px;color:#6E3954;margin:0}
+/* Meja sosmed (App 5.19): menu khusus D.meja, kartu konten tanpa sampul (sampul = tahap berikutnya) */
+.nav .lebar,.rb.mjlain{display:none}.nav.meja .lebar{display:none}.top .rb.mjlain{display:grid}
+.mjg{display:grid;grid-template-columns:1fr;gap:10px}.mjc{display:flex;gap:12px;background:var(--card);border-radius:20px;padding:12px;box-shadow:0 6px 18px var(--sh);color:inherit;text-decoration:none;align-items:flex-start}
+.mjt{position:relative;flex:none;width:64px;height:80px;border-radius:14px;background:var(--chip);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:22px}.mjt small{font-size:10px;color:var(--mut);font-weight:600}
+.mjr{position:absolute;top:-6px;left:-6px;width:22px;height:22px;border-radius:50%;background:var(--deep);color:#fff;font-size:12px;display:grid;place-items:center}
+.mjx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.mjx>b{font-weight:600;font-size:14px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.mjx small{color:var(--mut);font-size:12px}.mjn{font-size:13px}.mjx .chip{align-self:flex-start}
+.mjh{height:150px;gap:2px}.mjh small{font-size:9px}.mjh i{border-radius:4px 4px 2px 2px}
+.mjd{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.mjl{flex:1;min-width:170px;display:flex;flex-direction:column;gap:6px}.mjl div{display:grid;grid-template-columns:12px 1fr auto;gap:2px 8px;align-items:center;font-size:13.5px}.mjl i{width:12px;height:12px;border-radius:4px}.mjl small{grid-column:2/4;color:var(--mut);font-size:11.5px}
+@media (min-width:900px){.nav.meja .lebar{display:flex}.top .rb.mjlain{display:none}.mjg{grid-template-columns:repeat(2,minmax(0,1fr))}
+.nav.meja [data-t=home]{order:1}.nav.meja [data-t=mdash]{order:2}.nav.meja [data-t=cal]{order:3}.nav.meja [data-t=task]{order:4}.nav.meja [data-t=bankide]{order:5}.nav.meja [data-t=mlap]{order:6}.nav.meja [data-t=more]{order:7}}
 </style>
 </head><body>
 <style>
@@ -473,6 +483,7 @@ function rapikanIkon(root) {
 const IKON_ANTRE = new Set(); let IKON_JADWAL = 0;
 function antreIkon(n) { IKON_ANTRE.add(n); if (!IKON_JADWAL) IKON_JADWAL = requestAnimationFrame(() => { IKON_JADWAL = 0; const a = [...IKON_ANTRE]; IKON_ANTRE.clear(); a.forEach(x => { if (x.isConnected && !a.some(y => y !== x && y.contains && y.contains(x))) rapikanIkon(x); }); }); }
 new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) antreIkon(n); else if (n.nodeType === 3 && n.parentElement) antreIkon(n.parentElement); }))).observe(document.body, { childList: true, subtree: true });
+Object.assign(I, { mjdash: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', mjide: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>', mjlap: '<path d="M7 3.5h7l4 4V20.5H7z"/><path d="M14 3.5v4h4M10 12h5M10 16h5"/>' });   // meja sosmed 5.19
 const ic = (k, s) => `<svg width="${s || 22}" height="${s || 22}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
 const arcs = '<svg class="arcs" width="300" height="300" viewBox="0 0 300 300" fill="none" stroke="currentColor" stroke-width="1.6">' + [30, 48, 66, 84, 102, 120, 138].map(r => `<circle cx="150" cy="150" r="${r}"/>`).join('') + '</svg>';
 const WARNA = ['#DE6E95', '#C26489', '#B9466F', '#E58FAF', '#A94D75', '#B9466F'];
@@ -497,7 +508,7 @@ function react(k, teks) {
 function loading(on, t) { $('load').style.display = on ? 'flex' : 'none'; if (on && !$('loadimg').src.startsWith('data')) $('loadimg').src = STK.s11; if (t) $('loadt').textContent = t; }
 let LIHAT = '', SAYA = null;   // mode lihat akun tim (leader)
 let PDF_JALAN = false, PDF_URL = '', PDF_FILE = null;   // PDF RAB sedang disiapkan / hasil terakhir
-const BACA_SAJA = /^api(JadwalLaunching|Muat|MuatSebagai|Tambahan|TambahanSebagai|Produk|Shoot|Versi|Stiker|Materi|Report|Rapor|Pratinjau|Perintahku|Kesehatan|NotifInfo|LaporError|DaftarNama|ShootRekap|BankIde|Pengganti|FreelanceRekap|IdeLokasi)$/;
+const BACA_SAJA = /^api(JadwalLaunching|Muat|MuatSebagai|Tambahan|TambahanSebagai|Produk|Shoot|Versi|Stiker|Materi|Report|Rapor|Pratinjau|Perintahku|Kesehatan|NotifInfo|LaporError|DaftarNama|ShootRekap|BankIde|Pengganti|FreelanceRekap|IdeLokasi|MejaDash|MejaKonten)$/;
 function gsr(fn, args, ok, fail) { if (LIHAT && (!BACA_SAJA.test(fn) || (fn === 'apiShootRekap' && args[2]))) { loading(false); tutup(); react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat. Kembali ke akunmu untuk mengubah.'); return; } google.script.run.withSuccessHandler(ok).withFailureHandler(e => { loading(false); if (/Sesi tidak berlaku/.test(e.message)) { keluar(); return; } (fail || (x => react('gagal', '⚠️ ' + x.message)))(e); })[fn].apply(null, args); }
 function hasil(teks, k) {
   teks = String(teks || ''); const pendek = teks.split('\n')[0];
@@ -724,16 +735,19 @@ function verif() { const n = $('lg_nama').value, k = $('lg_otp').value; loading(
   gsr('apiVerifikasi', [n, k], r => { loading(false); if (!r.ok) return react('gagal', r.pesan); TOKEN = r.token; try { localStorage.setItem(LS, TOKEN); } catch (e) {} kabariInduk({ arabelleToken: TOKEN }); muat(); }); }
 const SUB = { sehat: 'more', perintah: 'more', rapor: 'more', rab: 'more', appr: 'more', dash: 'more', report: 'more', agenda: 'more', materi: 'more', akun: 'more', catatan: 'more' };
 function nav() {
-  const it = [['home', 'home', 'Beranda'], ['cal', 'cal', 'Kalender'], ['fab'], ['task', 'task', 'Tugas'], ['more', 'more', 'Lainnya']], aktif = SUB[TAB] || TAB;
+  // 5.19 meja sosmed (D.meja): HP = Beranda, Kalender, Catat, Dashboard, Ide, Laporan (Tugas → kartu Rutinitas, Lainnya → ikon bar atas); layar lebar = 7 menu (urutan lewat CSS)
+  const it = D.meja ? [['home', 'home', 'Beranda'], ['cal', 'cal', 'Kalender'], ['fab'], ['mdash', 'mjdash', 'Dashboard'], ['bankide', 'mjide', 'Ide'], ['mlap', 'mjlap', 'Laporan'], ['task', 'task', 'Tugas', 'lebar'], ['more', 'more', 'Lainnya', 'lebar']]
+    : [['home', 'home', 'Beranda'], ['cal', 'cal', 'Kalender'], ['fab'], ['task', 'task', 'Tugas'], ['more', 'more', 'Lainnya']], aktif = SUB[TAB] || TAB;
+  $('nav').classList.toggle('meja', !!D.meja);
   const telat = D.tugas.filter(x => x.telat).length;
   $('nav').innerHTML = `<div class="side-title"><img src="${LOGO}" alt="">ThinKerBelle</div>` + it.map(x => x[0] === 'fab' ? `<button class="fab" id="fab" aria-label="Tambah cepat">${ic('plus', 26)}<span class="fabt">Catat</span></button>` :
-    `<button class="${aktif === x[0] ? 'on' : ''}" data-t="${x[0]}">${x[0] === 'task' && telat ? `<span class="bdg">${telat}</span>` : ''}${ic(x[1])}${x[2]}</button>`).join('');
+    `<button class="${aktif === x[0] ? 'on' : ''}${x[3] ? ' ' + x[3] : ''}" data-t="${x[0]}">${x[0] === 'task' && telat ? `<span class="bdg">${telat}</span>` : ''}${ic(x[1])}${x[2]}</button>`).join('');
   $('nav').querySelectorAll('[data-t]').forEach(b => b.onclick = () => go(b.dataset.t)); $('fab').onclick = () => $('sheet').classList.contains('show') ? tutup() : quick();
 }
 function go(t) { tutup(); TAB = t; render(); scrollTo(0, 0); }
 function header() {
   const h = new Date().getHours(), sal = h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
-  return `<div class="top"><img src="${LOGO}" alt="Logo Arabelle"><div class="t"><small>${esc(D.tanggal)}${D._lama ? ' · memperbarui…' : ''}</small><b>${sal}, ${esc(D.nama)} 👋</b></div><button class="rb" onclick="cekVersi();react('sapa','Semua sudah versi terbaru ✨')" aria-label="Cek pembaruan">${ic('bell', 20)}</button></div>`;
+  return `<div class="top"><img src="${LOGO}" alt="Logo Arabelle"><div class="t"><small>${esc(D.tanggal)}${D._lama ? ' · memperbarui…' : ''}</small><b>${sal}, ${esc(D.nama)} 👋</b></div><button class="rb" onclick="cekVersi();react('sapa','Semua sudah versi terbaru ✨')" aria-label="Cek pembaruan">${ic('bell', 20)}</button>${D.meja ? `<button class="rb mjlain" onclick="go('more')" aria-label="Lainnya">${ic('more', 20)}</button>` : ''}</div>`;
 }
 function judul(t, s, tombol) { return `<div class="ph"><div><h1>${t}</h1>${s ? `<p>${s}</p>` : ''}</div>${tombol || ''}</div>`; }
 const kembali = `<button class="back" onclick="go('more')">‹ Lainnya</button>`;
@@ -744,7 +758,7 @@ const kerangkaRv = () => `<div class="prg" aria-busy="true" aria-label="Memuat p
 function render() { const g = {}; document.querySelectorAll('[data-gulir]').forEach(x => g[x.dataset.gulir] = x.scrollLeft);
   try { renderInti(); } catch (e) { console.error(e); gagalMuat(e.message + ' · tab ' + TAB); }
   document.querySelectorAll('[data-gulir]').forEach(x => { if (g[x.dataset.gulir]) x.scrollLeft = g[x.dataset.gulir]; }); }
-function renderInti() { window.__siap = true; $('nav').style.display = ''; nav(); $('view').innerHTML = (LIHAT ? `<div class="lihatbar"><span>👀 Melihat akun <b>${esc(LIHAT)}</b> · hanya lihat</span><button onclick="kembaliAkunku()">Kembali ke akunku</button></div>` : '') + ({ home: vHome, cal: vCal, task: vTask, more: vMore, rab: vRab, appr: vAppr, dash: vDash, report: vReport, rapor: vRapor, perintah: vPerintah, sehat: vSehat, agenda: vAgenda, launch: vLaunch, freelance: vFreelance, lokasi: vLokasi, materi: vMateri, akun: vAkun, catatan: vCatatan, produk: vProduk, shoot: vShoot, pslist: vPsList, review: vReview, bankide: vBankIde, pengganti: vPengganti }[TAB] || vHome)(); }
+function renderInti() { window.__siap = true; $('nav').style.display = ''; nav(); $('view').innerHTML = (LIHAT ? `<div class="lihatbar"><span>👀 Melihat akun <b>${esc(LIHAT)}</b> · hanya lihat</span><button onclick="kembaliAkunku()">Kembali ke akunku</button></div>` : '') + ({ home: vHome, cal: vCal, task: vTask, more: vMore, rab: vRab, appr: vAppr, dash: vDash, report: vReport, rapor: vRapor, perintah: vPerintah, sehat: vSehat, agenda: vAgenda, launch: vLaunch, freelance: vFreelance, lokasi: vLokasi, materi: vMateri, akun: vAkun, catatan: vCatatan, produk: vProduk, shoot: vShoot, pslist: vPsList, review: vReview, bankide: vBankIde, pengganti: vPengganti, mdash: vMejaDash, mlap: vMejaLap }[TAB] || vHome)(); }
 function rencana(h) {
   const a = h === 0 ? D.tugas.filter(x => !x.post).map(x => ({ jam: '', t: x.judul, c: x.ikon === '🚀' ? 'Jobdesk' : x.ikon === '📸' ? 'Photoshoot' : 'Tugas', s: x.sub, telat: x.telat, milik: true })) : [];
   const b = D.kal.filter(x => x.h === h).map(x => ({ jam: x.jam, t: x.topik, c: x.plat, s: (x.mode === 'Auto' ? '🚀 Auto · ' : '') + x.post + ' · ' + x.pic, done: x.post === 'Tayang', milik: !!x.milik, auto: x.mode === 'Auto' }));
@@ -778,6 +792,8 @@ function vHome() {
    <button class="lanjut" id="cta"><span class="li">${lanjut[1]}</span><span class="lt"><small>Langkah berikutnya</small><b>${esc(lanjut[2])}</b></span><span class="lb">${esc(lanjut[3])} ›</span></button></div>`;
   const cepat = [['lapor', '📝', D.sudah ? 'Tambah lapor' : 'Lapor'], ['caption', '✍️', 'Caption'], D.rab ? ['rab', '🧾', 'Nota'] : ['ide', '💡', 'Ide'], ['izin', '🌴', 'Izin']];
   h += `<div class="cepat">${cepat.map(c => `<button onclick="bukaForm('${c[0]}')"><span>${c[1]}</span>${esc(c[2])}</button>`).join('')}</div>`;
+  if (D.meja) { const tl = D.tugas.filter(x => x.telat).length;   // 5.19 meja sosmed: Tugas tidak ada di menu bawah HP → kartu Rutinitas
+    h += `<div class="card"><div class="sh" style="margin:0 0 4px"><h3>✅ Rutinitas</h3><button onclick="go('task')">Buka tugas ›</button></div>${tl ? `<span class="chip no">${tl} telat</span>` : ''}${D.tugas.length ? D.tugas.slice(0, 5).map(x => `<div class="lc"><div class="d" style="font-size:18px">${x.ikon}</div><div class="x"><b style="font-weight:600">${esc(x.judul)}</b><small style="${x.telat ? 'color:#C2456B;font-weight:600' : ''}">${esc(x.sub)}</small></div></div>`).join('') + (D.tugas.length > 5 ? `<small style="color:var(--mut)">+ ${D.tugas.length - 5} lagi</small>` : '') : '<small style="color:var(--mut)">Tidak ada tugas hari ini.</small>'}</div>`; }
   if (semuaBeres) setTimeout(() => { const k = 'arabelleRayakan', hr = isoL(); try { if (localStorage.getItem(k) !== hr) { localStorage.setItem(k, hr); const m = $('mas'); if (m) { const q = m.getBoundingClientRect(); for (let i = 0; i < 3; i++) setTimeout(() => fx('🎉', q.left + q.width / 2, q.top + q.height / 2), i * 250); } } } catch (e) {} }, 400);
   else if (!vHome.sapa) { vHome.sapa = true; setTimeout(() => react('sapa', jam < 11 ? 'Selamat pagi! ☀️' : jam < 15 ? 'Halo, semangat ya!' : jam < 18 ? 'Sore! Hampir beres 💪' : 'Jangan lupa istirahat 🌙'), 900); }
   const H = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'], t = new Date();
@@ -1078,6 +1094,88 @@ const PRV = {};
 function muatPratinjau() { (D.approval || []).forEach((x, i) => { if (!x.file || PRV[x.file] !== undefined) return; PRV[x.file] = '';
   google.script.run.withSuccessHandler(u => { PRV[x.file] = u || ''; const im = $('prv' + i); if (im) { if (u) im.src = u; else im.style.display = 'none'; } }).withFailureHandler(() => {}).apiPratinjau(TOKEN, x.file); }); }
 function appr(i, k) { const a = D.approval[i], c = $('cat' + i).value.trim(); if (k === 'revisi' && !c) return react('bingung', 'Tulis catatan revisinya dulu ya'); run('apiApprove', [a.tab, a.baris, k, c], k === 'approve' ? 'caption' : 'gagal'); }
+// =========================== MEJA SOSMED (App 5.19 · tampilan 26) ===========================
+// Hanya tampil kalau D.meja (saklar MEJA_SOSMED di PENGATURAN = nama di TIM). Hanya membaca: apiMejaDash & apiMejaKonten.
+// Angka nyata saja: Story tidak dihitung; "× median" = views ÷ median views posting non-story di periode yang dipilih.
+let MJ = { jenis: 'bulan', idx: null, dash: null, kon: null, plat: 'ig', kt: 'populer', pil: '' };
+const xMed = x => x == null ? '' : String(x).replace('.', ',') + '× median';
+const ikonFmt = f => /reels/i.test(f) ? '🎞️' : /carousel/i.test(f) ? '🖼️' : /story/i.test(f) ? '⏳' : '📷';
+function muatMeja(jenis, idx, apa) { MJ.jenis = jenis; MJ.idx = idx; const fn = apa === 'kon' ? 'apiMejaKonten' : 'apiMejaDash';
+  if (apa === 'kon') MJ.kon = null; else MJ.dash = null; loading(true, 'Menghitung angka…');
+  gsr(fn, [TOKEN, jenis, idx], d => { loading(false); d = d || {}; if (apa === 'kon') MJ.kon = d; else MJ.dash = d; MJ.idx = d.idx != null ? d.idx : idx; if (TAB === (apa === 'kon' ? 'mlap' : 'mdash')) render(); },
+    e => { loading(false); const g = { galat: (e && e.message) || 'Gagal memuat' }; if (apa === 'kon') MJ.kon = g; else MJ.dash = g; if (TAB === (apa === 'kon' ? 'mlap' : 'mdash')) render(); }); }
+function periodeMeja(R, apa) {
+  return `<div class="seg"><button class="${MJ.jenis === 'bulan' ? 'on' : ''}" onclick="muatMeja('bulan',null,'${apa}')">Bulanan</button><button class="${MJ.jenis === 'minggu' ? 'on' : ''}" onclick="muatMeja('minggu',null,'${apa}')">Mingguan</button></div>` +
+    (R && R.label ? `<div class="nv"><button ${R.idx <= 0 ? 'disabled' : ''} onclick="muatMeja(MJ.jenis,${R.idx - 1},'${apa}')" aria-label="Sebelumnya">‹</button><div><b>${esc(R.label)}</b><small>${esc(R.rentang)}</small></div><button ${R.idx >= R.n - 1 ? 'disabled' : ''} onclick="muatMeja(MJ.jenis,${R.idx + 1},'${apa}')" aria-label="Berikutnya">›</button></div>` : '');
+}
+function siapMeja(R, apa) {   // null = boleh lanjut menggambar; teks = kartu kosong / galat
+  if (!R) { setTimeout(() => muatMeja(MJ.jenis, MJ.idx, apa), 0); return kosong('s11', 'Menghitung angka…'); }
+  if ((R.jenis && R.jenis !== MJ.jenis) || (MJ.idx != null && R.idx != null && R.idx !== MJ.idx)) { setTimeout(() => muatMeja(MJ.jenis, MJ.idx, apa), 0); return kosong('s11', 'Menghitung angka…'); }
+  if (R.galat) return kosong('s22', 'Belum bisa dimuat: ' + esc(R.galat) + `<br><button class="sbtn pri" style="margin-top:10px" onclick="muatMeja(MJ.jenis,MJ.idx,'${apa}')">Coba lagi</button>`);
+  if (R.tolak) return kosong('s22', esc(R.pesan));
+  if (R.kosong) return kosong('s21', esc(R.kosong));
+  return null;
+}
+// satu konten: seluruh kartu membuka link Instagram (kolom Link di DATA PERFORMA). Belum ada sampul gambar (tahap berikutnya).
+function kartuKonten(x, rank) {
+  const isi = `<span class="mjt">${rank ? `<b class="mjr">${rank}</b>` : ''}<span>${ikonFmt(x.format)}</span><small>${esc(x.format || '–')}</small></span><span class="mjx"><b>${esc(x.cap || '(tanpa caption)')}</b>
+    <small>${esc(x.tgl)}${x.jam ? ' · ' + esc(x.jam) : ''} · ${esc(x.pillar)}${x.produk ? ' · ' + esc(x.produk) : ''}</small>
+    <span class="mjn"><b>${nf(x.views)}</b> views · ${nf(x.reach)} reach · ER ${String(x.er).replace('.', ',')}%</span>
+    ${x.x != null ? `<span class="chip ${x.x > 1 ? 'ok' : ''}">${x.x > 1 ? '▲ ' : ''}${xMed(x.x)}</span>` : ''}${x.tanpaKal ? ' <span class="chip wr">tidak ada di kalender</span>' : ''}</span>`;
+  return x.link ? `<a class="mjc" href="${esc(x.link)}" target="_blank" rel="noopener">${isi}</a>` : `<div class="mjc">${isi}</div>`;
+}
+function donutPillar(arr) {
+  const tot = arr.reduce((s, x) => s + x.n, 0); if (!tot) return '';
+  const WP = { 'Promotion': '#DE6E95', 'Engagement': '#8E5BB5', 'Product knowledge': '#E3A33B', 'Launching produk': '#3E9C8C' }, warna = n => n === '(belum diisi)' ? '#B9A8B1' : WP[n] || '#A94D75';   // warna tetap per pillar
+  let jalan = 0; const L = 2 * Math.PI * 15.9;
+  const seg = arr.map(p => { const pj = p.n / tot * L, s = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="${warna(p.nama)}" stroke-width="6" stroke-dasharray="${pj.toFixed(2)} ${(L - pj).toFixed(2)}" stroke-dashoffset="${(-jalan).toFixed(2)}" transform="rotate(-90 21 21)"/>`; jalan += pj; return s; }).join('');
+  return `<div class="mjd"><svg viewBox="0 0 42 42" width="132" height="132" aria-hidden="true">${seg}<text x="21" y="20" text-anchor="middle" font-size="7" font-weight="600" fill="currentColor">${tot}</text><text x="21" y="26" text-anchor="middle" font-size="3.6" fill="currentColor">posting</text></svg>
+    <div class="mjl">${arr.map(p => `<div><i style="background:${warna(p.nama)}"></i><span>${esc(p.nama)}</span><b>${p.n}</b><small>${Math.round(p.n / tot * 100)}% · ${nf(p.views)} views</small></div>`).join('')}</div></div>`;
+}
+function vMejaDash() {
+  if (!D.meja) { TAB = 'home'; return vHome(); }
+  const R = MJ.dash; let h = header() + judul('Dashboard', 'Instagram · hanya baca') + periodeMeja(R, 'dash');
+  const s = siapMeja(R, 'dash'); if (s) return h + s;
+  const g = R.kartu, L = g.lift || {}, lift = x => x == null ? '<span class="lift" style="color:var(--mut)">belum ada pembanding</span>' : `<span class="lift ${x >= 0 ? 'up' : 'dn'}">${x >= 0 ? '▲' : '▼'} ${String(Math.abs(x)).replace('.', ',')}%</span>`;
+  h += `<div class="sh"><h3>📸 Instagram</h3><small style="color:var(--mut)">${g.pembanding ? 'vs ' + esc(g.pembanding) : ''}</small></div><div class="kpi">
+    <div class="k"><span>👀 Views</span><b>${nf(g.views)}</b>${lift(L.views)}</div><div class="k"><span>🎯 Reach</span><b>${nf(g.reach)}</b>${lift(L.reach)}</div>
+    <div class="k"><span>💬 ER (rata-rata per posting)</span><b>${String(g.er).replace('.', ',')}%</b>${lift(L.er)}</div><div class="k"><span>❤️ Interaksi</span><b>${nf(g.inter)}</b>${lift(L.inter)}</div>
+    <div class="k"><span>🎞️ Postingan</span><b>${g.post}</b><span class="lift" style="color:var(--mut)">+ ${g.story} story (tidak dihitung)</span></div>
+    <div class="k"><span>👥 Followers</span><b>${g.followers ? nf(g.followers) : '–'}</b>${g.folGrow != null ? `<span class="lift ${g.folGrow >= 0 ? 'up' : 'dn'}">${g.folGrow >= 0 ? '+' : ''}${nf(g.folGrow)} di periode ini</span>` : '<span class="lift" style="color:var(--mut)">belum ada data</span>'}</div></div>`;
+  const mx = Math.max(1, ...R.harian.map(x => x.views));
+  h += `<div class="card"><h3>📊 Views per tanggal tayang</h3><small style="display:block;color:var(--mut);margin:-2px 0 6px">Jumlah views (sampai sekarang) dari posting yang tayang di tanggal itu. Hari tanpa posting = kosong.</small>
+    <div class="chart mjh">${R.harian.map(x => `<button tabindex="-1" title="${esc(x.hari + ' ' + x.tgl)}: ${x.n ? nf(x.views) + ' views · ' + x.n + ' posting' : 'tidak ada posting'}"><i style="height:${x.n ? Math.max(2, Math.round(x.views / mx * 100)) : 0}%;${x.n ? '' : 'min-height:0'}"></i><small>${x.tgl}</small></button>`).join('')}</div></div>`;
+  h += `<div class="cards"><div class="card"><h3>🎯 Content pillar</h3><small style="display:block;color:var(--mut);margin:-2px 0 8px">Jumlah posting per pillar (tanpa Story)</small>${R.pillar.length ? donutPillar(R.pillar) : '<small style="color:var(--mut)">Belum ada posting.</small>'}</div>
+    <div class="card"><h3>⚡ Perlu tindakan</h3>${R.tindak.length ? R.tindak.map(t => `<div class="lc"><span class="chip wr">!</span><div class="x"><b>${esc(t.judul)}</b>${t.sub ? `<small>${esc(t.sub)}</small>` : ''}
+      ${t.item && t.item.length ? `<details style="margin-top:6px"><summary style="font-size:13px;color:var(--acct)">Lihat ${t.item.length} posting</summary>${t.item.map(x => `<div style="font-size:13px;margin-top:6px">${x.link ? `<a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.tgl)} · ${esc(x.format)} · ${esc(x.cap)}</a>` : esc(x.tgl + ' · ' + x.format + ' · ' + x.cap)}</div>`).join('')}</details>` : ''}</div></div>`).join('') : '<small style="color:var(--mut)">Tidak ada yang perlu ditindak dari data periode ini ✅</small>'}</div></div>`;
+  h += `<div class="sh"><h3>🏆 Konten teratas</h3><small style="color:var(--mut)">median ${nf(R.median)} views</small></div><div class="mjg">${R.top.length ? R.top.map((x, i) => kartuKonten(x, i + 1)).join('') : '<div class="card">Belum ada posting.</div>'}</div>`;
+  h += `<button class="big alt" onclick="go('mlap')">📑 Laporan konten lengkap</button><small style="display:block;color:var(--mut);margin:10px 2px 0">Data Instagram dari DATA PERFORMA (ditarik tiap jam; tampil di sini paling lambat ±20 menit setelahnya). TikTok belum ada data otomatis.</small>`;
+  return h;
+}
+function vMejaLap() {
+  if (!D.meja) { TAB = 'home'; return vHome(); }
+  let h = header() + judul('Laporan', 'Konten · hanya baca') + `<div class="seg"><button class="${MJ.plat === 'ig' ? 'on' : ''}" onclick="MJ.plat='ig';render()">📸 Instagram</button><button class="${MJ.plat === 'tt' ? 'on' : ''}" onclick="MJ.plat='tt';render()">🎵 TikTok</button></div>`;
+  if (MJ.plat === 'tt') return h + kosong('s21', 'TikTok: belum ada data otomatis.<br><small>Views TikTok belum ditarik otomatis. Angka views di baris "Reels &amp; TikTok" kalender adalah views Instagram.</small>');
+  const R = MJ.kon; h += periodeMeja(R, 'kon'); const s = siapMeja(R, 'kon'); if (s) return h + s;
+  const byId = {}; R.item.forEach(x => byId[x.id] = x);
+  h += `<div class="card"><b>${R.total} posting</b> <small style="color:var(--mut)">(tanpa ${R.story} story)</small><div style="margin-top:4px;font-size:14px">Median views <b>${nf(R.median)}</b> · ${R.naik} posting di atas median</div></div>`;
+  const mg = R.terbaikMinggu.map(i => byId[i]).filter(Boolean);
+  h += `<div class="sh"><h3>⭐ Terbaik minggu ini</h3><small style="color:var(--mut)">${esc(R.mingguRentang)}</small></div>${mg.length ? `<div class="mjg">${mg.map((x, i) => kartuKonten(x, i + 1)).join('')}</div>` : '<div class="card"><small style="color:var(--mut)">Belum ada posting 7 hari terakhir.</small></div>'}`;
+  const naik = R.item.filter(x => x.x > 1).sort((a, b) => b.x - a.x).slice(0, 6);
+  h += `<div class="sh"><h3>📈 Naik di atas median</h3><small style="color:var(--mut)">views ÷ median ${esc(R.label)}</small></div>${naik.length ? `<div class="mjg">${naik.map(x => kartuKonten(x)).join('')}</div>` : '<div class="card"><small style="color:var(--mut)">Belum ada.</small></div>'}`;
+  const tab = [['populer', '🔥 Populer'], ['baru', '🆕 Terbaru'], ['eval', '🔎 Perlu dievaluasi']];
+  h += `<div class="sh"><h3>🗂️ Daftar konten</h3></div><div class="seg">${tab.map(t => `<button class="${MJ.kt === t[0] ? 'on' : ''}" onclick="MJ.kt='${t[0]}';render()">${t[1]}</button>`).join('')}</div>`;
+  let daftar = [];
+  if (MJ.kt === 'populer') {
+    h += `<div class="chips" data-gulir="mjpil" style="display:flex;gap:6px;overflow-x:auto;margin:10px 0">${[''].concat(R.pillar.map(p => p.nama)).map(p => `<button class="chip ${MJ.pil === p ? 'ok' : ''}" style="border:0" data-p="${esc(p)}" onclick="MJ.pil=this.dataset.p;render()">${p ? esc(p) : 'Semua'}</button>`).join('')}</div>`;
+    daftar = (MJ.pil ? R.item.filter(x => x.pillar === MJ.pil) : R.item.filter(x => x.f.includes('top'))).sort((a, b) => b.views - a.views).slice(0, 20);
+  } else if (MJ.kt === 'baru') daftar = R.item.filter(x => x.f.includes('baru')).sort((a, b) => b.iso.localeCompare(a.iso) || String(b.jam).localeCompare(String(a.jam)));
+  else { daftar = R.evaluasi.map(i => byId[i]).filter(Boolean); h += '<small style="display:block;color:var(--mut);margin:8px 2px">Views di bawah median, sudah tayang ≥ 3 hari (yang baru tayang belum dinilai). Paling rendah di atas.</small>'; }
+  h += daftar.length ? `<div class="mjg" style="margin-top:10px">${daftar.map(x => kartuKonten(x)).join('')}</div>` : '<div class="card" style="margin-top:10px"><small style="color:var(--mut)">Tidak ada.</small></div>';
+  const tabel = (judulT, arr) => `<div class="card"><h3>${judulT}</h3>${arr.map(x => `<div class="kat"><div class="rw"><span>${esc(x.nama)} <small style="color:var(--mut)">· ${x.n} post</small></span><span><b>${nf(x.median)}</b> <small style="color:var(--mut)">median views · ER ${String(x.er).replace('.', ',')}%</small></span></div></div>`).join('')}</div>`;
+  h += `<div class="sh"><h3>🧩 Kategori</h3></div><div class="cards">${tabel('Format', R.format)}${tabel('Produk', R.produk)}</div>${tabel('Content pillar', R.pillar)}`;
+  return h + `<small style="display:block;color:var(--mut);margin:10px 2px 0">Story tidak ikut dibandingkan. Ketuk kartu untuk membuka postingannya di Instagram. YouTube Shorts belum punya data views.</small>`;
+}
 function vDash() {
   if (!D.dash) return kembali + kosong('s11', 'Dashboard masih dimuat… buka lagi sebentar.');
   const d = D.dash, p = d.wajib ? Math.round(d.lapor / d.wajib * 100) : 100, pill = (a, c) => a.map(n => `<span class="chip ${c}">${esc(n)}</span>`).join(' ');
