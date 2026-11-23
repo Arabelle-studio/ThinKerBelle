@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="29">
-<script>window.__UIVERSI = 29;</script>
+<meta name="tkb-tampilan" content="30">
+<script>window.__UIVERSI = 30;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -1801,7 +1801,7 @@ function vShoot() {
   }
   if (SHT === 'mood') {
     const P = S.paket, bukanProps = g => !/props?\b/i.test(g.judul || ''), sk = S.skema || {};
-    h += `<div class="card msg"><b class="msgt">Arah visual</b>${P.arah ? `<p class="msarah">${esc(P.arah)}</p>` : '<small class="msd">Belum diisi.</small>'}${P.kunci.length ? `<div class="mskunci">${P.kunci.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</div>`;
+    if (P.arah || P.kunci.length) h += `<div class="card msg"><b class="msgt">Arah visual</b>${P.arah ? `<p class="msarah">${esc(P.arah)}</p>` : ''}${P.kunci.length ? `<div class="mskunci">${P.kunci.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</div>`;
     h += (P.gambar || []).filter(bukanProps).map(g => g.m.jenis === 'gambar' ? mediaShoot(g.m, g.judul) : kartuDok(g.m, 'Moodboard', g.judul)).join('');
     h += (P.folderFile || []).filter(f => f.m.jenis === 'gambar' && bukanProps(f)).map(f => mediaShoot(f.m, f.judul)).join('');
     // file non-gambar di folder: dikelompokkan menurut jenisnya (judul kartu = jenis, nama file = subjudul)
@@ -1819,7 +1819,7 @@ function vShoot() {
       + lain.filter(f => f.jenis === 'dok' || (f.jenis === 'skema' && !adaSk)).map(f => kartuDok(f.m, f.jenis === 'skema' ? 'Skema pembagian' : 'Dokumen', f.judul)).join('');
     if (fl) h += `<div class="msgg"><i style="background:var(--deep)"></i><b>File lain</b></div>` + fl;
     if (P.folderErr) h += `<p class="mstip">⚠️ ${esc(P.folderErr)}</p>`;
-    if (!S.arsip && S.boleh) h += `<div class="msup"><button onclick="pilihUpload('moodboard')">📎 Moodboard</button><button onclick="pilihUpload('pose')">📎 Referensi pose</button><button onclick="pilihUpload('callsheet')">📎 Call sheet</button><button onclick="pilihUpload('rundown')">📎 File rundown</button></div>
+    if (!S.arsip && S.boleh) h += `<div class="msup"><button onclick="pilihUpload('moodboard')">📎 Moodboard</button><button onclick="pilihUpload('pose')">📎 Storyboard</button><button onclick="pilihUpload('callsheet')">📎 Call sheet</button><button onclick="pilihUpload('rundown')">📎 File rundown</button></div>
       <p class="mstip">Maks 20 MB per file; file besar simpan di folder Drive photoshoot.</p>${P.folder ? `<a class="msbuka" href="${esc(P.folder)}" target="_blank" rel="noopener">Buka folder Drive photoshoot</a>` : ''}<button class="big alt" onclick="bukaForm('paket')">✏️ Ubah moodboard & link</button>`;
   }
   if (SHT === 'prep') {
@@ -3027,7 +3027,6 @@ function bukaForm(k, arg) {
       <div class="fm" id="wlist">${p.warna.map(baris).join('')}</div><button type="button" class="sbtn" id="wtambah">＋ Tambah warna</button><button class="big" id="kirim">Simpan warna</button>`; },
     paket: () => { const P = SH ? SH.paket : {}, v = x => esc(P[x] || '');
       return `<h2>Paket shooting</h2><div class="info" style="margin-top:0">${esc(SH ? SH.nama : '')}</div><div class="fm"><label>Link moodboard (Canva / PDF)</label><input id="k1" placeholder="https:\/\/…" value="${v('moodboard')}">
-      <label>Arah visual</label><textarea id="k2" style="min-height:76px" placeholder="Contoh: perempuan modern dalam keseharian sederhana, santai menikmati kopi">${v('arah')}</textarea>
       <label>Kata kunci visual <span style="font-weight:500;color:var(--mut)">(pisahkan koma)</span></label><input id="k3" placeholder="Minimal, Natural, Warm, Candid" value="${esc((P.kunci || []).join(', '))}">
       <label>Props <span style="font-weight:500;color:var(--mut)">(1 baris = nama | jumlah)</span></label><textarea id="k4" style="min-height:90px" placeholder="Sunglasses | 4x&#10;Fashion magazine | 1x">${esc((P.props || []).map(x => x.n + (x.q ? ' | ' + x.q : '')).join('\n'))}</textarea>
       <label>Link call sheet <span style="font-weight:500;color:var(--mut)">(atau 📎 upload di tab Props & tim)</span></label><input id="k5" placeholder="https:\/\/…" value="${v('callsheet')}">
@@ -3036,7 +3035,7 @@ function bukaForm(k, arg) {
       <label>Link sheet ide konten <span style="font-weight:500;color:var(--mut)">(Google Sheet / .xlsx · kosong = file berjudul IDE KONTEN di Folder Drive)</span></label><input id="k8" placeholder="https:\/\/docs.google.com/spreadsheets/…" value="${v('sheetIde')}">
       <label>Link skema pembagian <span style="font-weight:500;color:var(--mut)">(Google Sheet / .xlsx · kosong = file berjudul SKEMA di Folder Drive)</span></label><input id="k12" placeholder="https:\/\/docs.google.com/spreadsheets/…" value="${v('skemaLink')}">
       <label>Jam mulai shooting <span style="font-weight:500;color:var(--mut)">(kosong = ${esc((SH && SH.skema && SH.skema.jamMulai) || '08.00')})</span></label><input id="k13" inputmode="numeric" placeholder="08.00" value="${v('jamMulai')}">
-      <label>Gambar moodboard <span style="font-weight:500;color:var(--mut)">(1 baris = judul | link gambar/PDF Drive, Canva, Pinterest)</span></label><textarea id="k9" style="min-height:90px" placeholder="Referensi pose · Solo | https:\/\/drive.google.com/…&#10;Lokasi · 543 Backyard | https:\/\/…">${esc((P.gambar || []).map(x => (x.judul ? x.judul + ' | ' : '') + x.m.url).join('\n'))}</textarea>
+      <label>Gambar moodboard <span style="font-weight:500;color:var(--mut)">(1 baris = judul | link gambar/PDF Drive, Canva, Pinterest)</span></label><textarea id="k9" style="min-height:90px" placeholder="Storyboard · Solo | https:\/\/drive.google.com/…&#10;Lokasi · 543 Backyard | https:\/\/…">${esc((P.gambar || []).map(x => (x.judul ? x.judul + ' | ' : '') + x.m.url).join('\n'))}</textarea>
       <label>Catatan</label><textarea id="k7" style="min-height:64px">${v('catatan')}</textarea></div>
       <div class="info">Link sheet ide: bagikan sheet-nya ke akun pemilik Arabelle Hub. Judul kolom yang dikenali: Seri, Kategori, Ide/Deskripsi, Model, Warna/Baju, Blok, Referensi, Platform, Opsi. Kosong = ide dari tab IDE SHOOTING. File Drive dibagikan "siapa pun yang punya link" supaya tampil di HP tim.</div><div class="simpanlekat"><button class="big" id="kirim">Simpan paket</button></div>`; },
     agenda: () => { const k = arg !== undefined ? D.kalTim[arg] : null, jm = x => String(x || '').replace('.', ':');
@@ -3269,7 +3268,7 @@ function kirim(k, arg) {
     const list = [...sh.querySelectorAll('.mswr')].map(x => ({ n: x.querySelector('.wn').value.trim(), hex: x.querySelector('input[type=color]').value, tidak: x.querySelector('input[type=checkbox]').checked })).filter(x => x.n);
     if (!list.length) return react('bingung', 'Minimal 1 warna ya'); tutup(); loading(true, 'Menyimpan warna…');
     return gsr('apiShootWarna', [TOKEN, SH.id, p.nama, list], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); react('selesai', r.pesan); const id = SH.id; SH = null; SHID = id; render(); }); }
-  if (k === 'paket') { if (!SH) return; const d = { moodboard: g('k1'), arah: $('k2').value.trim(), kunci: g('k3'), props: $('k4').value.trim(), callsheet: g('k5'), folder: g('k6'), catatan: $('k7').value.trim(), brief: SH.paket.brief || '', sheetIde: g('k8'), gambar: $('k9').value.trim(), peran: (SH.paket.peran || []).map(x => (x.r ? x.r + ' | ' : '') + x.n).join('\n'), rundownFile: g('k11'), skema: g('k12'), jamMulai: g('k13') };
+  if (k === 'paket') { if (!SH) return; const d = { moodboard: g('k1'), arah: SH.paket.arah || '', kunci: g('k3'), props: $('k4').value.trim(), callsheet: g('k5'), folder: g('k6'), catatan: $('k7').value.trim(), brief: SH.paket.brief || '', sheetIde: g('k8'), gambar: $('k9').value.trim(), peran: (SH.paket.peran || []).map(x => (x.r ? x.r + ' | ' : '') + x.n).join('\n'), rundownFile: g('k11'), skema: g('k12'), jamMulai: g('k13') };
     tutup(); loading(true, 'Menyimpan paket…'); return gsr('apiShootSimpan', [TOKEN, SH.id, d], r => { loading(false); if (!r || !r.ok) return react('gagal', (r && r.pesan) || 'Gagal'); react('selesai', r.pesan); SH = null; render(); }); }
   if (k === 'produk') { if (!g('pr1')) return react('bingung', 'Isi nama produknya dulu ya'); const p = arg !== undefined && PROD ? PROD[arg] : null;
     const d = { id: p ? p.id : '', nama: g('pr1'), status: (sh.querySelector('#prs .on') || {}).dataset.v || 'Sampel', kategori: g('pr2'), warna: g('pr3'), ukuran: g('pr4'), ps: g('pr5'), launch: g('pr6'), catatan: $('pr7').value.trim(), linkFoto: g('pr8'), foto: FOTO, cover: COVER, coverLink: g('pr9') };
