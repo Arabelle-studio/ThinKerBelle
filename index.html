@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="30">
-<script>window.__UIVERSI = 30;</script>
+<meta name="tkb-tampilan" content="31">
+<script>window.__UIVERSI = 31;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -1447,8 +1447,9 @@ const keyShot = (p, w, t) => p + '|' + w + '|' + t;
 const difoto = (S, p, w) => !!(S.shot[keyShot(p, namaWarna(w), 'F')] || JS3.every(t => S.shot[keyShot(p, w, t[0])]));
 const tidakFoto = (S, p, w) => !!S.shot[keyShot(p, namaWarna(w), 'X')];   // ditandai PIC: memang tidak difoto (tidak dihitung & tidak dibawa)
 function hitungShoot(S) {
-  let tot = 0, lengkap = 0; S.produk.forEach(p => p.warna.forEach(w => { if (tidakFoto(S, p.nama, w)) return; tot++; if (difoto(S, p.nama, w)) lengkap++; }));
-  return { tot, lengkap, ideT: S.ide.filter(x => x.take).length, ideN: S.ide.length };
+  // 5.24: progres hanya produk shoot ini (dari penanda); sisa shoot sebelumnya (bawaan) dihitung terpisah
+  let tot = 0, lengkap = 0, bTot = 0, bSd = 0; S.produk.forEach(p => p.warna.forEach(w => { if (tidakFoto(S, p.nama, w)) return; const sd = difoto(S, p.nama, w); if (p.bawaan) { bTot++; if (sd) bSd++; return; } tot++; if (sd) lengkap++; }));
+  return { tot, lengkap, bTot, bSd, ideT: S.ide.filter(x => x.take).length, ideN: S.ide.length };
 }
 // ---------- warna swatch: "#hex" di nama warna, kamus nama warna, atau pastel dari nama ----------
 const WARNA_HEX = { 'light grey': '#CDCFD1', 'light gray': '#CDCFD1', grey: '#A9ABAE', gray: '#A9ABAE', abu: '#A9ABAE', charcoal: '#6E6D69', 'light sage': '#D3D5BD', sage: '#B5BFA1', 'broken white': '#EEEDE6', 'off white': '#F2EFE6', white: '#F7F5F0', putih: '#F7F5F0',
@@ -1471,15 +1472,19 @@ const namaWarna = w => String(w || '').replace(/#([0-9a-f]{6}|[0-9a-f]{3})\b/i, 
 const ANTRE_K = 'tkbShootAntre1'; let ANTRE = bacaLokal(ANTRE_K) || [];
 const putus = e => !navigator.onLine || /network|failed to fetch|load failed|timed? ?out|NetworkError/i.test(String((e && e.message) || e || ''));
 function kirimShoot(fn, args, ok, gagal) {
-  const antrekan = () => { const k = fn + JSON.stringify(args.slice(0, -1)); ANTRE = ANTRE.filter(x => x.k !== k).concat({ k, fn, args }); simpanLokal(ANTRE_K, ANTRE); if (SH) simpanLokal('tkbShoot1_' + SH.id, SH); if (TAB === 'shoot') render(); };
+  const antrekan = () => { const k = fn + JSON.stringify(args.slice(0, -1)); ANTRE = ANTRE.filter(x => x.k !== k).concat({ k, fn, args, t: Date.now() }); simpanLokal(ANTRE_K, ANTRE); if (SH) simpanLokal('tkbShoot1_' + SH.id, SH); if (TAB === 'shoot') render(); };
   if (!navigator.onLine) return antrekan();
   gsr(fn, [TOKEN].concat(args), r => ok && ok(r), e => putus(e) ? antrekan() : gagal && gagal(e));
 }
 function kirimAntre() {
   if (!ANTRE.length || !navigator.onLine || LIHAT || kirimAntre.jalan) return; kirimAntre.jalan = 1; const x = ANTRE[0];
   const lanjut = () => { kirimAntre.jalan = 0; ANTRE = ANTRE.filter(y => y.k !== x.k); simpanLokal(ANTRE_K, ANTRE); if (ANTRE.length) kirimAntre(); else { react('selesai', '📶 Centang saat offline sudah terkirim'); if (TAB === 'shoot') render(); } };
-  gsr(x.fn, [TOKEN].concat(x.args), lanjut, e => { kirimAntre.jalan = 0; if (!putus(e)) lanjut(); });
+  // 5.24: apiShootCentang ikut dikirim "umur" aksi (ms sejak dicentang) → server tidak menimpa perubahan orang lain yang lebih baru (tanpa bergantung jam HP)
+  const a = x.fn === 'apiShootCentang' && x.t ? [TOKEN].concat(x.args.slice(0, 3), [Math.max(0, Date.now() - x.t)]) : [TOKEN].concat(x.args);
+  gsr(x.fn, a, lanjut, e => { kirimAntre.jalan = 0; if (!putus(e)) lanjut(); });
 }
+// 5.24: sinyal lemah (navigator.onLine tetap true, tapi kiriman gagal) → coba lagi tiap 30 detik, tidak menunggu event "online"
+setInterval(() => { if (ANTRE.length) kirimAntre(); }, 30000);
 // data baru dari server + centang yang masih menunggu sinyal
 function terapkanAntre() {
   ANTRE.filter(x => x.args[0] === SH.id).forEach(x => {
@@ -1759,7 +1764,7 @@ function kartuSkema(S, f) {
   const tbl = lyr ? tblLayar(lyr, 'Skema pembagian' + (nama ? ' · ' + nama : ''), 'Lihat skema asli') : sk.skemaUrl ? `<a class="msbuka" href="${esc(sk.skemaUrl)}" target="_blank" rel="noopener">Lihat skema asli</a>` : '';
   return `<div class="card msg msdok">${judulDok('Skema pembagian', nama)}${pil}${isi}${tbl}</div>`;
 }
-function kartuIde(nama, url) {
+function kartuIdeFile(nama, url) {   // 5.24: dulu kartuIde, bertabrakan dengan kartuIde Bank ide (fungsi terakhir menang → galat IDEB.indexOf di tab Mood)
   return `<div class="card msg msdok">${judulDok('Ide konten', nama)}<small class="msd">Semua ide dari file ini sudah tampil di tab Ide.</small><button class="msbuka" onclick="SHT='ide';render();scrollTo(0,0)">Lihat di tab Ide</button>${url ? `<a class="msbuka" href="${esc(url)}" target="_blank" rel="noopener">Buka file asli</a>` : ''}</div>`;
 }
 function vShoot() {
@@ -1792,11 +1797,14 @@ function vShoot() {
     ${kurang.length && kurang.length < S.siap.length ? `<details><summary>Sudah siap (${S.siap.length - kurang.length})</summary>${S.siap.filter(x => x.ok).map(x => `<div class="mssi ok"><i>✓</i><span>${esc(x.label)}</span></div>`).join('')}</details>` : ''}</div>`; }
   if (SHT === 'produk') {
     if (!S.produk.length) h += kosong('s21', 'Belum ada produk di agenda ini. Ubah agenda → pilih produk yang difoto. Warna diambil dari kolom Warna / varian di tab PRODUK.');
-    else h += `<p class="mstip">Ketuk warna atau motif yang sudah difoto. Yang belum, tetap terlihat sampai akhir sesi.</p>` + S.produk.map((p, pi) => { const sd = p.warna.filter(w => difoto(S, p.nama, w)).length;
+    else h += `<p class="mstip">Ketuk warna yang sudah difoto, atau ✓ Semua warna untuk satu series. Yang belum, tetap terlihat sampai akhir sesi.</p>` + S.produk.map((p, pi) => ({ p, pi })).sort((a, b) => !!a.p.bawaan - !!b.p.bawaan).map(({ p, pi }, urut, A) => { const sd = p.warna.filter(w => difoto(S, p.nama, w)).length;
       const tdk = p.warna.filter(w => tidakFoto(S, p.nama, w)).length;
-      return `<div class="card msg"><div class="msgh"><b>${esc(p.nama)}${p.warna.length > 1 || p.warna[0] !== 'Semua warna' ? ' · ' + p.warna.length + ' warna' : ''}</b><small>${sd} / ${p.warna.length - tdk}</small></div>${p.bawaan ? `<small class="msdari">↪ Sisa dari ${esc(p.bawaan)}</small>` : ''}
-        <div class="msw">${p.warna.map((w, wi) => { const x = tidakFoto(S, p.nama, w), on = !x && difoto(S, p.nama, w), nm = w === 'Semua warna' ? 'Semua warna' : namaWarna(w);
-          return `<button ${kunci ? 'disabled' : ''} onclick="tapWarna(${pi},${wi})" aria-label="${esc(nm)}, ${x ? 'tidak difoto' : on ? 'sudah difoto' : 'belum difoto'}"><span class="${on ? 'on' : x ? 'x' : ''}" style="background:${hexWarna(w)}">${on ? `<i>${ikonCek}</i>` : ''}</span><small>${esc(nm)}${x ? '<em>tidak difoto</em>' : p.talentWarna && p.talentWarna[nm] ? `<em class="t">${esc(p.talentWarna[nm].join(', '))}</em>` : ''}</small></button>`; }).join('')}</div>
+      const judulSisa = p.bawaan && !(A[urut - 1] && A[urut - 1].p.bawaan) ? `<button class="msmore" onclick="SHBUKA.sisa=!SHBUKA.sisa;render()">${SHBUKA.sisa ? 'Sembunyikan' : 'Tampilkan'} sisa shoot sebelumnya · ${n.bSd}/${n.bTot} warna (tidak dihitung di progres)</button>` : '';
+      if (p.bawaan && !SHBUKA.sisa) return judulSisa;
+      const semua = !kunci && sd + tdk < p.warna.length ? `<button class="lk" onclick="tandaiSeri(${pi})">✓ Semua warna</button>` : '';
+      return judulSisa + `<div class="card msg"><div class="msgh"><b>${esc(p.nama)}${p.warna.length > 1 || p.warna[0] !== 'Semua warna' ? ' · ' + p.warna.length + ' warna' : ''}</b><small>${sd} / ${p.warna.length - tdk}</small>${semua}</div>${p.bawaan ? `<small class="msdari">↪ Sisa dari ${esc(p.bawaan)}</small>` : ''}
+        <div class="msw">${p.warna.map((w, wi) => { const x = tidakFoto(S, p.nama, w), on = !x && difoto(S, p.nama, w), nm = w === 'Semua warna' ? 'Semua warna' : namaWarna(w), lbl = /^[A-Za-z0-9]{1,2}$/.test(nm) ? 'Warna ' + nm.toUpperCase() : nm;
+          return `<button ${kunci ? 'disabled' : ''} onclick="tapWarna(${pi},${wi})" aria-label="${esc(nm)}, ${x ? 'tidak difoto' : on ? 'sudah difoto' : 'belum difoto'}"><span class="${on ? 'on' : x ? 'x' : ''}" style="background:${hexWarna(w)}">${on ? `<i>${ikonCek}</i>` : ''}</span><small>${esc(lbl)}${x ? '<em>tidak difoto</em>' : p.talentWarna && p.talentWarna[nm] ? `<em class="t">${esc(p.talentWarna[nm].join(', '))}</em>` : ''}</small></button>`; }).join('')}</div>
         ${S.boleh && !S.arsip ? `<button class="lk" onclick="bukaForm('warna',${pi})">✏️ Atur warna · tandai tidak difoto</button>` : ''}</div>`; }).join('');
   }
   if (SHT === 'mood') {
@@ -1814,7 +1822,7 @@ function vShoot() {
       ${P.brief ? `<p class="msarah">${esc(P.brief)}</p>` : '<small class="msd">Belum ada brief.</small>'}${P.brief && S.boleh && !S.arsip ? `<button class="msbuka" onclick="kirimBrief()">Kirim brief ke grup WA & HP tim</button>` : ''}</div>`;
     const adaSk = (sk.seri || []).length, ideF = lain.find(f => f.jenis === 'ide');
     let fl = kartuCallSheet(S) + (P.rundownM ? kartuDok(P.rundownM, 'File rundown', P.rundownM.nama) : '') + kartuSkema(S, lain.find(f => f.jenis === 'skema'));
-    if (sk.ideNama || ideF) fl += kartuIde(sk.ideNama || (ideF && ideF.judul), sk.ideUrl || (ideF && ideF.m.url));
+    if (sk.ideNama || ideF) fl += kartuIdeFile(sk.ideNama || (ideF && ideF.judul), sk.ideUrl || (ideF && ideF.m.url));
     fl += lain.filter(f => f.jenis === 'rundown').map(f => kartuDok(f.m, 'File rundown', f.judul)).join('')
       + lain.filter(f => f.jenis === 'dok' || (f.jenis === 'skema' && !adaSk)).map(f => kartuDok(f.m, f.jenis === 'skema' ? 'Skema pembagian' : 'Dokumen', f.judul)).join('');
     if (fl) h += `<div class="msgg"><i style="background:var(--deep)"></i><b>File lain</b></div>` + fl;
@@ -1838,7 +1846,7 @@ function vShoot() {
       h += `<div class="mstalr"><small>Talent hadir</small><div class="mstal">${S.skema.talent.map(t => `<button class="${ab(t) ? '' : 'on'}" ${S.boleh && !S.arsip ? '' : 'disabled'} onclick="tapAbsen(this.dataset.t)" data-t="${esc(t)}" aria-label="${esc(t)} ${ab(t) ? 'tidak hadir' : 'hadir'}">${ab(t) ? '🚫' : '✓'} ${esc(t)}</button>`).join('')}</div></div>`; }
     const tk = S.ide.filter(x => x.take).length;
     h += ringkasRvHtml(S);   // RevisiIde 1.0
-    h += `<div class="msurut" data-gulir="urut">${[['jam', 'Per jam'], ['warna', 'Per warna'], ['kat', 'Per kategori']].map(o => `<button class="${SHURUT === o[0] ? 'on' : ''}" onclick="SHURUT='${o[0]}';render()">${o[1]}</button>`).join('')}<small>${tk}/${S.ide.length} take</small>${S.paket.sheetIde || S.skema ? `<button class="lk" onclick="SH=null;muatShoot(true);render()" aria-label="Muat ulang dari file">🔄</button>` : ''}</div>`;
+    h += `<div class="msurut" data-gulir="urut">${[['jam', 'Ikut rundown'], ['warna', 'Per warna'], ['kat', 'Per kategori']].map(o => `<button class="${SHURUT === o[0] ? 'on' : ''}" onclick="SHURUT='${o[0]}';render()">${o[1]}</button>`).join('')}<small>${tk}/${S.ide.length} take</small>${S.paket.sheetIde || S.skema ? `<button class="lk" onclick="SH=null;muatShoot(true);render()" aria-label="Muat ulang dari file">🔄</button>` : ''}</div>`;
     if (SHURUT === 'jam') h += perJam(S, now);
     else if (!S.ide.length) {
       h += `<div class="card msempty"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--mid)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg>
@@ -1873,12 +1881,12 @@ function perJam(S, now) {
   let h = '';
   const blok = S.rundown.filter(b => b.blok), masuk = S.ide.filter(x => blok.some(b => ideDiBlok(S, b).includes(x))), dariCs = S.rundownSumber === 'callsheet';
   // rundown sudah ada: ringkas jadi 1 baris supaya daftar jam langsung terlihat
-  if (blok.length) h += `<div class="msmini"><span>${dariCs ? 'Rundown dari call sheet' : 'Rundown aktif'} · ${masuk.length} ide</span>${S.skema && S.boleh && !S.arsip ? `<button class="lk" onclick="draftShoot()">⟳ buat ulang draf</button>` : ''}</div>${S.skema && S.skema.peringatan.length ? `<div class="mswarn">⚠️ ${S.skema.peringatan.map(esc).join('<br>')}</div>` : ''}`;
+  if (blok.length) h += `<div class="msmini"><span>${dariCs ? 'Rundown dari call sheet' : 'Rundown aktif'} · ${masuk.length} ide</span></div>`;   // 5.24: tombol draf rundown & kotak peringatan nama seri dihapus (rundown awal = acuan cetak)
   else if (S.skema) h += `<div class="card msg"><div class="msgh"><b>Skema & ide konten</b><small>${esc(S.skema.talent.join(', '))}</small></div><small class="msd">Skema: ${esc(S.skema.sumberSkema)}${S.skema.sumberIde ? ' · Ide: ' + esc(S.skema.sumberIde) : ' · file IDE KONTEN belum ada'} · mulai shooting ${esc(S.skema.jamMulai)}</small>
-    ${S.skema.peringatan.length ? `<div class="mswarn">⚠️ ${S.skema.peringatan.map(esc).join('<br>')}</div>` : ''}${S.boleh && !S.arsip ? `<button class="big" onclick="draftShoot()">✨ Buat draf rundown dari skema & ide</button>` : ''}</div>`;
+    </div>`;
   const cek = S.ide.filter(x => { const b = blok.find(b => ideDiBlok(S, b).includes(x)); return b && !b.ideKeys && cekModel(x, b); });
   if (blok.length && cek.length) h += `<div class="msseg msseg3">${[[false, 'Semua blok'], [true, 'Perlu dicek (' + cek.length + ')']].map(o => `<button class="${SHCEK === o[0] ? 'on' : ''}" onclick="SHCEK=${o[0]};render()">${o[1]}</button>`).join('')}</div>`;
-  if (!blok.length) h += `<div class="info">Rundown belum ada.${S.skema && S.boleh ? ' Ketuk <b>✨ Buat draf rundown</b> di atas, lalu <b>Pakai rundown ini</b>.' : S.boleh ? ' Tambah lewat <b>＋ Blok</b> atau tempel dari Excel.' : ''} File rundown (PDF/gambar) ada di tab Mood.</div>`;
+  if (!blok.length) h += `<div class="info">Rundown belum ada.${S.boleh && !S.skema ? ' Tambah lewat <b>＋ Blok</b> atau tempel dari Excel.' : ''} File rundown (PDF/gambar) ada di tab Mood.</div>`;
   if (S.boleh && !S.arsip && !S.skema && !dariCs) h += `<div class="acts" style="margin-top:10px"><button class="sbtn" onclick="bukaForm('blok')">＋ Blok</button><button class="sbtn" onclick="bukaForm('tempel','rundown')">📋 Tempel rundown dari Excel</button></div>`;
   h += S.rundown.map((b, i) => { const ub = S.boleh && !S.arsip && !dariCs ? `<button class="shed" onclick="bukaForm('blok',${i})" aria-label="Ubah blok">✏️</button>` : '';
     if (!b.blok) return SHCEK || SHRV ? '' : `<div class="shev"><b>${esc(b.jam)}</b><span>${esc([b.catatan, b.setup].filter(Boolean).join(' · ') || b.seri)}</span>${ub}</div>`;
@@ -2108,6 +2116,10 @@ function centangShot(k, on) {
   kirimShoot('apiShootCentang', [SH.id, k, on], r => { if (r && r.ok && SH) { SH.shot = r.shot; simpanLokal('tkbShoot1_' + SH.id, SH); if (TAB === 'shoot' && !$('sheet').classList.contains('show')) render(); } else if (r) react('gagal', r.pesan || 'Gagal menyimpan'); },
     e => { if (lama) SH.shot[k] = lama; else delete SH.shot[k]; if (i) i.take = lama ? '✓ ' + lama : ''; render(); react('gagal', '⚠️ ' + e.message); });
 }
+// 5.24: tandai satu series sekaligus (setiap warna lewat centangShot, jadi ikut antrean offline)
+function tandaiSeri(pi) { const p = SH && SH.produk[pi]; if (!p || SH.h > 0 || SH.arsip) return; if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat.');
+  const w = p.warna.filter(x => !tidakFoto(SH, p.nama, x) && !difoto(SH, p.nama, x)); if (!w.length) return;
+  if (!confirm('Tandai ' + w.length + ' warna ' + p.nama + ' sudah difoto?')) return; w.forEach(x => centangShot(keyShot(p.nama, namaWarna(x), 'F'), true)); }
 function tapWarna(pi, wi) { const p = SH && SH.produk[pi], w = p && p.warna[wi]; if (!w || SH.h > 0) return;
   if (tidakFoto(SH, p.nama, w)) return react('bingung', namaWarna(w) + ' ditandai tidak difoto. Ubah lewat ✏️ Atur warna');
   centangShot(keyShot(p.nama, namaWarna(w), 'F'), !difoto(SH, p.nama, w)); }
@@ -2134,7 +2146,7 @@ async function uploadShoot(jenis, f) {
     let r = null; for (let a = 0; a < f.size; a += UK) { r = await panggil('apiShootUploadPotong', [m.uid, await bacaB64(f.slice(a, a + UK)), a, f.size]); if (!r || !r.ok) throw new Error((r && r.pesan) || 'Upload gagal');
       loading(true, 'Mengunggah ' + Math.round(Math.min(a + UK, f.size) / f.size * 100) + '%…'); }
     loading(false); react('selesai', r.pesan); SH = null; SHID = id; render();
-  } catch (e) { loading(false); react('gagal', '⚠️ ' + e.message); }
+  } catch (e) { loading(false); react('gagal', navigator.onLine ? '⚠️ ' + e.message : '📶 Upload terputus karena sinyal hilang. File belum tersimpan, ulangi saat sinyal normal ya.'); }
 }
 function tapProp(i) { const x = SH && SH.paket.props[i]; if (x) centangShot('prop|' + x.n); }
 function takeIde(i) {
