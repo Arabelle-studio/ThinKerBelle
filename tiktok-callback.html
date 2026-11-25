@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>ThinKerBelle · Login TikTok</title>
+<!-- Dibuat otomatis oleh buat_github.command dari github_tiktok_callback.txt. Jangan edit di repo GitHub. -->
+<style>
+  :root { --bg: #fbf7f4; --kartu: #fff; --teks: #2b2326; --redup: #7a6d72; --aksen: #c2577f; --ok: #2f6b4a; --gagal: #a33a3a; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1d1a1b; --kartu: #2a2527; --teks: #f3ecee; --redup: #b9aab0; --aksen: #e58bb0; --ok: #7fd1a1; --gagal: #f08f8f; } }
+  body { margin: 0; background: var(--bg); color: var(--teks); font: 16px/1.5 -apple-system, system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 440px; margin: 12vh auto 0; padding: 0 16px; }
+  .kartu { background: var(--kartu); border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.06); text-align: center; }
+  h1 { font-size: 20px; margin: 8px 0; }
+  p { color: var(--redup); margin: 8px 0; }
+  .ikon { font-size: 40px; }
+  .ok { color: var(--ok); } .gagal { color: var(--gagal); }
+  a.tombol { display: inline-block; margin-top: 16px; background: var(--aksen); color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 10px; font-weight: 600; }
+</style>
+</head>
+<body>
+<main><div class="kartu">
+  <div class="ikon" id="ikon">⏳</div>
+  <h1 id="judul">Menyambungkan akun TikTok…</h1>
+  <p id="isi">Sebentar, ThinKerBelle sedang memeriksa izin dari TikTok.</p>
+  <a class="tombol" id="lanjut" href="tiktok.html" hidden>Buka panel TikTok</a>
+</div></main>
+<script>
+(function () {
+  var EXEC = 'https://script.google.com/macros/s/AKfycbxglVQKBvsnks_7C_XnrLXEx0GiIoZFT4xjSTDQ74YPVP_sAA-DaVlJdG_6Tvnx1Gk/exec';
+  var q = new URLSearchParams(location.search), code = q.get('code') || '', state = q.get('state') || '', galat = q.get('error') || '', ket = q.get('error_description') || '';
+  // kode login tidak boleh tertinggal di alamat / riwayat browser
+  try { history.replaceState(null, '', location.pathname); } catch (e) {}
+  function tampil(ikon, judul, isi, kelas) {
+    document.getElementById('ikon').textContent = ikon;
+    var j = document.getElementById('judul'); j.textContent = judul; j.className = kelas || '';
+    document.getElementById('isi').textContent = isi;
+    document.getElementById('lanjut').hidden = false;
+  }
+  if (!state) { tampil('⚠️', 'Tautan tidak lengkap', 'Halaman ini dibuka tanpa data login TikTok. Mulai lagi dari tombol Hubungkan akun TikTok.', 'gagal'); return; }
+  fetch(EXEC, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ rpc: 'tkb', fn: 'apiTikTokSelesai', args: [code, state, galat ? (galat + (ket ? ': ' + ket : '')) : ''] }) })
+    .then(function (r) { return r.text(); })
+    .then(function (t) {
+      var o; try { o = JSON.parse(t); } catch (e) { throw new Error('Jawaban server tidak terbaca. Coba lagi.'); }
+      if (!o.ok) throw new Error(o.pesan || 'Server menolak.');
+      var d = o.data || {};
+      tampil('✅', 'Akun TikTok tersambung', (d.nama ? 'Akun: ' + d.nama + '. ' : '') + (d.sandbox ? '(mode Sandbox) ' : '') + 'Halaman ini boleh ditutup.', 'ok');
+    })
+    .catch(function (e) { tampil('❌', 'Belum tersambung', String((e && e.message) || e), 'gagal'); });
+})();
+</script>
+</body>
+</html>

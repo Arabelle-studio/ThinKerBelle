@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>ThinKerBelle · TikTok</title>
+<!-- Dibuat otomatis oleh buat_github.command dari github_tiktok.txt. Jangan edit di repo GitHub. -->
+<style>
+  :root { --bg: #fbf7f4; --kartu: #fff; --teks: #2b2326; --redup: #7a6d72; --garis: #eadfe3; --aksen: #c2577f; --ok: #2f6b4a; --gagal: #a33a3a; --chip: #f6e7ed; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1d1a1b; --kartu: #2a2527; --teks: #f3ecee; --redup: #b9aab0; --garis: #3d3538; --aksen: #e58bb0; --ok: #7fd1a1; --gagal: #f08f8f; --chip: #3a2f33; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--teks); font: 15px/1.5 -apple-system, system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
+  h1 { font-size: 20px; margin: 4px 0 12px; } h2 { font-size: 16px; margin: 20px 0 8px; }
+  .kartu { background: var(--kartu); border: 1px solid var(--garis); border-radius: 14px; padding: 14px; margin: 10px 0; }
+  .redup { color: var(--redup); font-size: 13px; } .ok { color: var(--ok); } .gagal { color: var(--gagal); }
+  .chip { display: inline-block; background: var(--chip); border-radius: 99px; padding: 2px 10px; font-size: 12px; margin: 2px 4px 2px 0; }
+  .akun { display: flex; gap: 12px; align-items: center; } .akun img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+  button { font: inherit; border: 0; border-radius: 10px; padding: 9px 14px; background: var(--aksen); color: #fff; font-weight: 600; cursor: pointer; margin: 6px 6px 0 0; }
+  button.kedua { background: var(--chip); color: var(--teks); } button:disabled { opacity: .45; cursor: not-allowed; }
+  label { display: block; margin: 8px 0; } select, textarea { width: 100%; font: inherit; padding: 8px; border-radius: 8px; border: 1px solid var(--garis); background: var(--bg); color: var(--teks); }
+  textarea { min-height: 110px; } .mati { opacity: .5; }
+  iframe { width: 100%; aspect-ratio: 9 / 16; max-height: 520px; border: 0; border-radius: 10px; background: #000; }
+  .persetujuan { font-size: 13px; color: var(--redup); } .persetujuan a { color: var(--aksen); }
+  #lapisan { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; overflow: auto; padding: 16px; }
+  #lapisan .kartu { max-width: 560px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<main>
+  <h1>🎵 TikTok · ThinKerBelle</h1>
+  <div id="atas" class="kartu">Memuat…</div>
+  <div id="daftar"></div>
+</main>
+<div id="lapisan"><div class="kartu" id="form"></div></div>
+<script>
+(function () {
+  var EXEC = 'https://script.google.com/macros/s/AKfycbxglVQKBvsnks_7C_XnrLXEx0GiIoZFT4xjSTDQ74YPVP_sAA-DaVlJdG_6Tvnx1Gk/exec', LS = 'arabelleStudioToken';
+  var token = ''; try { token = localStorage.getItem(LS) || ''; } catch (e) {}
+  var INFO = null, KREATOR = null;
+  var MUSIK = 'https://www.tiktok.com/legal/page/global/music-usage-confirmation/en', BC = 'https://www.tiktok.com/legal/page/global/bc-policy/en';
+  var NAMA_PRIVASI = { PUBLIC_TO_EVERYONE: 'Semua orang', MUTUAL_FOLLOW_FRIENDS: 'Teman (saling mengikuti)', FOLLOWER_OF_CREATOR: 'Pengikut', SELF_ONLY: 'Hanya saya' };
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function rpc(fn, args) {
+    return fetch(EXEC, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: 'tkb', fn: fn, args: args || [] }) })
+      .then(function (r) { return r.text(); })
+      .then(function (t) { var o; try { o = JSON.parse(t); } catch (e) { throw new Error('Jawaban server tidak terbaca. Coba lagi.'); } if (!o.ok) throw new Error(o.pesan || 'Server menolak'); return o.data; });
+  }
+  if (!token) { $('atas').innerHTML = 'Buka app ThinKerBelle dulu lewat link pribadi dari WhatsApp (#APP), lalu buka halaman ini lagi.'; return; }
+
+  function muat() {
+    rpc('apiTikTokInfo', [token]).then(function (d) { INFO = d; gambar(); }).catch(function (e) { $('atas').innerHTML = '<span class="gagal">' + esc(e.message) + '</span>'; });
+  }
+  function gambar() {
+    var d = INFO, a = d.akun;
+    var mode = '<span class="chip">' + (d.aktif ? 'Menyala' : 'Mati') + '</span><span class="chip">' + (d.uji ? '🧪 Uji coba' : '🚀 Sungguhan') + '</span>' + (d.sandbox ? '<span class="chip">Sandbox</span>' : '') + '<span class="chip">Posting langsung: ' + (d.langsung ? 'boleh' : 'belum') + '</span>';
+    if (!d.boleh) { $('atas').innerHTML = 'Panel TikTok hanya untuk pimpinan dan PIC TikTok. ' + mode; $('daftar').innerHTML = ''; return; }
+    $('atas').innerHTML = (a ? '<div class="akun">' + (a.avatar ? '<img alt="" src="' + esc(a.avatar) + '">' : '') + '<div><b>' + esc(a.nama || 'Akun TikTok') + '</b>' + (a.username ? ' <span class="redup">@' + esc(a.username) + '</span>' : '') +
+        '<div class="redup">Tersambung ' + esc(a.waktu) + (a.oleh ? ' oleh ' + esc(a.oleh) : '') + '</div>' + (a.putus ? '<div class="gagal">⚠️ ' + esc(a.putus) + '</div>' : '') + '</div></div>'
+        : '<div>Akun TikTok belum tersambung.</div>') +
+      '<div>' + mode + '</div><button id="hub">' + (a ? 'Sambungkan ulang' : 'Hubungkan akun TikTok') + '</button><button class="kedua" id="segar">Muat ulang</button>';
+    $('hub').onclick = function () { this.disabled = true; rpc('apiTikTokMulai', [token]).then(function (r) { location.href = r.url; }).catch(function (e) { alert(e.message); muat(); }); };
+    $('segar').onclick = muat;
+    var b = d.baris || [];
+    $('daftar').innerHTML = '<h2>Jadwal TikTok (2 hari lalu – 14 hari ke depan)</h2>' + (b.length ? b.map(function (r, i) {
+      var bisa = a && !a.putus && !r.tayang && !r.jalan && r.statusKonten === 'Approved' && r.fileId;
+      return '<div class="kartu"><b>' + esc(r.topik) + '</b><div class="redup">' + esc(r.tanggal) + ' ' + esc(r.jam) + ' · ' + esc(r.platform) + ' · PIC ' + esc(r.pic) + ' · ' + esc(r.statusKonten) + '</div>' +
+        (r.status ? '<div>' + esc(r.status) + '</div>' : '') + (r.link ? '<div><a href="' + esc(r.link) + '" target="_blank" rel="noopener">' + esc(r.link) + '</a></div>' : '') +
+        (r.fileId ? '' : '<div class="redup">File media belum berisi link video Drive.</div>') +
+        '<button data-i="' + i + '" data-m="draf"' + (bisa ? '' : ' disabled') + '>Kirim ke draf TikTok</button>' +
+        (d.langsung ? '<button class="kedua" data-i="' + i + '" data-m="langsung"' + (bisa ? '' : ' disabled') + '>Posting langsung…</button>' : '') + '</div>';
+    }).join('') : '<p class="redup">Tidak ada baris TikTok di Kalender IG & TikTok untuk rentang ini.</p>');
+    Array.prototype.forEach.call(document.querySelectorAll('button[data-i]'), function (el) { el.onclick = function () { var r = INFO.baris[+el.dataset.i]; el.dataset.m === 'draf' ? formDraf(r) : formLangsung(r); }; });
+  }
+  function tutup() { $('lapisan').style.display = 'none'; $('form').innerHTML = ''; }
+  function buka(html) { $('form').innerHTML = html; $('lapisan').style.display = 'block'; }
+  function pratinjau(r) { return '<iframe title="Pratinjau video" src="https://drive.google.com/file/d/' + encodeURIComponent(r.fileId) + '/preview" allow="autoplay"></iframe>'; }
+  function kirim(r, isi, tombol) {
+    tombol.disabled = true; tombol.textContent = 'Mengirim…';
+    rpc('apiTikTokKirim', [token, Object.assign({ baris: r.baris, topik: r.topik }, isi)])
+      .then(function (h) { alert(h.pesan || 'Terkirim'); tutup(); muat(); })
+      .catch(function (e) { alert(e.message); tombol.disabled = false; tombol.textContent = 'Coba lagi'; });
+  }
+  // DRAF (inbox): video dikirim ke inbox TikTok, kreator menyelesaikan caption & posting di app TikTok
+  function formDraf(r) {
+    buka('<h2>Kirim ke draf TikTok</h2>' + pratinjau(r) + '<p><b>' + esc(r.topik) + '</b></p>' +
+      '<p>Video ini akan dikirim ke <b>inbox TikTok akun ' + esc((INFO.akun && (INFO.akun.nama || INFO.akun.username)) || '') + '</b>. Buka app TikTok → notifikasi inbox untuk mengedit dan memposting. Caption tidak ikut terkirim; salin dari bawah.</p>' +
+      '<label>Caption untuk disalin<textarea readonly>' + esc(r.caption) + '</textarea></label>' +
+      '<p class="redup">TikTok butuh beberapa menit untuk memproses video sebelum muncul di inbox.</p>' +
+      '<button id="ya">Kirim ke draf</button><button class="kedua" id="batal">Batal</button>');
+    $('batal').onclick = tutup; $('ya').onclick = function () { kirim(r, { mode: 'draf' }, this); };
+  }
+  // POSTING LANGSUNG: tampilan sesuai pedoman TikTok (nama kreator, privasi tanpa bawaan, interaksi kosong, konten komersial, persetujuan)
+  function formLangsung(r) {
+    buka('<p>Memuat info akun TikTok…</p>');
+    rpc('apiTikTokKreator', [token]).then(function (k) {
+      KREATOR = k;
+      var opsi = k.privasi.map(function (p) { return '<option value="' + esc(p) + '">' + esc(NAMA_PRIVASI[p] || p) + '</option>'; }).join('');
+      buka('<h2>Posting ke TikTok</h2><div class="akun">' + (k.avatar ? '<img alt="" src="' + esc(k.avatar) + '">' : '') + '<div>Akan diposting ke <b>' + esc(k.nama) + '</b>' + (k.username ? ' <span class="redup">@' + esc(k.username) + '</span>' : '') + '</div></div>' +
+        pratinjau(r) + (k.maksDetik ? '<p class="redup">Batas durasi akun ini: ' + k.maksDetik + ' detik.</p>' : '') +
+        '<label>Judul / caption<textarea id="judul" maxlength="2200">' + esc(r.caption) + '</textarea></label>' +
+        '<label>Siapa yang bisa melihat video ini<select id="privasi"><option value="" selected disabled>Pilih…</option>' + opsi + '</select></label>' +
+        '<div><b>Izinkan pengguna lain</b>' +
+        '<label class="' + (k.komentarMati ? 'mati' : '') + '"><input type="checkbox" id="komentar"' + (k.komentarMati ? ' disabled' : '') + '> Komentar' + (k.komentarMati ? ' (dimatikan di akun)' : '') + '</label>' +
+        '<label class="' + (k.duetMati ? 'mati' : '') + '"><input type="checkbox" id="duet"' + (k.duetMati ? ' disabled' : '') + '> Duet' + (k.duetMati ? ' (dimatikan di akun)' : '') + '</label>' +
+        '<label class="' + (k.stitchMati ? 'mati' : '') + '"><input type="checkbox" id="stitch"' + (k.stitchMati ? ' disabled' : '') + '> Stitch' + (k.stitchMati ? ' (dimatikan di akun)' : '') + '</label></div>' +
+        '<label><input type="checkbox" id="komersial"> <b>Ungkapkan konten komersial</b> <span class="redup">(video ini mempromosikan brand, produk, atau jasa)</span></label>' +
+        '<div id="pilKom" hidden style="margin-left:22px">' +
+        '<label><input type="checkbox" id="brand"> Brand sendiri <span class="redup">· Your brand</span></label>' +
+        '<label><input type="checkbox" id="bermerek"> Konten bermerek (pihak lain) <span class="redup">· Branded content</span></label>' +
+        '<div id="labelKom" class="redup"></div></div>' +
+        '<p id="peringatan" class="gagal"></p>' +
+        '<p class="persetujuan" id="setuju"></p>' +
+        '<p class="redup">Setelah diposting, TikTok butuh beberapa menit untuk memproses video sebelum muncul di profil.</p>' +
+        '<button id="ya" disabled>Posting</button><button class="kedua" id="batal">Batal</button>');
+      $('batal').onclick = tutup;
+      ['privasi', 'komersial', 'brand', 'bermerek'].forEach(function (id) { $(id).onchange = cek; });
+      cek();
+      $('ya').onclick = function () {
+        kirim(r, { mode: 'langsung', judul: $('judul').value, privasi: $('privasi').value, komentar: $('komentar').checked, duet: $('duet').checked, stitch: $('stitch').checked,
+          komersial: $('komersial').checked, brand: $('brand').checked, bermerek: $('bermerek').checked, setuju: true }, this);
+      };
+    }).catch(function (e) { buka('<p class="gagal">' + esc(e.message) + '</p><button class="kedua" id="batal">Tutup</button>'); $('batal').onclick = tutup; });
+  }
+  function cek() {
+    var kom = $('komersial').checked, brand = $('brand').checked, bm = $('bermerek').checked, pv = $('privasi'), salah = '';
+    $('pilKom').hidden = !kom;
+    // konten bermerek tidak boleh privat
+    Array.prototype.forEach.call(pv.options, function (o) { if (o.value === 'SELF_ONLY') { o.disabled = kom && bm; o.title = kom && bm ? 'Konten bermerek tidak bisa diatur privat' : ''; } });
+    if (kom && bm && pv.value === 'SELF_ONLY') { pv.value = ''; salah = 'Konten bermerek tidak bisa diatur privat (Branded content visibility cannot be set to private).'; }
+    $('labelKom').textContent = !kom ? '' : bm ? 'Video akan diberi label "Paid partnership".' : brand ? 'Video akan diberi label "Promotional content".' : '';
+    if (kom && !brand && !bm) salah = salah || 'Pilih apakah konten mempromosikan brand sendiri, pihak lain, atau keduanya.';
+    $('peringatan').textContent = salah;
+    $('setuju').innerHTML = kom && bm
+      ? 'By posting, you agree to TikTok\'s <a href="' + BC + '" target="_blank" rel="noopener">Branded Content Policy</a> and <a href="' + MUSIK + '" target="_blank" rel="noopener">Music Usage Confirmation</a>.'
+      : 'By posting, you agree to TikTok\'s <a href="' + MUSIK + '" target="_blank" rel="noopener">Music Usage Confirmation</a>.';
+    $('ya').disabled = !pv.value || (kom && !brand && !bm);
+    $('ya').title = kom && !brand && !bm ? 'You need to indicate if your content promotes yourself, a third party, or both.' : '';
+  }
+  muat();
+})();
+</script>
+</body>
+</html>
