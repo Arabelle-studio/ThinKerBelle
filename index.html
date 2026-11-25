@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><base target="_top"><meta charset="utf-8">
-<meta name="tkb-tampilan" content="31">
-<script>window.__UIVERSI = 31;</script>
+<meta name="tkb-tampilan" content="32">
+<script>window.__UIVERSI = 32;</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ThinKerBelle</title>
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -333,7 +333,10 @@ body{font:400 15px/1.5 'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;ba
 .msw span.x{opacity:.35;background-image:linear-gradient(135deg,transparent 46%,rgba(74,29,51,.6) 48%,rgba(74,29,51,.6) 52%,transparent 54%)!important}.msw small em{display:block;font-style:normal;color:var(--warn);font-size:10px}
 .mssiap{margin-top:14px;display:flex;flex-direction:column;gap:6px;border-radius:22px;padding:14px}.mssi{display:flex;align-items:center;gap:10px;font-size:14px}.mssi i{width:22px;height:22px;border-radius:50%;border:2px solid var(--mid);display:grid;place-items:center;font-style:normal;font-size:12px;color:#fff;flex:none}.mssi.ok i{background:var(--ok);border-color:var(--ok)}.mssi.ok span{color:var(--mut)}.mssi small{margin-left:auto;color:var(--warn);font-size:12px;text-align:right}
 .msup{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.msup button{flex:1 1 auto;min-height:44px;border-radius:999px;border:1.5px dashed var(--deep);background:var(--card);color:var(--deep);font-weight:600;font-size:14px;padding:0 14px}
-.mswr{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.mswr input[type=color]{width:40px;height:40px;border:0;padding:0;border-radius:12px;background:none;flex:none}.mswr .wn{flex:1;min-width:0}.mswr label{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;white-space:nowrap}.mswr label input{width:auto}.mswr button{border:0;background:var(--chip);color:var(--mut);border-radius:50%;width:32px;height:32px;flex:none}
+.mswr{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.mswr input[type=color]{width:40px;height:40px;border:0;padding:0;border-radius:12px;background:none;flex:none}.mswr .wn{flex:1;min-width:0}.mswr label{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;white-space:nowrap}.mswr label input{width:auto}.mswr button{border:0;background:var(--chip);color:var(--mut);border-radius:50%;width:32px;height:32px;flex:none}.mswr .wn{flex:1 1 60px;min-width:60px}.mswr button.mswc{width:44px;height:44px;border-radius:12px;background:var(--chip) center/cover no-repeat;color:var(--ink);display:grid;place-items:center}.mswr button.mswc.ada{box-shadow:0 0 0 2px var(--ok)}
+.msw span.f{background-size:cover!important;background-position:center!important}.msw .mszm{position:absolute;right:4px;top:4px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 1px 4px rgba(0,0,0,.2)}.msw button{position:relative}
+.msgh .lk,.msw~.lk,.msmore{min-height:40px}.msjs{color:#B3261E;font-weight:600}.msiw{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.msiw>*{display:flex;flex-direction:column;align-items:center;gap:2px;width:56px;border:0;background:none;padding:0;color:var(--ink)}.msiw i{width:44px;height:44px;border-radius:12px;border:1px solid rgba(74,29,51,.12);display:block}.msiw small{font-size:11px;line-height:1.2;text-align:center;overflow-wrap:anywhere;color:var(--mut)}.msw~.lk{display:inline-flex;align-items:center}
+#msfw{position:fixed;inset:0;z-index:9999;background:rgba(20,10,16,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px}#msfw img{max-width:100%;max-height:82vh;border-radius:12px;object-fit:contain}#msfw b{color:#fff;font-size:15px}#msfw small{color:#ddd;font-size:12px}
 .msw small em.t{color:var(--mut);font-weight:500}.mstal{display:flex;flex-wrap:wrap;gap:8px}.mstal button{min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--mut);font-weight:600}.mstal button.on{border-color:var(--ok);background:var(--okbg);color:var(--ok)}
 .msdr{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-top:10px;display:flex;flex-direction:column;gap:6px}.msdr.inf{background:transparent;border-style:dashed}.msdr.tetap{opacity:.85}
 .msdrh{display:flex;align-items:baseline;gap:10px}.msdrh span{flex:none;font-size:12px;font-weight:700;color:var(--mut);min-width:92px}.msdrh b{flex:1;font-size:15px}.msdrh em{font-style:normal;font-size:11px;font-weight:700;color:var(--ok);background:var(--okbg);border-radius:999px;padding:2px 8px}
@@ -536,7 +539,7 @@ function react(k, teks) {
 function loading(on, t) { $('load').style.display = on ? 'flex' : 'none'; if (on && !$('loadimg').src.startsWith('data')) $('loadimg').src = STK.s11; if (t) $('loadt').textContent = t; }
 let LIHAT = '', SAYA = null;   // mode lihat akun tim (leader)
 let PDF_JALAN = false, PDF_URL = '', PDF_FILE = null;   // PDF RAB sedang disiapkan / hasil terakhir
-const BACA_SAJA = /^api(JadwalLaunching|Muat|MuatSebagai|Tambahan|TambahanSebagai|Produk|Shoot|Versi|Stiker|Materi|Report|Rapor|Pratinjau|Perintahku|Kesehatan|NotifInfo|LaporError|DaftarNama|ShootRekap|BankIde|Pengganti|FreelanceRekap|IdeLokasi|MejaDash|MejaKonten|MejaIde)$/;
+const BACA_SAJA = /^api(JadwalLaunching|Muat|MuatSebagai|Tambahan|TambahanSebagai|Produk|Shoot|Versi|Stiker|Materi|Report|Rapor|Pratinjau|Perintahku|Kesehatan|NotifInfo|LaporError|DaftarNama|ShootRekap|BankIde|Pengganti|FreelanceRekap|IdeLokasi|MejaDash|MejaKonten|MejaIde|ShootPdf)$/;
 function gsr(fn, args, ok, fail) { if (LIHAT && (!BACA_SAJA.test(fn) || (fn === 'apiShootRekap' && args[2]))) { loading(false); tutup(); react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat. Kembali ke akunmu untuk mengubah.'); return; } google.script.run.withSuccessHandler(ok).withFailureHandler(e => { loading(false); if (/Sesi tidak berlaku/.test(e.message)) { keluar(); return; } (fail || (x => react('gagal', '⚠️ ' + x.message)))(e); })[fn].apply(null, args); }
 function hasil(teks, k) {
   teks = String(teks || ''); const pendek = teks.split('\n')[0];
@@ -1049,6 +1052,12 @@ function tur(i) {
 function pesanPdf(m) { m = String(m || ''); if (/Failed to fetch|NetworkError|network|offline|Load failed|koneksi/i.test(m)) return 'Koneksi terputus. Coba lagi saat internet stabil ya.';
   if (/timed? ?out|waktu|Exceeded maximum execution/i.test(m)) return 'Menyiapkan PDF terlalu lama. Coba lagi, atau pilih periode yang lebih pendek.';
   if (/Sesi tidak berlaku/.test(m)) return m; return /[a-z]/i.test(m) && !/^(Error|Exception|TypeError)/.test(m) ? m : 'PDF belum bisa dibuat. Coba lagi sebentar ya.'; }
+function unduhShootPdf(jenis) { if (!SH) return; if (PDF_JALAN) return react('sapa', 'PDF masih disiapkan, tunggu sebentar ya…');
+  if (!navigator.onLine) return react('bingung', '📶 Membuat PDF butuh sinyal, coba lagi ya.');
+  PDF_JALAN = true; loading(true, 'Menyiapkan PDF…');
+  gsr('apiShootPdf', [TOKEN, SH.id, jenis], r => { PDF_JALAN = false; loading(false); if (!r || !r.ok || !r.data) return react('gagal', (r && r.pesan) || '⚠️ PDF belum bisa dibuat. Coba lagi sebentar ya.'); tampilPdf(r); },
+    e => { PDF_JALAN = false; loading(false); react('gagal', '⚠️ ' + pesanPdf(e && e.message)); });
+}
 function unduhRabPdf(opsi) {
   if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': PDF RAB hanya bisa diunduh dari akunmu sendiri.');
   if (PDF_JALAN) return react('sapa', 'PDF masih disiapkan, tunggu sebentar ya…');
@@ -1521,12 +1530,18 @@ function saranBlok(S, x) {
   return b ? 'Saran: ambil di blok ' + b.blok + (b.jam ? ' (' + b.jam + ')' : '') : '';
 }
 const ikonCek = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+// 5.25: foto kecil + nama warna produk yang di-take (server: x.fw = {pi, wi[]}). Belum ada foto = kotak warna datar. Ketuk foto = perbesar.
+function stripWarnaIde(x) { const g = x.fw && SH.produk[x.fw.pi]; if (!g) return ''; const wi = x.fw.wi.filter(i => g.warna[i] !== undefined); if (!wi.length) return '';
+  const tampil = wi.slice(0, 8), sisa = wi.length - tampil.length;
+  return `<div class="msiw">${tampil.map(i => { const w = g.warna[i], f = fotoW(g, w), l = lblW(null, w);
+    return f ? `<button type="button" onclick="lihatFotoW(${x.fw.pi},${i})" aria-label="Perbesar foto ${esc(l)}"><i style="background:url('${thumb(f.id, 160)}') ${hexWarna(w)} center/cover"></i><small>${esc(l)}</small></button>`
+      : `<span><i style="background:${hexWarna(w)}"></i><small>${esc(l)}</small></span>`; }).join('')}${sisa > 0 ? `<span><small>+${sisa} warna</small></span>` : ''}</div>`; }
 function barisIde(x, b, kat) {
   const i = SH.ide.indexOf(x), c = !!x.take, warn = b ? cekModel(x, b) : '', saran = !b && SH.rundown.some(r => r.blok) ? saranBlok(SH, x) : '';
   return `<div class="msi ${c ? 'on' : ''} ${warn ? 'wr' : ''}"><button class="mscb" onclick="takeIde(${i})" aria-label="${c ? 'Batalkan tanda sudah take' : 'Tandai sudah take'}">${c ? ikonCek : ''}</button>
     <div class="msix">${kat && (x.kategori || x.format) ? `<small class="msk">${esc(String(x.kategori || x.format).toUpperCase())}</small>` : ''}<b>${x.no && x.no !== '+' ? esc(x.no) + '. ' : ''}${esc(x.ide || 'Deskripsi belum diisi di sheet')}</b>${x.desk ? `<small class="msd">${esc(x.desk)}</small>` : ''}
-    <div class="mschip">${x.talentWarna ? `<span>${esc(x.talentWarna)}</span>` : x.model ? `<span>${esc(pisahNama(x.model).join(' + '))}</span>` : ''}${(x.luar || []).length ? '<span class="w">di luar skema</span>' : ''}${!kat && x.warna && kecil(x.warna) !== 'bebas' && SHURUT !== 'warna' ? `<span class="w">${esc(x.warna)}</span>` : ''}${x.opsi ? '<span class="g">Opsi</span>' : ''}${x.pic ? `<span class="g">PIC ${esc(x.pic)}</span>` : ''}${/^https?:\/\//i.test(x.ref || '') ? `<a href="${esc(x.ref)}" target="_blank" rel="noopener">▶ ${esc(x.platform || 'Referensi')}</a>` : x.platform && x.bisaRevisi ? `<span class="g">${esc(x.platform)}</span>` : ''}${x.baru ? '<span class="rv">Ide baru</span>' : ''}${x.direvisi ? '<span class="rv">direvisi</span>' : ''}${chipRv(x)}</div>
-    ${blokRv(x)}${(x.absen || []).length ? `<div class="mswarn">🚫 ${esc(x.absen.join(', '))} tidak hadir · ide ini perlu disesuaikan</div>` : ''}${(x.cek || []).length ? `<div class="mswarn">⚠️ ${esc(x.cek.join(' · '))}</div>` : ''}
+    <div class="mschip">${x.talentWarna ? `<span>${esc(x.talentWarna)}</span>` : x.model ? `<span>${esc(pisahNama(x.model).join(' + '))}</span>` : ''}${(x.luar || []).length ? '<span class="w">di luar skema</span>' : ''}${!kat && x.warna && !x.fw && kecil(x.warna) !== 'bebas' && SHURUT !== 'warna' ? `<span class="w">${esc(x.warna)}</span>` : ''}${x.opsi ? '<span class="g">Opsi</span>' : ''}${x.pic ? `<span class="g">PIC ${esc(x.pic)}</span>` : ''}${/^https?:\/\//i.test(x.ref || '') ? `<a href="${esc(x.ref)}" target="_blank" rel="noopener">▶ ${esc(x.platform || 'Referensi')}</a>` : x.platform && x.bisaRevisi ? `<span class="g">${esc(x.platform)}</span>` : ''}${x.baru ? '<span class="rv">Ide baru</span>' : ''}${x.direvisi ? '<span class="rv">direvisi</span>' : ''}${chipRv(x)}</div>
+    ${blokRv(x)}${(x.absen || []).length ? `<div class="mswarn">🚫 ${esc(x.absen.join(', '))} tidak hadir · ide ini perlu disesuaikan</div>` : ''}${stripWarnaIde(x)}${(x.cek || []).filter(c => !/tidak ada di daftar warna/.test(c)).length ? `<div class="mswarn">⚠️ ${esc(x.cek.filter(c => !/tidak ada di daftar warna/.test(c)).join(' · '))}</div>` : ''}
     ${warn && !x.talentWarna ? `<div class="mswarn">⚠️ ${esc(warn)}${saranBlok(SH, x) ? ' · ' + esc(saranBlok(SH, x)) : ''}</div>` : ''}${saran ? `<div class="mssaran">${esc(saran)}</div>` : ''}
     ${blokCatatan(x, i)}${x.take && !/baru saja|offline/.test(x.take) ? `<small class="msok">${esc(x.take)}</small>` : ''}${SH.boleh && !SH.arsip && x.sumber !== 'sheet' && !x.bisaRevisi ? (x.baris ? `<div class="msrvbar"><button onclick="bukaForm('idesh',${i})">✏️ Revisi</button><button onclick="formCatatan(${i})">📝 Catatan</button></div>` : `<button class="lk" onclick="bukaForm('idesh',${i})">✏️ Ubah ide</button>`) : ''}${tombolIde(x, i)}</div></div>`;
 }
@@ -1803,8 +1818,8 @@ function vShoot() {
       if (p.bawaan && !SHBUKA.sisa) return judulSisa;
       const semua = !kunci && sd + tdk < p.warna.length ? `<button class="lk" onclick="tandaiSeri(${pi})">✓ Semua warna</button>` : '';
       return judulSisa + `<div class="card msg"><div class="msgh"><b>${esc(p.nama)}${p.warna.length > 1 || p.warna[0] !== 'Semua warna' ? ' · ' + p.warna.length + ' warna' : ''}</b><small>${sd} / ${p.warna.length - tdk}</small>${semua}</div>${p.bawaan ? `<small class="msdari">↪ Sisa dari ${esc(p.bawaan)}</small>` : ''}
-        <div class="msw">${p.warna.map((w, wi) => { const x = tidakFoto(S, p.nama, w), on = !x && difoto(S, p.nama, w), nm = w === 'Semua warna' ? 'Semua warna' : namaWarna(w), lbl = /^[A-Za-z0-9]{1,2}$/.test(nm) ? 'Warna ' + nm.toUpperCase() : nm;
-          return `<button ${kunci ? 'disabled' : ''} onclick="tapWarna(${pi},${wi})" aria-label="${esc(nm)}, ${x ? 'tidak difoto' : on ? 'sudah difoto' : 'belum difoto'}"><span class="${on ? 'on' : x ? 'x' : ''}" style="background:${hexWarna(w)}">${on ? `<i>${ikonCek}</i>` : ''}</span><small>${esc(lbl)}${x ? '<em>tidak difoto</em>' : p.talentWarna && p.talentWarna[nm] ? `<em class="t">${esc(p.talentWarna[nm].join(', '))}</em>` : ''}</small></button>`; }).join('')}</div>
+        <div class="msw">${p.warna.map((w, wi) => { const x = tidakFoto(S, p.nama, w), on = !x && difoto(S, p.nama, w), nm = w === 'Semua warna' ? 'Semua warna' : namaWarna(w), lbl = lblW(null, w);
+          return `<button ${kunci ? 'disabled' : ''} onclick="tapWarna(${pi},${wi})" aria-label="${esc(nm)}, ${x ? 'tidak difoto' : on ? 'sudah difoto' : 'belum difoto'}">${(f => `<span class="${on ? 'on' : x ? 'x' : ''}${f ? ' f' : ''}" style="background:${f ? `url('${thumb(f.id, 300)}') ${hexWarna(w)}` : hexWarna(w)}">${on ? `<i>${ikonCek}</i>` : ''}</span>${f ? `<i class="mszm" role="button" aria-label="Perbesar foto ${esc(lbl)}" onclick="event.stopPropagation();lihatFotoW(${pi},${wi})">${SVG_ZOOM}</i>` : ''}`)(fotoW(p, w))}<small>${esc(lbl)}${x ? '<em>tidak difoto</em>' : p.talentWarna && p.talentWarna[nm] ? `<em class="t">${esc(p.talentWarna[nm].join(', '))}</em>` : ''}</small></button>`; }).join('')}</div>
         ${S.boleh && !S.arsip ? `<button class="lk" onclick="bukaForm('warna',${pi})">✏️ Atur warna · tandai tidak difoto</button>` : ''}</div>`; }).join('');
   }
   if (SHT === 'mood') {
@@ -1818,8 +1833,7 @@ function vShoot() {
     if (P.mood) h += P.mood.jenis === 'gambar' ? mediaShoot(P.mood, 'Moodboard') : kartuDok(P.mood, 'Moodboard', P.mood.nama);
     h += moodF.map(f => kartuDok(f.m, 'Moodboard', f.judul)).join('');
     if (!P.mood && !moodF.length && !(P.gambar || []).length) h += kosong('s21', S.boleh ? 'Belum ada moodboard. Upload di bawah atau tempel link di paket.' : 'Moodboard belum diisi leader.');
-    if (P.brief || (S.boleh && !S.arsip)) h += `<div class="card msg"><div class="msgh"><b>Brief leader</b>${S.boleh && !S.arsip ? `<button class="lk" onclick="bukaForm('brief')">✏️ ${P.brief ? 'Ubah' : 'Tulis'}</button>` : ''}</div>
-      ${P.brief ? `<p class="msarah">${esc(P.brief)}</p>` : '<small class="msd">Belum ada brief.</small>'}${P.brief && S.boleh && !S.arsip ? `<button class="msbuka" onclick="kirimBrief()">Kirim brief ke grup WA & HP tim</button>` : ''}</div>`;
+    // 5.25: kartu Brief leader tidak lagi tampil di tab Mood (data kolom Brief leader tetap, Kesiapan tetap menghitung)
     const adaSk = (sk.seri || []).length, ideF = lain.find(f => f.jenis === 'ide');
     let fl = kartuCallSheet(S) + (P.rundownM ? kartuDok(P.rundownM, 'File rundown', P.rundownM.nama) : '') + kartuSkema(S, lain.find(f => f.jenis === 'skema'));
     if (sk.ideNama || ideF) fl += kartuIdeFile(sk.ideNama || (ideF && ideF.judul), sk.ideUrl || (ideF && ideF.m.url));
@@ -1832,6 +1846,7 @@ function vShoot() {
   }
   if (SHT === 'prep') {
     const P = S.paket, pn = P.props.filter(x => S.shot['prop|' + x.n]).length;
+    h += `<div class="card msg"><div class="msgh"><b>📄 Cetak PDF</b></div><small class="msd">Dibuat dari data paket ini saat tombol ditekan. Moodboard & storyboard dicetak dari file yang diunggah.</small><div class="msup" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"><button class="sbtn" onclick="unduhShootPdf('callsheet')">Call Sheet</button><button class="sbtn" onclick="unduhShootPdf('rundown')">Rundown</button><button class="sbtn" onclick="unduhShootPdf('lengkap')">Keduanya</button></div></div>`;
     if (P.props.length) h += `<div class="card msg"><div class="msgh"><b>Props</b><small>${pn} / ${P.props.length}</small></div>${P.props.map((x, i) => { const on = !!S.shot['prop|' + x.n];
       return `<button class="msprop" ${S.arsip ? 'disabled' : ''} onclick="tapProp(${i})"><span class="mscb ${on ? 'on' : ''}">${on ? ikonCek : ''}</span><b>${esc(x.n)}</b><small>${esc(x.q)}</small></button>`; }).join('')}</div>`;
     const gp = (P.gambar || []).concat((P.folderFile || []).filter(f => f.m.jenis === 'gambar')).filter(g => /props?\b/i.test(g.judul || ''));
@@ -1876,6 +1891,11 @@ function vShoot() {
   return h;
 }
 // ---------- tab Ide · Per jam: rundown (jam, talent – warna, ide, referensi, centang take) + draf dari skema ----------
+// 5.25: jam rundown awal = acuan (server _jamAwal), perubahan tampil sebagai selisih menit
+const menitJam = j => { const m = String(j || '').match(/(\d{1,2})[.:](\d{2})/); return m ? +m[1] * 60 + +m[2] : null; };
+function selisihJam(b) { const a = SH && SH.shot && SH.shot._jamAwal, kk = String(b.blok || '').trim().toLowerCase().replace(/\s+/g, ' '), awal = a && a[kk];
+  if (!awal || awal === b.jam) return ''; const d = menitJam(b.jam) != null && menitJam(awal) != null ? menitJam(b.jam) - menitJam(awal) : null;
+  return ` · <span class="msjs">acuan ${esc(awal)}${d ? ' · selisih ' + (d > 0 ? '+' : '−') + Math.abs(d) + ' mnt' : ''}</span>`; }
 function perJam(S, now) {
   if (SHDRAFT) return vDraft(S);
   let h = '';
@@ -1893,7 +1913,7 @@ function perJam(S, now) {
     let ide = ideDiBlok(S, b); if (SHCEK) ide = ide.filter(x => cekModel(x, b)); if (SHCEK && !ide.length) return '';
     if (SHRV) { ide = ide.filter(cocokRv); if (!ide.length) return ''; }   // RevisiIde: saringan review juga di Per jam
     const tk = ide.filter(x => x.take).length, lim = SHBUKA[i] ? 999 : 3, ws = pisahNama(b.warna || b.blok).slice(0, 4);
-    return `<div class="msblok ${i === now ? 'now' : ''}" id="blok${i}"><div class="msbh"><div class="msdots">${ws.map(w => `<i style="background:${hexWarna(w)}"></i>`).join('')}</div><div class="msbt"><small>${esc([b.jam, b.seri].filter(Boolean).join(' · '))}</small><b>${esc(b.warna ? pisahNama(b.warna).join(' × ') : b.blok)}</b></div>${i === now ? '<span class="msnow">SEDANG JALAN</span>' : ''}${ub}</div>
+    return `<div class="msblok ${i === now ? 'now' : ''}" id="blok${i}"><div class="msbh"><div class="msdots">${ws.map(w => `<i style="background:${hexWarna(w)}"></i>`).join('')}</div><div class="msbt"><small>${esc([b.jam, b.seri].filter(Boolean).join(' · '))}${selisihJam(b)}</small><b>${esc(b.warna ? pisahNama(b.warna).join(' × ') : b.blok)}</b></div>${i === now ? '<span class="msnow">SEDANG JALAN</span>' : ''}${ub}</div>
       ${b.talent ? `<small class="msd">👥 ${esc(talentWarna(b.talent, b.warna))}</small>` : ''}${b.scene && !ide.length ? `<div class="msscene">🎬 <span><b>Video:</b> ${esc(b.scene)}</span></div>` : ''}
       ${b.setup ? `<div class="msset"><small>FOTO KATALOG</small>${b.setup.split(/\n|;/).map(x => x.trim()).filter(Boolean).map(x => `<span>• ${esc(x)}</span>`).join('')}</div>` : ''}${b.pose ? `<small class="msd">🖼️ Pose: ${esc(b.pose)}</small>` : ''}${b.catatan ? `<small class="msd">📝 ${esc(b.catatan)}</small>` : ''}
       ${ide.length ? `<div class="msih"><small>IDE KONTEN DI BLOK INI</small><small>${tk} / ${ide.length} sudah take</small></div>` + ide.slice(0, lim).map(x => barisIde(x, b, true)).join('') : ''}
@@ -2120,6 +2140,29 @@ function centangShot(k, on) {
 function tandaiSeri(pi) { const p = SH && SH.produk[pi]; if (!p || SH.h > 0 || SH.arsip) return; if (LIHAT) return react('bingung', '👀 Mode lihat ' + LIHAT + ': hanya bisa melihat.');
   const w = p.warna.filter(x => !tidakFoto(SH, p.nama, x) && !difoto(SH, p.nama, x)); if (!w.length) return;
   if (!confirm('Tandai ' + w.length + ' warna ' + p.nama + ' sudah difoto?')) return; w.forEach(x => centangShot(keyShot(p.nama, namaWarna(x), 'F'), true)); }
+const SVG_ZOOM = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M11 8v6M8 11h6"/></svg>';
+// 5.25: foto warna/motif (STYLE PRODUK). Kunci = nama warna (huruf kecil) di produk yang sama; server mencocokkan ID produk + kode F.xxx
+const fotoW = (p, w) => p && p.foto && p.foto[String(namaWarna(w)).toLowerCase()] || null;
+const lblW = (p, w) => { const nm = w === 'Semua warna' ? 'Semua warna' : namaWarna(w), l = /^[A-Za-z0-9]{1,2}$/.test(nm) ? 'Warna ' + nm.toUpperCase() : nm; return (p && p.kode ? p.kode + ' · ' : '') + l; };
+function lihatFotoW(pi, wi) { const p = SH && SH.produk[pi], w = p && p.warna[wi], f = fotoW(p, w); if (!f) return;
+  const d = document.createElement('div'); d.id = 'msfw'; d.setAttribute('role', 'dialog');
+  d.innerHTML = `<img src="${esc(thumb(f.id, 1600))}" alt="${esc(lblW(p, w))}" referrerpolicy="no-referrer"><b>${esc(lblW(p, w))}</b><small>Ketuk di mana saja untuk menutup</small>`;
+  d.onclick = () => d.remove(); document.body.appendChild(d); }
+function pilihFotoW(btn, pi) { const p = SH && SH.produk[pi]; if (!p) return; const row = btn.closest('.mswr'), nm = row.querySelector('.wn').value.trim();
+  if (!nm) return react('bingung', 'Beri nama warna dulu (mis. A atau Sage), lalu foto ya');
+  const f = fotoW(p, nm); if (f && !confirm('Warna ini sudah punya foto. Ganti dengan foto baru?')) { if (confirm('Lihat foto yang sekarang?')) { const wi = p.warna.findIndex(x => namaWarna(x).toLowerCase() === nm.toLowerCase()); if (wi >= 0) lihatFotoW(pi, wi); } return; }
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = () => { const file = inp.files && inp.files[0]; if (!file) return; unggahFotoW(btn, pi, nm, file); }; inp.click(); }
+function unggahFotoW(btn, pi, nm, file) { const p = SH && SH.produk[pi]; if (!p) return;
+  if (!navigator.onLine) return react('bingung', '📶 Unggah foto butuh sinyal. Centang warna tetap bisa dipakai; coba lagi saat sinyal ada ya.');
+  btn.disabled = true; btn.textContent = '…'; const id = SH.id;
+  kecilkanFoto(file, 1280, .8).then(u => {
+    gsr('apiShootFotoWarna', [TOKEN, id, p.nama, nm, { data: u.split(',')[1], mime: 'image/jpeg' }], r => { btn.disabled = false; btn.textContent = '';
+      if (!r || !r.ok) { btn.innerHTML = ic('cam', 20); return react('gagal', (r && r.pesan) || 'Foto gagal diunggah'); }
+      if (SH && SH.id === id) { const g = SH.produk[pi]; g.foto = g.foto || {}; g.foto[r.warna] = r.foto; if (r.pid) g.pid = r.pid; }
+      btn.classList.add('ada'); btn.style.backgroundImage = `url("${thumb(r.foto.id, 200)}")`; react('selesai', r.pesan); },
+      e => { btn.disabled = false; btn.innerHTML = ic('cam', 20); react('gagal', !navigator.onLine || /network|jaringan|koneksi|NetworkError|Failed to fetch/i.test(e && e.message || '') ? '📶 Sinyal putus saat unggah. Foto belum tersimpan, coba lagi saat sinyal ada ya.' : '⚠️ ' + ((e && e.message) || 'Gagal')); });
+  }).catch(() => { btn.disabled = false; btn.innerHTML = ic('cam', 20); react('gagal', 'Foto tidak bisa dibaca. Coba pilih foto lain ya.'); }); }
 function tapWarna(pi, wi) { const p = SH && SH.produk[pi], w = p && p.warna[wi]; if (!w || SH.h > 0) return;
   if (tidakFoto(SH, p.nama, w)) return react('bingung', namaWarna(w) + ' ditandai tidak difoto. Ubah lewat ✏️ Atur warna');
   centangShot(keyShot(p.nama, namaWarna(w), 'F'), !difoto(SH, p.nama, w)); }
@@ -2166,6 +2209,8 @@ function lihatRekap() {
     buka(`<h2 style="margin-top:4px">Rekap ${esc(SH.nama)}</h2><div class="msrk"><div class="ok"><small>Sudah</small><b>${r.sudah}</b></div><div><small>Belum</small><b>${nb}</b></div></div>
       ${nb ? `<b style="display:block;margin:6px 0">Belum sempat diambil</b>${r.belum.slice(0, 6).map(x => `<div class="msrks">${esc(x)}</div>`).join('')}<small style="display:block;color:var(--mut);margin-top:6px">${nb > 6 ? 'dan ' + (nb - 6) + ' lainnya · ' : ''}otomatis dibawa ke ${r.berikutnya ? esc(r.berikutnya) : 'agenda shooting berikutnya'}</small>` : '<div class="info">Semua produk sudah difoto 🎉</div>'}
       ${r.tidak ? `<small style="display:block;color:var(--mut);margin-top:6px">${r.tidak} warna ditandai tidak difoto (tidak dibawa).</small>` : ''}
+      ${(r.perSeri || []).length ? `<b style="display:block;margin:10px 0 4px">Per series</b>${r.perSeri.map(x => `<div class="msrks">${esc(x.n)} · ${x.sd}/${x.tot} warna${x.belum.length ? ' · belum: ' + esc(x.belum.join(', ')) : ' ✓'}</div>`).join('')}` : ''}
+      ${r.sampel && r.sampel.rencana.length ? `<div class="info">↩️ ${r.sampel.mode === 'ubah' ? 'Status kembali ke Sampel setelah rekap dikirim' : r.sampel.mode === 'kering' ? 'Uji kering (tidak diubah): status yang akan kembali ke Sampel' : 'Status sampel tidak diubah (saklar mati). Yang akan berubah bila dinyalakan'}:${r.sampel.rencana.slice(0, 6).map(t => `<br>• ${esc(t)}`).join('')}${r.sampel.rencana.length > 6 ? '<br>dan ' + (r.sampel.rencana.length - 6) + ' lainnya' : ''}</div>` : ''}
       ${r.ideTake + r.ideSisa ? `<div class="info">🎬 Ide konten: ${r.ideTake}/${r.ideTake + r.ideSisa} sudah take${r.ideSisa ? ' · sisanya tetap di daftar ide' : ''}.</div>` : ''}
       <button class="big" id="kirimRekap">Kirim rekap ke grup tim</button><button class="big alt" onclick="tutup()">Kembali ke Mode Shooting</button>`);
     $('kirimRekap').onclick = () => { if (!confirm('Kirim rekap ke grup WA dan arsipkan photoshoot ini?')) return; tutup(); loading(true, 'Mengirim rekap…');
@@ -3034,8 +3079,8 @@ function bukaForm(k, arg) {
       <div class="fm"><textarea id="br1" style="min-height:220px" placeholder="Contoh:&#10;Tujuan: foto feed official + katalog Mahligai 5 warna&#10;Mood: hangat, keluarga, candid&#10;Wajib: candid tiap warna sebelum ISHOMA&#10;Pembagian: Bontot foto, Atin & Inces video, Wafiq wardrobe">${esc(SH && SH.paket.brief || '')}</textarea></div>
       <button class="big" id="kirim">Simpan brief</button>`,
     warna: () => { const p = SH && SH.produk[arg]; if (!p) return '';
-      const baris = (w, i) => `<div class="mswr"><input type="color" value="${/^#[0-9a-f]{6}$/i.test(hexWarna(w)) ? hexWarna(w) : '#E6C7A6'}" aria-label="Kode warna"><input class="wn" value="${esc(w === 'Semua warna' ? '' : namaWarna(w))}" placeholder="Nama warna / motif"><label><input type="checkbox" ${tidakFoto(SH, p.nama, w) ? 'checked' : ''}> Tidak difoto</label><button type="button" onclick="this.parentNode.remove()" aria-label="Hapus warna">✕</button></div>`;
-      return `<h2>🎨 Warna · ${esc(p.nama)}</h2><div class="info" style="margin-top:0">Untuk photoshoot ini saja: tambah/hapus warna & tandai yang memang tidak difoto (tidak dihitung, tidak dibawa ke shoot berikutnya). Kode warna kotak disimpan ke produk dan dipakai lagi nanti.</div>
+      const baris = (w, i) => `<div class="mswr">${(f => `<button type="button" class="mswc${f ? ' ada' : ''}" ${f ? `style="background-image:url('${thumb(f.id, 200)}')"` : ''} aria-label="Foto warna (kamera/galeri)" onclick="pilihFotoW(this,${arg})">${f ? '' : ic('cam', 20)}</button>`)(fotoW(p, w))}<input type="color" value="${/^#[0-9a-f]{6}$/i.test(hexWarna(w)) ? hexWarna(w) : '#E6C7A6'}" aria-label="Kode warna"><input class="wn" value="${esc(w === 'Semua warna' ? '' : namaWarna(w))}" placeholder="Nama warna / motif"><label><input type="checkbox" ${tidakFoto(SH, p.nama, w) ? 'checked' : ''}> Tidak difoto</label><button type="button" onclick="this.parentNode.remove()" aria-label="Hapus warna">✕</button></div>`;
+      return `<h2>🎨 Warna · ${esc(p.nama)}</h2><div class="info" style="margin-top:0">Untuk photoshoot ini saja: tambah/hapus warna & tandai yang memang tidak difoto (tidak dihitung, tidak dibawa ke shoot berikutnya). Kode warna kotak disimpan ke produk dan dipakai lagi nanti. ${ic('cam', 14)} = foto warna/motif (satu foto per warna, langsung tersimpan; warna baru disimpan dulu baru difoto).</div>
       <div class="fm" id="wlist">${p.warna.map(baris).join('')}</div><button type="button" class="sbtn" id="wtambah">＋ Tambah warna</button><button class="big" id="kirim">Simpan warna</button>`; },
     paket: () => { const P = SH ? SH.paket : {}, v = x => esc(P[x] || '');
       return `<h2>Paket shooting</h2><div class="info" style="margin-top:0">${esc(SH ? SH.nama : '')}</div><div class="fm"><label>Link moodboard (Canva / PDF)</label><input id="k1" placeholder="https:\/\/…" value="${v('moodboard')}">
@@ -3110,7 +3155,7 @@ function bukaForm(k, arg) {
       <label>Status materi</label><select id="mstatus">${['Belum', 'Siap', 'Terkirim ke Alif'].map(s => `<option ${s === m.status ? 'selected' : ''}>${s}</option>`).join('')}</select></div><button class="big" id="kirim">Simpan materi</button>`; }
   };
   buka((k === 'materi' && TAB === 'materi' || ['paket', 'blok', 'idesh', 'tempel', 'brief', 'review', 'warna', 'seri'].includes(k) ? '' : bk) + F[k]());
-  if (k === 'warna' && $('wtambah')) $('wtambah').onclick = () => { const l = $('wlist'), d = document.createElement('div'); d.innerHTML = F.warna().match(/<div class="mswr">[\s\S]*?<\/div>/)[0]; const b = d.firstChild; b.querySelector('.wn').value = ''; b.querySelector('input[type=checkbox]').checked = false; l.appendChild(b); b.querySelector('.wn').focus(); };
+  if (k === 'warna' && $('wtambah')) $('wtambah').onclick = () => { const l = $('wlist'), d = document.createElement('div'); d.innerHTML = F.warna().match(/<div class="mswr">[\s\S]*?<\/div>/)[0]; const b = d.firstChild; b.querySelector('.wn').value = ''; b.querySelector('input[type=checkbox]').checked = false; const fb = b.querySelector('.mswc'); if (fb) { fb.classList.remove('ada'); fb.style.backgroundImage = ''; fb.innerHTML = ic('cam', 20); } l.appendChild(b); b.querySelector('.wn').focus(); };
   const sh = $('sheet');
   sh.querySelectorAll('#untuk .pf,#ikut .pf,#prd .pf').forEach(b => b.onclick = () => { if (b.dataset.p === 'Semua') sh.querySelectorAll('#untuk .pf').forEach(x => x.classList.toggle('on', x === b)); else { b.classList.toggle('on'); const s = sh.querySelector('#untuk [data-p="Semua"]'); if (s) s.classList.toggle('on', !sh.querySelectorAll('#untuk .pf.on:not([data-p="Semua"])').length); } });
   const f2 = $('file2'); COVER = null; if (f2) f2.onchange = e => { const f = e.target.files[0]; if (!f) return; const im = new Image(), rd = new FileReader();
